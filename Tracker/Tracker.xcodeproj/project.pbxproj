@@ -7,19 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220A86932A8125AC0082B271 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220A86922A8125AC0082B271 /* Tracker.swift */; };
+		220A86952A8136B30082B271 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220A86942A8136B30082B271 /* WeekDay.swift */; };
+		220A86992A8141360082B271 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220A86982A8141360082B271 /* TrackerRecord.swift */; };
+		220A869B2A81419B0082B271 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220A869A2A81419B0082B271 /* TrackerCategory.swift */; };
 		22D371F42A79781500FA5888 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F32A79781500FA5888 /* AppDelegate.swift */; };
 		22D371F62A79781500FA5888 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F52A79781500FA5888 /* SceneDelegate.swift */; };
-		22D371F82A79781500FA5888 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F72A79781500FA5888 /* ViewController.swift */; };
+		22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F72A79781500FA5888 /* TrackersViewController.swift */; };
 		22D371FB2A79781500FA5888 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22D371F92A79781500FA5888 /* Main.storyboard */; };
 		22D371FD2A79781800FA5888 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FC2A79781800FA5888 /* Assets.xcassets */; };
 		22D372002A79781800FA5888 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FE2A79781800FA5888 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		220A86922A8125AC0082B271 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
+		220A86942A8136B30082B271 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
+		220A86982A8141360082B271 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		220A869A2A81419B0082B271 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		22D371F02A79781500FA5888 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22D371F32A79781500FA5888 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22D371F52A79781500FA5888 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		22D371F72A79781500FA5888 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		22D371F72A79781500FA5888 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
 		22D371FA2A79781500FA5888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		22D371FC2A79781800FA5888 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		22D371FF2A79781800FA5888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -37,6 +45,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		220A86912A81258B0082B271 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				220A86922A8125AC0082B271 /* Tracker.swift */,
+				220A86942A8136B30082B271 /* WeekDay.swift */,
+				220A86982A8141360082B271 /* TrackerRecord.swift */,
+				220A869A2A81419B0082B271 /* TrackerCategory.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		22D371E72A79781500FA5888 = {
 			isa = PBXGroup;
 			children = (
@@ -56,9 +75,10 @@
 		22D371F22A79781500FA5888 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				220A86912A81258B0082B271 /* Model */,
 				22D371F32A79781500FA5888 /* AppDelegate.swift */,
 				22D371F52A79781500FA5888 /* SceneDelegate.swift */,
-				22D371F72A79781500FA5888 /* ViewController.swift */,
+				22D371F72A79781500FA5888 /* TrackersViewController.swift */,
 				22D371F92A79781500FA5888 /* Main.storyboard */,
 				22D371FC2A79781800FA5888 /* Assets.xcassets */,
 				22D371FE2A79781800FA5888 /* LaunchScreen.storyboard */,
@@ -138,9 +158,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22D371F82A79781500FA5888 /* ViewController.swift in Sources */,
+				220A86932A8125AC0082B271 /* Tracker.swift in Sources */,
+				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
+				220A86952A8136B30082B271 /* WeekDay.swift in Sources */,
 				22D371F42A79781500FA5888 /* AppDelegate.swift in Sources */,
 				22D371F62A79781500FA5888 /* SceneDelegate.swift in Sources */,
+				220A86992A8141360082B271 /* TrackerRecord.swift in Sources */,
+				220A869B2A81419B0082B271 /* TrackerCategory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
