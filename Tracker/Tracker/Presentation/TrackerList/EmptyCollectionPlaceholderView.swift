@@ -12,6 +12,7 @@ class EmptyCollectionPlaceholderView: UIView {
     private lazy var placeholderImage = {
         let image = UIImage(named: "circleStar") ?? UIImage()
         let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -32,8 +33,14 @@ class EmptyCollectionPlaceholderView: UIView {
         addSubview(placeholderImage)
         addSubview(placeholderLabel)
         NSLayoutConstraint.activate([
+            placeholderImage.topAnchor.constraint(equalTo: topAnchor),
+            placeholderImage.heightAnchor.constraint(equalToConstant: 80),
+            placeholderImage.widthAnchor.constraint(equalToConstant: 80),
             placeholderImage.bottomAnchor.constraint(equalTo: placeholderLabel.topAnchor),
-            placeholderImage.centerXAnchor.constraint(equalTo: placeholderLabel.centerXAnchor)
+            placeholderImage.centerXAnchor.constraint(equalTo: placeholderLabel.centerXAnchor),
+            placeholderLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            placeholderLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            placeholderLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 
