@@ -9,7 +9,7 @@ import UIKit
 
 class TrackerNavigationBar: UINavigationBar {
 
-    private weak var trackerBarDelegate: TrackersViewControllerProtocol?
+    private weak var trackerBarDelegate: TrackersBarControllerProtocol?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,7 +20,7 @@ class TrackerNavigationBar: UINavigationBar {
     }
 
     convenience init(frame: CGRect,
-                     trackerBarDelegate: TrackersViewControllerProtocol) {
+                     trackerBarDelegate: TrackersBarControllerProtocol) {
         self.init(frame: frame)
 
         self.trackerBarDelegate = trackerBarDelegate
