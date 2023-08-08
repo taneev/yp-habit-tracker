@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TrackersViewControllerProtocol: AnyObject, UISearchControllerDelegate {
+    func addTrackerButtonDidTapped()
+}
+
 final class TrackersViewController: UIViewController {
 
     private lazy var navigationBar = { createNavigationBar() }()
@@ -19,46 +23,14 @@ final class TrackersViewController: UIViewController {
         addSubviews()
         addConstraints()
     }
-
-    @objc private func createTrackerTapped() {
-
-        print("Create Tracker")
-    }
 }
 
 // MARK: Layout
 private extension TrackersViewController {
 
     func createNavigationBar() -> UINavigationBar {
-        let bar = UINavigationBar(frame: .zero)
-        bar.prefersLargeTitles = true
-
-        let navigationItem = UINavigationItem()
-        let leftBarItem = UIBarButtonItem(image: UIImage(systemName: "plus"),
-                                          style: .plain,
-                                          target: self,
-                                          action: #selector(createTrackerTapped))
-        navigationItem.leftBarButtonItem = leftBarItem
-        navigationItem.title = "Трекеры"
-
-        let rightBarItem = UIDatePicker()
-        rightBarItem.datePickerMode = .date
-        rightBarItem.preferredDatePickerStyle = .compact
-        rightBarItem.locale = Locale(identifier: "ru_RU")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightBarItem)
-
-        let searchController = UISearchController()
-        searchController.delegate = self
-        searchController.automaticallyShowsCancelButton = true
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = "Поиск"
-        navigationItem.searchController = searchController
-
-        bar.isTranslucent = false
-        bar.tintColor = .ypBlackDay
-        bar.setItems([navigationItem], animated: true)
-        bar.translatesAutoresizingMaskIntoConstraints = false
-
+        let bar = TrackerNavigationBar(frame: .zero,
+                                       trackerBarDelegate: self)
         return bar
     }
 
@@ -84,18 +56,17 @@ private extension TrackersViewController {
             collectionView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
- //       view.layoutIfNeeded()
 
-        NSLayoutConstraint.activate([
             emptyCollectionPlaceholder.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
             emptyCollectionPlaceholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor)
         ])
     }
 }
 
-extension TrackersViewController: UISearchControllerDelegate {
-
+extension TrackersViewController: TrackersViewControllerProtocol {
+    func addTrackerButtonDidTapped() {
+        print("add Tracker tapped")
+    }
 }
 
 
