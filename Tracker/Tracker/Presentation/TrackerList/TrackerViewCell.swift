@@ -12,7 +12,7 @@ final class TrackerViewCell: UICollectionViewCell {
 
     var cellColor: UIColor! {
         didSet {
-            backgroundColor = cellColor
+            contentView.backgroundColor = cellColor
         }
     }
     var cellName: String! {
@@ -32,6 +32,8 @@ final class TrackerViewCell: UICollectionViewCell {
     }
 
     private let pinImage = UIImage(systemName: "pin.fill") ?? UIImage()
+    private let fontSize = CGFloat(12)
+
     private lazy var cellNameLabel = { createNameLabel() }()
     private lazy var emojiLabel = { createEmojiLabel() }()
     private lazy var pinnedImageView = { createPinnedImagedView() }()
@@ -40,10 +42,8 @@ final class TrackerViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        translatesAutoresizingMaskIntoConstraints = false
-        layer.cornerRadius = 16
-        layer.masksToBounds = true
-
+        contentView.layer.cornerRadius = 16
+        contentView.layer.masksToBounds = true
         addSubviews()
     }
 
@@ -55,7 +55,7 @@ final class TrackerViewCell: UICollectionViewCell {
 private extension TrackerViewCell {
     func createNameLabel() -> UILabel {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
         label.textColor = .white
         label.textAlignment = .left
         label.numberOfLines = 2
@@ -66,9 +66,13 @@ private extension TrackerViewCell {
 
     func createEmojiLabel() -> UILabel {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textAlignment = .left
+        label.font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
+        label.textAlignment = .center
+        label.contentMode = .center
+        label.backgroundColor = .white.withAlphaComponent(0.3)
         label.numberOfLines = 1
+        label.layer.cornerRadius = 12
+        label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
@@ -89,6 +93,7 @@ private extension TrackerViewCell {
         NSLayoutConstraint.activate([
             emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             emojiLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            emojiLabel.widthAnchor.constraint(equalToConstant: 24),
 
             pinnedImageView.heightAnchor.constraint(equalToConstant: 24),
             pinnedImageView.widthAnchor.constraint(equalTo: pinnedImageView.heightAnchor),
