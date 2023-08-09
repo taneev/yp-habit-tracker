@@ -20,16 +20,22 @@ final class TrackersViewController: UIViewController {
                                     isRegular: true,
                                     emoji: "❤️",
                                     color: .ypColorSelection5,
+                                    isCompleted: false,
+                                    counter: 0,
                                     schedule: [.mon, .tue]),
                             Tracker(name: "Постричь газон во дворе",
                                     isRegular: false,
                                     emoji: "🏝️",
                                     color: .ypColorSelection2,
+                                    isCompleted: false,
+                                    counter: 21,
                                     schedule: nil),
                             Tracker(name: "Постирать шторы",
                                     isRegular: false,
                                     emoji: "🤔",
                                     color: .ypColorSelection15,
+                                    isCompleted: false,
+                                    counter: 2,
                                     schedule: nil),
                         ]),
         TrackerCategory(name: "Радостные мелочи",
@@ -38,11 +44,15 @@ final class TrackersViewController: UIViewController {
                                     isRegular: true,
                                     emoji: "😻",
                                     color: .ypColorSelection2,
+                                    isCompleted: true,
+                                    counter: 5,
                                     schedule: nil),
                             Tracker(name: "Бабушка прислала открытку в вотсапе",
                                     isRegular: false,
                                     emoji: "❤️",
                                     color: .ypColorSelection1,
+                                    isCompleted: false,
+                                    counter: 23,
                                     schedule: nil),
                         ]),
         TrackerCategory(name: "Самочуствие",
@@ -149,6 +159,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.cellName = tracker.name
         cell.cellColor = tracker.color
         cell.emoji = tracker.emoji
+        cell.isCompleted = tracker.isCompleted
+        cell.quantity = tracker.counter
         return cell
     }
 }
@@ -159,7 +171,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        CGSize(width: (collectionView.frame.width - params.paddingWidth) / CGFloat(params.cellCount), height: 90)
+        CGSize(width: (collectionView.frame.width - params.paddingWidth) / CGFloat(params.cellCount), height: 90 + TrackerViewCell.quantityCardHeight)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -172,7 +184,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 16
+        return 0
     }
 
     func collectionView(_ collectionView: UICollectionView,
