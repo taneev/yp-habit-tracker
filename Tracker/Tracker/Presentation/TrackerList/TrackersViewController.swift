@@ -7,62 +7,71 @@
 
 import UIKit
 
-protocol TrackersBarControllerProtocol: AnyObject, UISearchControllerDelegate {
+protocol TrackersBarControllerProtocol: AnyObject, UISearchBarDelegate {
     func addTrackerButtonDidTapped()
+    func currentDateDidChange(for selectedDate: Date)
 }
 
 final class TrackersViewController: UIViewController {
 
-    var categories: [TrackerCategory]! = [
-        TrackerCategory(name: "Домашний уют",
+    var categories: [TrackerCategory] = [
+        TrackerCategory(categoryID: UUID(),
+                        name: "Домашний уют",
                         activeTrackers: [
                             Tracker(name: "Поливать растения",
                                     isRegular: true,
                                     emoji: "❤️",
                                     color: .ypColorSelection5,
-                                    isCompleted: false,
                                     counter: 0,
                                     schedule: [.mon, .tue]),
                             Tracker(name: "Постричь газон во дворе",
                                     isRegular: false,
                                     emoji: "🏝️",
                                     color: .ypColorSelection2,
-                                    isCompleted: false,
                                     counter: 21,
                                     schedule: nil),
                             Tracker(name: "Постирать шторы",
-                                    isRegular: false,
+                                    isRegular: true,
                                     emoji: "🤔",
                                     color: .ypColorSelection15,
-                                    isCompleted: false,
                                     counter: 2,
-                                    schedule: nil),
+                                    schedule: [.sun]),
                         ]),
-        TrackerCategory(name: "Радостные мелочи",
+        TrackerCategory(categoryID: UUID(),
+                        name: "Занятия спортом",
+                        activeTrackers: nil),
+        TrackerCategory(categoryID: UUID(),
+                        name: "Радостные мелочи",
                         activeTrackers: [
                             Tracker(name: "Кошка заслонила камеру на созвоне",
                                     isRegular: true,
                                     emoji: "😻",
-                                    color: .ypColorSelection2,
-                                    isCompleted: true,
+                                    color: .ypColorSelection3,
                                     counter: 5,
                                     schedule: nil),
-                            Tracker(name: "Бабушка прислала открытку в вотсапе",
-                                    isRegular: false,
+                            Tracker(name: "Бабушка прислала открытку в телеге!",
+                                    isRegular: true,
                                     emoji: "❤️",
                                     color: .ypColorSelection1,
-                                    isCompleted: false,
                                     counter: 23,
-                                    schedule: nil),
+                                    schedule: [.fri, .sat, .tue, .mon]),
+                            Tracker(name: "Дать свиньям",
+                                    isRegular: false,
+                                    emoji: "🐶",
+                                    color: .ypColorSelection18,
+                                    counter: 23780,
+                                    schedule: Array(WeekDay.allCases)),
                         ]),
-        TrackerCategory(name: "Самочуствие",
+        TrackerCategory(categoryID: UUID(),
+                        name: "Самочуствие",
                         activeTrackers: []),
 
     ]
     var visibleCategories: [TrackerCategory]?
-    var completedTrackers: [TrackerRecord]?
+    var completedTrackers: Set<TrackerRecord>?
 
-    var currentDate: Date!
+    private var currentDate: Date = Date()
+    private var searchBarTextFilter: String = ""
 
     private lazy var navigationBar = { createNavigationBar() }()
     private lazy var collectionView = { createCollectionView() }()
@@ -78,7 +87,7 @@ final class TrackersViewController: UIViewController {
 
         addSubviews()
         addConstraints()
-        visibleCategories = categories
+        filterVisibleCategories()
         collectionView.reloadData()
         if categories.isEmpty {
             emptyCollectionPlaceholder.isHidden = false
@@ -86,6 +95,42 @@ final class TrackersViewController: UIViewController {
         else {
             emptyCollectionPlaceholder.isHidden = true
         }
+    }
+
+    private func filterVisibleCategories() {
+        let categoriesFilteredByDate = categories.compactMap{ category -> TrackerCategory? in
+            guard let activeTrackers = category.activeTrackers else { return nil }
+
+            let visibleTrackers = activeTrackers.filter{ tracker in
+                if !tracker.isRegular {
+                    return true
+                }
+
+                guard let schedule = tracker.schedule
+                else { // регулярная привычка с почему-то не заданным расписанием
+                       // - отображать всегда или никогда?
+                       // отображаю всегда, чтобы был шанс исправить ошибку (в расписании или коде)
+                    return true
+                }
+
+                if let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: currentDate)) {
+                    return schedule.contains(currentWeekDay)
+                }
+                return false
+            }
+
+            if visibleTrackers.isEmpty {
+                return nil
+            }
+            let filteredCategory = TrackerCategory(categoryID: category.categoryID,
+                                                   name: category.name,
+                                                   activeTrackers: visibleTrackers,
+                                                   completedTrackers: category.completedTrackers)
+
+            return filteredCategory
+        }
+
+        visibleCategories = categoriesFilteredByDate
     }
 }
 
@@ -136,8 +181,26 @@ private extension TrackersViewController {
 
 // MARK: Navigation bar delegate
 extension TrackersViewController: TrackersBarControllerProtocol {
+    func currentDateDidChange(for selectedDate: Date) {
+        currentDate = selectedDate
+        filterVisibleCategories()
+        collectionView.reloadData()
+    }
+
     func addTrackerButtonDidTapped() {
         print("add Tracker tapped")
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchBarTextFilter = searchText.trimmingCharacters(in: .whitespaces)
+        print("txt filter: \(searchBarTextFilter)")
+        collectionView.reloadData()
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBarTextFilter = ""
+        print("txt filter cancelled")
+        collectionView.reloadData()
     }
 }
 
@@ -153,13 +216,14 @@ extension TrackersViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerViewCell.cellIdentifier, for: indexPath) as? TrackerViewCell,
-              let tracker = visibleCategories?[indexPath.section].activeTrackers?[indexPath.row]
+              let currentCategory = visibleCategories?[indexPath.section],
+              let tracker = currentCategory.activeTrackers?[indexPath.row]
         else {return UICollectionViewCell()}
 
         cell.cellName = tracker.name
         cell.cellColor = tracker.color
         cell.emoji = tracker.emoji
-        cell.isCompleted = tracker.isCompleted
+        cell.isCompleted = false
         cell.quantity = tracker.counter
         return cell
     }

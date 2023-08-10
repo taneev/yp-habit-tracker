@@ -7,6 +7,8 @@
 
 import Foundation
 
-enum WeekDay: CaseIterable {
-    case mon, tue, wed, thu, fri, sat, sun
+enum WeekDay: Int, CaseIterable {
+    case sun = 1, // для соответствия григорианскому календарю в Calendar,
+                  // другие календари не поддерживаются
+         mon, tue, wed, thu, fri, sat
 }

@@ -13,7 +13,6 @@ struct Tracker {
     let isRegular: Bool
     let emoji: String
     let color: UIColor
-    let isCompleted: Bool
     let counter: Int
     let schedule: [WeekDay]?
 }

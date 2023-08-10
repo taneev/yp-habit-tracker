@@ -8,8 +8,15 @@
 import Foundation
 
 struct TrackerCategory {
-    let categoryID = UUID()
+    let categoryID: UUID
     let name: String
     let activeTrackers: [Tracker]?
-    let completedTrackers: [Tracker]? = nil
+    let completedTrackers: [Tracker]?
+
+    init(categoryID: UUID, name: String, activeTrackers: [Tracker]?, completedTrackers: [Tracker]? = nil) {
+        self.categoryID = categoryID
+        self.name = name
+        self.activeTrackers = activeTrackers
+        self.completedTrackers = completedTrackers
+    }
 }

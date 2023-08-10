@@ -10,6 +10,14 @@ import UIKit
 class TrackerNavigationBar: UINavigationBar {
 
     private weak var trackerBarDelegate: TrackersBarControllerProtocol?
+    private lazy var datePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.addTarget(self, action: #selector(currentDateDidChange), for: .valueChanged)
+        return datePicker
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,14 +43,10 @@ class TrackerNavigationBar: UINavigationBar {
         navigationItem.leftBarButtonItem = leftBarItem
         navigationItem.title = "Трекеры"
 
-        let rightBarItem = UIDatePicker()
-        rightBarItem.datePickerMode = .date
-        rightBarItem.preferredDatePickerStyle = .compact
-        rightBarItem.locale = Locale(identifier: "ru_RU")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightBarItem)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
 
         let searchController = UISearchController()
-        searchController.delegate = self.trackerBarDelegate
+        searchController.searchBar.delegate = self.trackerBarDelegate
         searchController.automaticallyShowsCancelButton = true
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.placeholder = "Поиск"
@@ -56,5 +60,9 @@ class TrackerNavigationBar: UINavigationBar {
 
     @objc private func createTrackerTapped() {
         trackerBarDelegate?.addTrackerButtonDidTapped()
+    }
+
+    @objc private func currentDateDidChange() {
+        trackerBarDelegate?.currentDateDidChange(for: datePicker.date)
     }
 }
