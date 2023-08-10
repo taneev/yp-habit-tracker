@@ -97,26 +97,30 @@ final class TrackersViewController: UIViewController {
         }
     }
 
+    private func isPassedDate(_ date: Date, filter schedule: [WeekDay]?) -> Bool {
+        guard let schedule
+        else { // регулярная привычка с почему-то не заданным расписанием
+               // - отображать всегда или никогда?
+               // отображаю всегда, чтобы был шанс исправить ошибку (в расписании или коде)
+            return true
+        }
+
+        if let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: date)) {
+            return schedule.contains(currentWeekDay)
+        }
+        return false
+    }
+
+    private func isPassedName(_ name: String, filter searchText: String) -> Bool {
+        return searchText.isEmpty || name.lowercased().contains(searchText.lowercased())
+    }
+
     private func filterVisibleCategories() {
-        let categoriesFilteredByDate = categories.compactMap{ category -> TrackerCategory? in
+        let categoriesFiltered = categories.compactMap{ category -> TrackerCategory? in
             guard let activeTrackers = category.activeTrackers else { return nil }
 
-            let visibleTrackers = activeTrackers.filter{ tracker in
-                if !tracker.isRegular {
-                    return true
-                }
-
-                guard let schedule = tracker.schedule
-                else { // регулярная привычка с почему-то не заданным расписанием
-                       // - отображать всегда или никогда?
-                       // отображаю всегда, чтобы был шанс исправить ошибку (в расписании или коде)
-                    return true
-                }
-
-                if let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: currentDate)) {
-                    return schedule.contains(currentWeekDay)
-                }
-                return false
+            let visibleTrackers = activeTrackers.filter{
+                (!$0.isRegular || isPassedDate(currentDate, filter: $0.schedule)) && isPassedName($0.name, filter: searchBarTextFilter)
             }
 
             if visibleTrackers.isEmpty {
@@ -129,8 +133,7 @@ final class TrackersViewController: UIViewController {
 
             return filteredCategory
         }
-
-        visibleCategories = categoriesFilteredByDate
+        visibleCategories = categoriesFiltered
     }
 }
 
@@ -193,13 +196,13 @@ extension TrackersViewController: TrackersBarControllerProtocol {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchBarTextFilter = searchText.trimmingCharacters(in: .whitespaces)
-        print("txt filter: \(searchBarTextFilter)")
+        filterVisibleCategories()
         collectionView.reloadData()
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBarTextFilter = ""
-        print("txt filter cancelled")
+        filterVisibleCategories()
         collectionView.reloadData()
     }
 }
