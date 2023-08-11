@@ -31,10 +31,6 @@ class TrackerNavigationBar: UINavigationBar {
                      trackerBarDelegate: TrackersBarControllerProtocol) {
         self.init(frame: frame)
 
-        self.trackerBarDelegate = trackerBarDelegate
-
-        prefersLargeTitles = true
-
         let navigationItem = UINavigationItem()
         let leftBarItem = UIBarButtonItem(image: UIImage(systemName: "plus"),
                                           style: .plain,
@@ -42,16 +38,10 @@ class TrackerNavigationBar: UINavigationBar {
                                           action: #selector(createTrackerTapped))
         navigationItem.leftBarButtonItem = leftBarItem
         navigationItem.title = "Трекеры"
-
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
 
-        let searchController = UISearchController()
-        searchController.searchBar.delegate = self.trackerBarDelegate
-        searchController.automaticallyShowsCancelButton = true
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = "Поиск"
-        navigationItem.searchController = searchController
-
+        self.trackerBarDelegate = trackerBarDelegate
+        prefersLargeTitles = true
         isTranslucent = false
         tintColor = .ypBlackDay
         setItems([navigationItem], animated: true)

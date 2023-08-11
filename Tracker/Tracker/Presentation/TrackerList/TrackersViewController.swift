@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol TrackersBarControllerProtocol: AnyObject, UISearchBarDelegate {
+protocol TrackersBarControllerProtocol: AnyObject {
     func addTrackerButtonDidTapped()
     func currentDateDidChange(for selectedDate: Date)
 }
@@ -71,9 +71,10 @@ final class TrackersViewController: UIViewController {
     var completedTrackers: Set<TrackerRecord>?
 
     private var currentDate: Date = Date()
-    private var searchBarTextFilter: String = ""
+    private var searchTextFilter: String = ""
 
     private lazy var navigationBar = { createNavigationBar() }()
+    private lazy var searchTextField = { createSearchTextField() }()
     private lazy var collectionView = { createCollectionView() }()
     private lazy var emptyCollectionPlaceholder = { EmptyCollectionPlaceholderView() }()
 
@@ -95,6 +96,13 @@ final class TrackersViewController: UIViewController {
         else {
             emptyCollectionPlaceholder.isHidden = true
         }
+        // Для скрытия курсора с поля ввода при тапе вне поля ввода и вне клавиатуры
+        let anyTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleAnyTap))
+        view.addGestureRecognizer(anyTapGesture)
+    }
+
+    @objc private func handleAnyTap(_ sender: UITapGestureRecognizer) {
+        searchTextField.resignFirstResponder()
     }
 
     private func isPassedDate(_ date: Date, filter schedule: [WeekDay]?) -> Bool {
@@ -120,7 +128,7 @@ final class TrackersViewController: UIViewController {
             guard let activeTrackers = category.activeTrackers else { return nil }
 
             let visibleTrackers = activeTrackers.filter{
-                (!$0.isRegular || isPassedDate(currentDate, filter: $0.schedule)) && isPassedName($0.name, filter: searchBarTextFilter)
+                (!$0.isRegular || isPassedDate(currentDate, filter: $0.schedule)) && isPassedName($0.name, filter: searchTextFilter)
             }
 
             if visibleTrackers.isEmpty {
@@ -140,9 +148,17 @@ final class TrackersViewController: UIViewController {
 // MARK: Layout
 private extension TrackersViewController {
 
-    func createNavigationBar() -> UINavigationBar {
-        let bar = TrackerNavigationBar(frame: .zero,
-                                       trackerBarDelegate: self)
+    func createSearchTextField() -> UISearchTextField {
+        let searchField = UISearchTextField()
+        searchField.placeholder = "Поиск"
+        searchField.delegate = self
+        searchField.font = UIFont.systemFont(ofSize: 17)
+        searchField.translatesAutoresizingMaskIntoConstraints = false
+        return searchField
+    }
+
+    func createNavigationBar() -> TrackerNavigationBar {
+        let bar = TrackerNavigationBar(frame: .zero, trackerBarDelegate: self)
         return bar
     }
 
@@ -161,6 +177,7 @@ private extension TrackersViewController {
 
     func addSubviews() {
         view.addSubview(navigationBar)
+        view.addSubview(searchTextField)
         view.addSubview(collectionView)
         view.addSubview(emptyCollectionPlaceholder)
     }
@@ -171,8 +188,12 @@ private extension TrackersViewController {
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 
+            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            searchTextField.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 7),
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
@@ -185,25 +206,26 @@ private extension TrackersViewController {
 // MARK: Navigation bar delegate
 extension TrackersViewController: TrackersBarControllerProtocol {
     func currentDateDidChange(for selectedDate: Date) {
+        searchTextField.resignFirstResponder()
         currentDate = selectedDate
         filterVisibleCategories()
         collectionView.reloadData()
     }
 
     func addTrackerButtonDidTapped() {
-        print("add Tracker tapped")
+        searchTextField.resignFirstResponder()
     }
+}
 
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchBarTextFilter = searchText.trimmingCharacters(in: .whitespaces)
+extension TrackersViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces) ?? ""
         filterVisibleCategories()
         collectionView.reloadData()
     }
 
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBarTextFilter = ""
-        filterVisibleCategories()
-        collectionView.reloadData()
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        searchTextField.resignFirstResponder()
     }
 }
 
