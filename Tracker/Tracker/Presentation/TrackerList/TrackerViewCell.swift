@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol TrackerViewCellProtocol: AnyObject {
+    func trackerDoneButtonDidTapped(for trackerID: UUID)
+}
+
 final class TrackerViewCell: UICollectionViewCell {
     static let cellIdentifier = "trackerCell"
     static let quantityCardHeight = CGFloat(58)
 
+    weak var delegate: TrackerViewCellProtocol?
+    var trackerID: UUID!
     var cellColor: UIColor! {
         didSet {
             trackerView.backgroundColor = cellColor
@@ -43,16 +49,20 @@ final class TrackerViewCell: UICollectionViewCell {
             quantityLabel.text = "\(quantity) \(daysText)"
         }
     }
-    var isCompleted: Bool? {
+    var isCompleted: Bool! {
         didSet {
             doneButton.setTitle((isCompleted == true) ? "✓" : "＋", for: .normal)
+        }
+    }
+    var isDoneButtonEnabled: Bool! {
+        didSet {
+            doneButton.alpha = isDoneButtonEnabled ? 1 : 0.3
         }
     }
 
     private let pinImage = UIImage(systemName: "pin.fill") ?? UIImage()
     private let fontSize = CGFloat(12)
     private let buttonRadius = CGFloat(17)
-
     private var buttonLabelText: String { (isCompleted == true) ? "✓" : "＋" }
 
     private lazy var trackerView = { createTrackerView() }()
@@ -73,8 +83,11 @@ final class TrackerViewCell: UICollectionViewCell {
     }
 
     @objc private func doneButtonDidTap() {
-        isCompleted = !(isCompleted == true)
-        print("done tapped")
+
+        if !isDoneButtonEnabled {return}
+
+        isCompleted = !isCompleted
+        delegate?.trackerDoneButtonDidTapped(for: trackerID)
     }
 }
 
