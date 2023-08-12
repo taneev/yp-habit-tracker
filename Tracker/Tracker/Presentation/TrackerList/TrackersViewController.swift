@@ -82,6 +82,7 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .ypWhiteDay
         addSubviews()
         addConstraints()
         loadData()
@@ -225,6 +226,9 @@ extension TrackersViewController: TrackersBarControllerProtocol {
 
     func addTrackerButtonDidTapped() {
         searchTextField.resignFirstResponder()
+        let selectTrackerTypeViewController = CreateTrackerTypeSelectionViewController()
+        selectTrackerTypeViewController.modalPresentationStyle = .automatic
+        present(selectTrackerTypeViewController, animated: true)
     }
 }
 

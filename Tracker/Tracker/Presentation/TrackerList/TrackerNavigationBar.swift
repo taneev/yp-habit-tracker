@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TrackerNavigationBar: UINavigationBar {
+final class TrackerNavigationBar: UINavigationBar {
 
     private weak var trackerBarDelegate: TrackersBarControllerProtocol?
     private lazy var datePicker = {

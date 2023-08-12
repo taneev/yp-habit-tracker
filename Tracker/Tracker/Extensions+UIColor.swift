@@ -9,6 +9,7 @@ import UIKit
 
 extension UIColor {
     static let ypBlackDay = UIColor(named: "ypBlackDay")!
+    static let ypWhiteDay = UIColor(named: "ypWhiteDay")!
     static let ypGray = UIColor(named: "ypGray")!
     static let ypColorSelection1 = UIColor(named: "ypColorSelection-1")!
     static let ypColorSelection2 = UIColor(named: "ypColorSelection-2")!

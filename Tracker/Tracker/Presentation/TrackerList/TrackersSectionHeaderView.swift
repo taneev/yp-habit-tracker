@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TrackersSectionHeaderView: UICollectionReusableView {
+final class TrackersSectionHeaderView: UICollectionReusableView {
     static let viewIdentifier = "trackresSectionHeader"
 
     let headerLabel = UILabel()

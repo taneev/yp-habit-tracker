@@ -15,11 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow()
         window?.makeKeyAndVisible()
-        window?.backgroundColor = .systemBackground
 
         let tabBarController = UITabBarController()
         tabBarController.tabBar.barStyle = .default
         tabBarController.tabBar.isTranslucent = false
+        tabBarController.tabBar.backgroundColor = .ypWhiteDay
         tabBarController.tabBar.layer.borderColor = UIColor.ypGray.cgColor
         tabBarController.tabBar.layer.borderWidth = 1
 
