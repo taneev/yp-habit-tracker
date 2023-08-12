@@ -16,7 +16,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let scene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: scene)
+        window?.makeKeyAndVisible()
+        window?.backgroundColor = .systemBackground
+
+        let tabBarController = UITabBarController()
+        tabBarController.tabBar.barStyle = .default
+        tabBarController.tabBar.isTranslucent = false
+        tabBarController.tabBar.layer.borderColor = UIColor.ypGray.cgColor
+        tabBarController.tabBar.layer.borderWidth = 1
+
+        let trackersListViewController = TrackersViewController()
+        let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
+        trackersListViewController.tabBarItem = UITabBarItem(title: "Трекеры",
+                                                             image: trackersTabBarImage,
+                                                             selectedImage: nil)
+
+        let statisticsViewController = StatisticsViewController()
+        let statisticsTabBarImage = UIImage(systemName: "hare.fill") ?? UIImage()
+        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика",
+                                                           image: statisticsTabBarImage,
+                                                           selectedImage: nil)
+
+        tabBarController.setViewControllers([trackersListViewController, statisticsViewController], animated: true)
+        window?.rootViewController = tabBarController
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
