@@ -56,6 +56,9 @@ final class TrackerViewCell: UICollectionViewCell {
     }
     var isDoneButtonEnabled: Bool! {
         didSet {
+            // осознанно реализовал более привычную версию UI:
+            // - недоступные кнопки (и только они) приглушаются цветом
+            // - для выполненных/невыполненных меняется только title
             doneButton.alpha = isDoneButtonEnabled ? 1 : 0.3
         }
     }

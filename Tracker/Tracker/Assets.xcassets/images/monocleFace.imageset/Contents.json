@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "circleStar@1x.png",
+      "filename" : "monocleFace@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "circleStar@2x.png",
+      "filename" : "monocleFace@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "circleStar@3x.png",
+      "filename" : "monocleFace@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

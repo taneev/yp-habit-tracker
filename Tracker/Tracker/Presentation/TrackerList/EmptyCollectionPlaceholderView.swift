@@ -7,10 +7,32 @@
 
 import UIKit
 
-class EmptyCollectionPlaceholderView: UIView {
+enum PlaceholderType {
+    case noData, emptyList
+}
+
+final class EmptyCollectionPlaceholderView: UIView {
+
+    var placeholderType: PlaceholderType = .noData {
+        didSet {
+            switch placeholderType {
+            case .noData:
+                placeholderImage.image = circleStarImage
+                placeholderLabel.text = noDataText
+            case .emptyList:
+                placeholderImage.image = monocleFaceImage
+                placeholderLabel.text = emptyListText
+            }
+        }
+    }
+
+    private let circleStarImage = UIImage(named: "circleStar") ?? UIImage()
+    private let monocleFaceImage = UIImage(named: "monocleFace") ?? UIImage()
+    private let noDataText = "Что будем отслеживать?"
+    private let emptyListText = "Ничего не найдено"
 
     private lazy var placeholderImage = {
-        let image = UIImage(named: "circleStar") ?? UIImage()
+        let image = circleStarImage
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -19,7 +41,7 @@ class EmptyCollectionPlaceholderView: UIView {
 
     private lazy var placeholderLabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = noDataText
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlackDay
         label.translatesAutoresizingMaskIntoConstraints = false

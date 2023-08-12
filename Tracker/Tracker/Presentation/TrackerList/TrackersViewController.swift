@@ -144,6 +144,7 @@ final class TrackersViewController: UIViewController {
             return filteredCategory
         }
         visibleCategories = categoriesFiltered
+        updatePlaceholderType()
     }
 
     private func isTrackerCompleted(withId trackerID: UUID) -> Bool {
@@ -330,7 +331,26 @@ private extension TrackersViewController {
         view.addSubview(navigationBar)
         view.addSubview(searchTextField)
         view.addSubview(collectionView)
+        addPlaceholder()
+    }
+
+    func updatePlaceholderType() {
+        if categories.isEmpty {
+            emptyCollectionPlaceholder.isHidden = false
+            emptyCollectionPlaceholder.placeholderType = .noData
+        }
+        else if visibleCategories.isEmpty {
+            emptyCollectionPlaceholder.isHidden = false
+            emptyCollectionPlaceholder.placeholderType = .emptyList
+        }
+        else {
+            emptyCollectionPlaceholder.isHidden = true
+        }
+    }
+
+    func addPlaceholder() {
         view.addSubview(emptyCollectionPlaceholder)
+        updatePlaceholderType()
     }
 
     func addConstraints() {
