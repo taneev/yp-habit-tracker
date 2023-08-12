@@ -9,6 +9,7 @@ import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
     func trackerDoneButtonDidTapped(for trackerID: UUID)
+    func trackerCounterValue(for trackerID: UUID) -> Int 
 }
 
 final class TrackerViewCell: UICollectionViewCell {
@@ -91,6 +92,7 @@ final class TrackerViewCell: UICollectionViewCell {
 
         isCompleted = !isCompleted
         delegate?.trackerDoneButtonDidTapped(for: trackerID)
+        quantity = delegate?.trackerCounterValue(for: trackerID)
     }
 }
 

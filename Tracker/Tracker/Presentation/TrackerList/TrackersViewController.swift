@@ -67,9 +67,10 @@ final class TrackersViewController: UIViewController {
                         activeTrackers: []),
 
     ]
-    var visibleCategories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
+    var visibleCategories: [TrackerCategory] = []
     private var completedTrackersIDs: Set<UUID> = Set()
+    private var completedTrackersCounter: [UUID: Int] = [:]
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -89,15 +90,8 @@ final class TrackersViewController: UIViewController {
 
         addSubviews()
         addConstraints()
-        completedTrackersIDs = selectCompletedTrackersIDs(for: currentDate)
-        filterVisibleCategories()
-        collectionView.reloadData()
-        if categories.isEmpty {
-            emptyCollectionPlaceholder.isHidden = false
-        }
-        else {
-            emptyCollectionPlaceholder.isHidden = true
-        }
+        loadData()
+
         // Для скрытия курсора с поля ввода при тапе вне поля ввода и вне клавиатуры
         let anyTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleAnyTap))
         view.addGestureRecognizer(anyTapGesture)
@@ -105,6 +99,19 @@ final class TrackersViewController: UIViewController {
 
     @objc private func handleAnyTap(_ sender: UITapGestureRecognizer) {
         searchTextField.resignFirstResponder()
+    }
+
+    private func loadData() {
+        completedTrackersIDs = selectCompletedTrackersIDs(for: currentDate)
+        initCompletedCounters()
+        filterVisibleCategories()
+        collectionView.reloadData()
+    }
+
+    private func initCompletedCounters() {
+        for record in completedTrackers {
+            completedTrackersCounter[record.trackerID] = (completedTrackersCounter[record.trackerID] ?? 0) + 1
+        }
     }
 
     private func isPassedDate(_ date: Date, filter schedule: [WeekDay]?) -> Bool {
@@ -155,11 +162,19 @@ final class TrackersViewController: UIViewController {
         let record = TrackerRecord(trackerID: trackerID, dateCompleted: currentDate)
         completedTrackers.append(record)
         completedTrackersIDs.insert(trackerID)
+        completedTrackersCounter[trackerID] = (completedTrackersCounter[trackerID] ?? 0) + 1
     }
 
     private func uncompleteTracker(withID trackerID: UUID) {
         if completedTrackersIDs.contains(trackerID) {
             completedTrackersIDs.remove(trackerID)
+            if let counter = completedTrackersCounter[trackerID],
+                counter > 1 {
+                completedTrackersCounter[trackerID] = counter - 1
+            }
+            else {
+                completedTrackersCounter.removeValue(forKey: trackerID)
+            }
         }
 
         for (i, record) in completedTrackers.enumerated() {
@@ -182,6 +197,10 @@ final class TrackersViewController: UIViewController {
         }
         return completedTrackersIDs
     }
+
+    private func getCompletedTrackersCount(for trackerID: UUID) -> Int {
+        completedTrackersCounter[trackerID] ?? 0
+    }
 }
 
 // MARK: TrackerViewCellDelegate
@@ -194,6 +213,11 @@ extension TrackersViewController: TrackerViewCellProtocol {
             completeTracker(withID: trackerID)
         }
     }
+
+    func trackerCounterValue(for trackerID: UUID) -> Int {
+        return getCompletedTrackersCount(for: trackerID)
+    }
+
 }
 
 // MARK: Navigation bar delegate
@@ -244,7 +268,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.cellColor = tracker.color
         cell.emoji = tracker.emoji
         cell.isCompleted = isTrackerCompleted(withId: tracker.trackerID)
-        cell.quantity = tracker.counter
+        cell.quantity = getCompletedTrackersCount(for: tracker.trackerID)
 
         let order = Calendar.current.compare(Date(), to: currentDate, toGranularity: .day)
         cell.isDoneButtonEnabled = !(order == .orderedAscending)
