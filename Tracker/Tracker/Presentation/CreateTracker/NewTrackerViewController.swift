@@ -10,6 +10,9 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
 
     var isRegular: Bool!
+    var newTracker: Tracker?
+    var category: TrackerCategory?
+
     private lazy var createTrackerTableView = { createTableView() }()
     private let uiSource: [NewTrackerTableUISection] = [
         .trackerName(cellClass: TrackerNameInputViewCell.self, reuseIdentifier: "trackerNameInputCell"),
@@ -45,6 +48,7 @@ private extension NewTrackerViewController {
         let table = UITableView(frame: .zero, style: .insetGrouped)
         table.dataSource = self
         table.delegate = self
+        table.backgroundColor = .ypWhiteDay
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }
@@ -92,12 +96,26 @@ extension NewTrackerViewController: UITableViewDataSource {
         let cell = sectionType.dequeueReusableCell(in: tableView, indexPath: indexPath)
         if let actionButtonCell = cell as? TrackerActionsViewCell,
            let buttonType = ActionButton(rawValue: indexPath.row) {
-            actionButtonCell.configCell(for: buttonType)
+            newTracker = Tracker(name: "Новый трекер", isRegular: true, emoji: "", color: .ypColorSelection1, schedule: [.fri, .sat, .tue])
+            category = TrackerCategory(categoryID: UUID(), name: "Категория новая", activeTrackers: nil)
+            actionButtonCell.configCell(for: buttonType,
+                                        tracker: newTracker,
+                                        category: category)
         }
         return cell
     }
 }
 
 extension NewTrackerViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let cellType = uiSource[indexPath.section]
+        switch cellType {
+        case .trackerName, .trackerButtons:
+            return CGFloat(75)
+        case .okCancelButtons:
+            return CGFloat(60)
+        default:
+            return CGFloat(204)
+        }
+    }
 }
