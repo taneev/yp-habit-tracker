@@ -12,6 +12,7 @@ extension UIColor {
     static let ypWhiteDay = UIColor(named: "ypWhiteDay")!
     static let ypGray = UIColor(named: "ypGray")!
     static let ypBackgroundDay = UIColor(named: "ypBackgroundDay")!
+    static let ypRed = UIColor(named: "ypRed")!
 
     static let ypColorSelection1 = UIColor(named: "ypColorSelection-1")!
     static let ypColorSelection2 = UIColor(named: "ypColorSelection-2")!

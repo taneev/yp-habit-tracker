@@ -28,6 +28,7 @@
 		22CF5E812A8931EB00BEAD2F /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */; };
 		22CF5E832A89320A00BEAD2F /* OkCancelActionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */; };
 		22CF5E852A89489200BEAD2F /* NewTrackerTableUISection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E842A89489200BEAD2F /* NewTrackerTableUISection.swift */; };
+		22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift */; };
 		22D371F42A79781500FA5888 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F32A79781500FA5888 /* AppDelegate.swift */; };
 		22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F72A79781500FA5888 /* TrackersViewController.swift */; };
 		22D371FD2A79781800FA5888 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FC2A79781800FA5888 /* Assets.xcassets */; };
@@ -56,6 +57,7 @@
 		22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OkCancelActionsViewCell.swift; sourceTree = "<group>"; };
 		22CF5E842A89489200BEAD2F /* NewTrackerTableUISection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerTableUISection.swift; sourceTree = "<group>"; };
+		22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputFooterLabel.swift; sourceTree = "<group>"; };
 		22D371F02A79781500FA5888 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22D371F32A79781500FA5888 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22D371F72A79781500FA5888 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				22CF5E702A87F80900BEAD2F /* CreateTrackerTypeSelectionViewController.swift */,
 				22CF5E752A881B8600BEAD2F /* NewTrackerViewController.swift */,
 				22CF5E7A2A89310E00BEAD2F /* TrackerNameInputViewCell.swift */,
+				22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift */,
 				22CF5E7C2A8931BE00BEAD2F /* TrackerActionsViewCell.swift */,
 				22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */,
 				22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */,
@@ -244,6 +247,7 @@
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
 				22CF5E7F2A8931D800BEAD2F /* EmojiCollectionViewCell.swift in Sources */,
 				22CF5E832A89320A00BEAD2F /* OkCancelActionsViewCell.swift in Sources */,
+				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift in Sources */,
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,
 				220A86952A8136B30082B271 /* WeekDay.swift in Sources */,
 				220A869F2A8170710082B271 /* Extensions+UIColor.swift in Sources */,

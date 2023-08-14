@@ -13,6 +13,8 @@ final class NewTrackerViewController: UIViewController {
     var newTracker: Tracker?
     var category: TrackerCategory?
 
+    private var isTrackerNameInputFooterDisplayed: Bool = false
+
     private lazy var createTrackerTableView = { createTableView() }()
     private let uiSource: [NewTrackerTableUISection] = [
         .trackerName(cellClass: TrackerNameInputViewCell.self, reuseIdentifier: "trackerNameInputCell"),
@@ -88,6 +90,15 @@ extension NewTrackerViewController: UITableViewDataSource {
             return isRegular ? 2 : 1
         default:
             return 1
+        }
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        switch uiSource[section] {
+        case .trackerName:
+            return isTrackerNameInputFooterDisplayed ? TrackerNameInputFooterLabel() : nil
+        default:
+            return nil
         }
     }
 
