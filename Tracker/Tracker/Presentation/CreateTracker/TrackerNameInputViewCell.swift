@@ -40,7 +40,7 @@ private extension TrackerNameInputViewCell {
         textField.placeholder = "Введите название трекера"
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
-        textField.backgroundColor = .green
+        textField.backgroundColor = .ypBackgroundDay
         textField.clearButtonMode = .whileEditing
         textField.textColor = .ypBlackDay
         textField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
