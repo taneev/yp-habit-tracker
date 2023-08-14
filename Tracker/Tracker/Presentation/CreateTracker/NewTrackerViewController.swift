@@ -49,6 +49,7 @@ private extension NewTrackerViewController {
         table.dataSource = self
         table.delegate = self
         table.backgroundColor = .ypWhiteDay
+        table.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }
