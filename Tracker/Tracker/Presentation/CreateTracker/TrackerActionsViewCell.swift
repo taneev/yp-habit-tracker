@@ -12,6 +12,13 @@ enum ActionButton: Int {
     case schedule
 }
 
+enum CellRoundedCorderStyle {
+    case topOnly
+    case bottomOnly
+    case topAndBottom
+    case defaultCorners
+}
+
 final class TrackerActionsViewCell: UITableViewCell {
 
     private var buttonType: ActionButton?
@@ -28,9 +35,9 @@ final class TrackerActionsViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         accessoryType = .disclosureIndicator
-        accessoryView?.backgroundColor = .ypBackgroundDay
-        backgroundColor = .ypBackgroundDay
+        backgroundColor = .ypWhiteDay
         selectionStyle = .none
+        backgroundView = UIView()
 
         contentView.addSubview(actionButton)
 
@@ -40,11 +47,11 @@ final class TrackerActionsViewCell: UITableViewCell {
             actionButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14)
         ])
         if let accessoryView {
-            let trailingConstraint = NSLayoutConstraint(item: actionButton, attribute: .leading, relatedBy: .equal, toItem: accessoryView, attribute: .trailing, multiplier: 1, constant: 0)
+            let trailingConstraint = NSLayoutConstraint(item: actionButton, attribute: .trailing, relatedBy: .equal, toItem: accessoryView, attribute: .leading, multiplier: 1, constant: 0)
             trailingConstraint.isActive = true
         }
         else {
-            let trailingConstraint = NSLayoutConstraint(item: actionButton, attribute: .leading, relatedBy: .equal, toItem: contentView, attribute: .trailing, multiplier: 1, constant: 0)
+            let trailingConstraint = NSLayoutConstraint(item: actionButton, attribute: .trailing, relatedBy: .equal, toItem: contentView, attribute: .trailing, multiplier: 1, constant: 0)
             trailingConstraint.isActive = true
         }
 
@@ -94,8 +101,29 @@ final class TrackerActionsViewCell: UITableViewCell {
         buttonDetailLabel.text = text
     }
 
+    private func setCellCornerStyle(_ cornerStyle: CellRoundedCorderStyle?) {
+        backgroundView?.backgroundColor = .ypBackgroundDay
+        switch cornerStyle {
+        case .topOnly:
+            backgroundView?.layer.cornerRadius = 16
+            backgroundView?.layer.masksToBounds = true
+            backgroundView?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        case .bottomOnly:
+            backgroundView?.layer.cornerRadius = 16
+            backgroundView?.layer.masksToBounds = true
+            backgroundView?.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        case .topAndBottom:
+            backgroundView?.layer.cornerRadius = 16
+            backgroundView?.layer.masksToBounds = true
+        default:
+            break
+        }
+    }
 
-    func configCell(for buttonType: ActionButton, tracker: Tracker?, category: TrackerCategory?) {
+    func configCell(for buttonType: ActionButton,
+                    cornerStyle: CellRoundedCorderStyle?,
+                    tracker: Tracker?,
+                    category: TrackerCategory?) {
 
         self.buttonType = buttonType
 
@@ -104,12 +132,14 @@ final class TrackerActionsViewCell: UITableViewCell {
         case .category:
             buttonNameLabel.text = "Категория"
             setDetailText(with: category?.name)
+            setCellCornerStyle(cornerStyle)
         case .schedule:
             buttonNameLabel.text = "Расписание"
             let detailedText = tracker?.schedule?
                                     .compactMap{ WeekDay.shortWeekdayText[$0] }
                                     .joined(separator: ", ")
             setDetailText(with: detailedText)
+            setCellCornerStyle(cornerStyle)
         }
     }
 

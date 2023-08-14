@@ -98,7 +98,16 @@ extension NewTrackerViewController: UITableViewDataSource {
            let buttonType = ActionButton(rawValue: indexPath.row) {
             newTracker = Tracker(name: "Новый трекер", isRegular: true, emoji: "", color: .ypColorSelection1, schedule: [.fri, .sat, .tue])
             category = TrackerCategory(categoryID: UUID(), name: "Категория новая", activeTrackers: nil)
+
+            var cornerStyle: CellRoundedCorderStyle?
+            if isRegular {
+                cornerStyle = buttonType == .category ? .topOnly : .bottomOnly
+            }
+            else {
+                cornerStyle = .topAndBottom
+            }
             actionButtonCell.configCell(for: buttonType,
+                                        cornerStyle: cornerStyle ?? .defaultCorners,
                                         tracker: newTracker,
                                         category: category)
         }
