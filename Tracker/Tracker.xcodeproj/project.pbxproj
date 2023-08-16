@@ -22,13 +22,13 @@
 		22CF5E732A88106900BEAD2F /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E722A88106900BEAD2F /* RoundedButton.swift */; };
 		22CF5E762A881B8600BEAD2F /* NewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E752A881B8600BEAD2F /* NewTrackerViewController.swift */; };
 		22CF5E782A881BF800BEAD2F /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E772A881BF800BEAD2F /* TitleLabel.swift */; };
-		22CF5E7B2A89310E00BEAD2F /* TrackerNameInputViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7A2A89310E00BEAD2F /* TrackerNameInputViewCell.swift */; };
-		22CF5E7D2A8931BE00BEAD2F /* TrackerActionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7C2A8931BE00BEAD2F /* TrackerActionsViewCell.swift */; };
+		22CF5E7B2A89310E00BEAD2F /* TrackerNameInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7A2A89310E00BEAD2F /* TrackerNameInputView.swift */; };
+		22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */; };
 		22CF5E7F2A8931D800BEAD2F /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */; };
 		22CF5E812A8931EB00BEAD2F /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */; };
 		22CF5E832A89320A00BEAD2F /* OkCancelActionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */; };
-		22CF5E852A89489200BEAD2F /* NewTrackerTableUISection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E842A89489200BEAD2F /* NewTrackerTableUISection.swift */; };
-		22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift */; };
+		22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterView.swift */; };
+		22CF5E892A8D5A5100BEAD2F /* StackRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */; };
 		22D371F42A79781500FA5888 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F32A79781500FA5888 /* AppDelegate.swift */; };
 		22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F72A79781500FA5888 /* TrackersViewController.swift */; };
 		22D371FD2A79781800FA5888 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FC2A79781800FA5888 /* Assets.xcassets */; };
@@ -51,13 +51,13 @@
 		22CF5E722A88106900BEAD2F /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		22CF5E752A881B8600BEAD2F /* NewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerViewController.swift; sourceTree = "<group>"; };
 		22CF5E772A881BF800BEAD2F /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
-		22CF5E7A2A89310E00BEAD2F /* TrackerNameInputViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputViewCell.swift; sourceTree = "<group>"; };
-		22CF5E7C2A8931BE00BEAD2F /* TrackerActionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerActionsViewCell.swift; sourceTree = "<group>"; };
+		22CF5E7A2A89310E00BEAD2F /* TrackerNameInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputView.swift; sourceTree = "<group>"; };
+		22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackRoundedView.swift; sourceTree = "<group>"; };
 		22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
 		22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OkCancelActionsViewCell.swift; sourceTree = "<group>"; };
-		22CF5E842A89489200BEAD2F /* NewTrackerTableUISection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerTableUISection.swift; sourceTree = "<group>"; };
-		22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputFooterLabel.swift; sourceTree = "<group>"; };
+		22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputFooterView.swift; sourceTree = "<group>"; };
+		22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackRoundedButton.swift; sourceTree = "<group>"; };
 		22D371F02A79781500FA5888 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22D371F32A79781500FA5888 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22D371F72A79781500FA5888 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
@@ -116,13 +116,11 @@
 			children = (
 				22CF5E702A87F80900BEAD2F /* CreateTrackerTypeSelectionViewController.swift */,
 				22CF5E752A881B8600BEAD2F /* NewTrackerViewController.swift */,
-				22CF5E7A2A89310E00BEAD2F /* TrackerNameInputViewCell.swift */,
-				22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift */,
-				22CF5E7C2A8931BE00BEAD2F /* TrackerActionsViewCell.swift */,
+				22CF5E7A2A89310E00BEAD2F /* TrackerNameInputView.swift */,
+				22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterView.swift */,
 				22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */,
 				22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */,
 				22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */,
-				22CF5E842A89489200BEAD2F /* NewTrackerTableUISection.swift */,
 			);
 			path = CreateTracker;
 			sourceTree = "<group>";
@@ -132,6 +130,8 @@
 			children = (
 				22CF5E772A881BF800BEAD2F /* TitleLabel.swift */,
 				22CF5E722A88106900BEAD2F /* RoundedButton.swift */,
+				22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */,
+				22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */,
 			);
 			path = HelpfulViews;
 			sourceTree = "<group>";
@@ -241,13 +241,12 @@
 				22CF5E732A88106900BEAD2F /* RoundedButton.swift in Sources */,
 				220A86932A8125AC0082B271 /* Tracker.swift in Sources */,
 				220A86A52A8292380082B271 /* TrackerViewCell.swift in Sources */,
-				22CF5E7D2A8931BE00BEAD2F /* TrackerActionsViewCell.swift in Sources */,
+				22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
-				22CF5E852A89489200BEAD2F /* NewTrackerTableUISection.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
 				22CF5E7F2A8931D800BEAD2F /* EmojiCollectionViewCell.swift in Sources */,
 				22CF5E832A89320A00BEAD2F /* OkCancelActionsViewCell.swift in Sources */,
-				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterLabel.swift in Sources */,
+				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */,
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,
 				220A86952A8136B30082B271 /* WeekDay.swift in Sources */,
 				220A869F2A8170710082B271 /* Extensions+UIColor.swift in Sources */,
@@ -258,8 +257,9 @@
 				22CF5E812A8931EB00BEAD2F /* ColorCollectionViewCell.swift in Sources */,
 				220A869B2A81419B0082B271 /* TrackerCategory.swift in Sources */,
 				22CF5E762A881B8600BEAD2F /* NewTrackerViewController.swift in Sources */,
-				22CF5E7B2A89310E00BEAD2F /* TrackerNameInputViewCell.swift in Sources */,
+				22CF5E7B2A89310E00BEAD2F /* TrackerNameInputView.swift in Sources */,
 				22CF5E4F2A87D7E600BEAD2F /* StatisticsViewController.swift in Sources */,
+				22CF5E892A8D5A5100BEAD2F /* StackRoundedButton.swift in Sources */,
 				22CF5E782A881BF800BEAD2F /* TitleLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

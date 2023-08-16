@@ -11,28 +11,45 @@ final class NewTrackerViewController: UIViewController {
 
     var isRegular: Bool!
     var newTracker: Tracker?
-    var category: TrackerCategory?
+    var trackerName: String?
+    // временная категория для тестирования
+    var category: TrackerCategory? = TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
+                                                     name: "Занятия спортом",
+                                                     activeTrackers: nil)
+    var schedule: [WeekDay]?
 
-    private var isTrackerNameInputFooterDisplayed: Bool = false
-
-    private lazy var createTrackerTableView = { createTableView() }()
-    private let uiSource: [NewTrackerTableUISection] = [
-        .trackerName(cellClass: TrackerNameInputViewCell.self, reuseIdentifier: "trackerNameInputCell"),
-        .trackerButtons(cellClass: TrackerActionsViewCell.self, reuseIdentifier: "trackerActionsViewCell"),
-        .emojiCollection(cellClass: EmojiCollectionViewCell.self, reuseIdentifier: "emojiCollectionViewCell"),
-        .colorCollection(cellClass: ColorCollectionViewCell.self, reuseIdentifier: "colorCollectionViewCell"),
-        .okCancelButtons(cellClass: OkCancelActionsViewCell.self, reuseIdentifier: "okCancelButtonViewCell")
-    ]
+    private lazy var inputTrackerNameTxtField = { createInputTextField() }()
+    private lazy var categorySetupButton = { createCategorySetupButton() }()
+    private lazy var scheduleSetupButton = { createScheduleSetupButton() }()
+    private lazy var emojiCollectionView = { createCollectionView() }()
+    private lazy var colorCollectionView = { createCollectionView() }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubviews()
-        registerCellTypes()
     }
 
-    private func registerCellTypes() {
-        uiSource.forEach { section in
-            section.register(in: createTrackerTableView)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        displayData()
+    }
+
+    @objc private func categoryButtonDidTap() {
+        // TODO: next sprint
+        print("Category did tap")
+    }
+
+    @objc private func scheduleButtonDidTap() {
+        print("Schedule did tap")
+    }
+
+    private func displayData() {
+        if let category {
+            categorySetupButton.detailedText = category.name
+        }
+
+        if let schedule {
+            scheduleSetupButton.detailedText = WeekDay.getDescription(for: schedule)
         }
     }
 }
@@ -46,14 +63,71 @@ private extension NewTrackerViewController {
         return title
     }
 
-    func createTableView() -> UITableView {
-        let table = UITableView(frame: .zero, style: .insetGrouped)
-        table.dataSource = self
-        table.delegate = self
-        table.backgroundColor = .ypWhiteDay
-        table.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        table.translatesAutoresizingMaskIntoConstraints = false
-        return table
+    func createInputTextField() -> TrackerNameInputView {
+        let textField = TrackerNameInputView(delegate: self, placeholder: "Введите название трекера")
+        return textField
+    }
+
+    func createCategorySetupButton() -> StackRoundedView {
+        let categoryButton = StackRoundedButton(target: self, action: #selector(categoryButtonDidTap))
+        categoryButton.roundedCornerStyle = isRegular ? .topOnly : .topAndBottom
+        categoryButton.text = "Категория"
+        return categoryButton
+    }
+
+    func createScheduleSetupButton() -> StackRoundedView {
+        let scheduleButton = StackRoundedButton(target: self, action: #selector(scheduleButtonDidTap))
+        scheduleButton.roundedCornerStyle = .bottomOnly
+        scheduleButton.text = "Расписание"
+        return scheduleButton
+    }
+
+    func createActionButtonsView() -> UIView {
+
+        let stack = UIStackView()
+        stack.addArrangedSubview(categorySetupButton)
+        if isRegular {
+            stack.addArrangedSubview(scheduleSetupButton)
+        }
+        stack.axis = .vertical
+        stack.spacing = 0
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        return stack
+    }
+
+    func createScrollView() -> UIScrollView {
+        let scrollView = UIScrollView()
+        scrollView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 16, right: 0)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+        scrollView.addSubview(inputTrackerNameTxtField)
+
+        let actionButtonsView = createActionButtonsView()
+        scrollView.addSubview(actionButtonsView)
+
+        scrollView.addSubview(emojiCollectionView)
+        scrollView.addSubview(colorCollectionView)
+
+        NSLayoutConstraint.activate([
+
+            inputTrackerNameTxtField.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
+            inputTrackerNameTxtField.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            inputTrackerNameTxtField.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
+
+            actionButtonsView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            actionButtonsView.topAnchor.constraint(equalTo: inputTrackerNameTxtField.bottomAnchor, constant: 24),
+            actionButtonsView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
+        ])
+
+        return scrollView
+    }
+
+    func createCollectionView() -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.translatesAutoresizingMaskIntoConstraints = true
+        return collection
     }
 
     func setupSubviews() {
@@ -61,82 +135,47 @@ private extension NewTrackerViewController {
 
         let title = createTitleLabel()
         view.addSubview(title)
-        view.addSubview(createTrackerTableView)
+
+        let scrollView = createScrollView()
+        view.addSubview(scrollView)
 
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             title.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
 
-            createTrackerTableView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 14),
-            createTrackerTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            createTrackerTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            createTrackerTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.topAnchor.constraint(equalTo: title.bottomAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
 
-// MARK: UITableViewDataSource
-extension NewTrackerViewController: UITableViewDataSource {
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-        uiSource.count
+extension NewTrackerViewController: UITextFieldDelegate {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 5
+        let currentString = textField.text as? NSString
+        let newString = currentString?.replacingCharacters(in: range, with: string) ?? ""
+        if newString.count > maxLength {
+            inputTrackerNameTxtField.isMaxLengthHintHidden = false
+        }
+        else if !inputTrackerNameTxtField.isMaxLengthHintHidden {
+            inputTrackerNameTxtField.isMaxLengthHintHidden = true
+        }
+        return newString.count <= maxLength
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch uiSource[section] {
-        case .trackerButtons:
-            // Единственная секция с двумя ячейками - секция кнопок действий trackerButtons:
-            // Категория и Расписание (для регулярной привычки)
-            return isRegular ? 2 : 1
-        default:
-            return 1
-        }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        switch uiSource[section] {
-        case .trackerName:
-            return isTrackerNameInputFooterDisplayed ? TrackerNameInputFooterLabel() : nil
-        default:
-            return nil
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        if textField.isFirstResponder {
+            textField.resignFirstResponder()
         }
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let sectionType = uiSource[indexPath.section]
-        let cell = sectionType.dequeueReusableCell(in: tableView, indexPath: indexPath)
-        if let actionButtonCell = cell as? TrackerActionsViewCell,
-           let buttonType = ActionButton(rawValue: indexPath.row) {
-            newTracker = Tracker(name: "Новый трекер", isRegular: true, emoji: "", color: .ypColorSelection1, schedule: [.fri, .sat, .tue])
-            category = TrackerCategory(categoryID: UUID(), name: "Категория новая", activeTrackers: nil)
-
-            var cornerStyle: CellRoundedCorderStyle?
-            if isRegular {
-                cornerStyle = buttonType == .category ? .topOnly : .bottomOnly
-            }
-            else {
-                cornerStyle = .topAndBottom
-            }
-            actionButtonCell.configCell(for: buttonType,
-                                        cornerStyle: cornerStyle ?? .defaultCorners,
-                                        tracker: newTracker,
-                                        category: category)
-        }
-        return cell
-    }
-}
-
-extension NewTrackerViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let cellType = uiSource[indexPath.section]
-        switch cellType {
-        case .trackerName, .trackerButtons:
-            return CGFloat(75)
-        case .okCancelButtons:
-            return CGFloat(60)
-        default:
-            return CGFloat(204)
-        }
+        trackerName = textField.text
     }
 }

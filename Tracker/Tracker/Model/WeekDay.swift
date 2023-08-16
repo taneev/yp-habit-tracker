@@ -21,4 +21,9 @@ enum WeekDay: Int, CaseIterable {
         .fri: "Пт",
         .sat: "Сб",
     ]
+
+    static func getDescription(for schedule: [WeekDay]) -> String {
+        let description = schedule.compactMap{ WeekDay.shortWeekdayText[$0] }.joined(separator: ", ")
+        return description
+    }
 }

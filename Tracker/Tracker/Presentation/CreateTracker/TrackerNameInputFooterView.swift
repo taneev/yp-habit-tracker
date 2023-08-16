@@ -1,5 +1,5 @@
 //
-//  TableNameInputFooterLabel.swift
+//  TrackerNameInputFooterView.swift
 //  Tracker
 //
 //  Created by Тимур Танеев on 14.08.2023.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TrackerNameInputFooterLabel: UIView {
+class TrackerNameInputFooterView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)

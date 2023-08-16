@@ -34,7 +34,7 @@ final class TrackersViewController: UIViewController {
                                     color: .ypColorSelection15,
                                     schedule: [.sun]),
                         ]),
-        TrackerCategory(categoryID: UUID(),
+        TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
                         name: "Занятия спортом",
                         activeTrackers: nil),
         TrackerCategory(categoryID: UUID(),

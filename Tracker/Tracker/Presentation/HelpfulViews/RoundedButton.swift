@@ -9,12 +9,6 @@ import UIKit
 
 class RoundedButton: UIButton {
 
-//    var title: String? {
-//        didSet {
-//            setTitleStyle(title: title)
-//        }
-//    }
-//
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
