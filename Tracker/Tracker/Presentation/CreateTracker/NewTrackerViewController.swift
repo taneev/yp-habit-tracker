@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ScheduleSaverDelegate: AnyObject {
+    func scheduleDidSetup(with newSchedule: [WeekDay])
+}
+
 final class NewTrackerViewController: UIViewController {
 
     var isRegular: Bool!
@@ -27,10 +31,6 @@ final class NewTrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubviews()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
         displayData()
     }
 
@@ -40,17 +40,23 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func scheduleButtonDidTap() {
-        print("Schedule did tap")
+        let scheduleViewController = ScheduleViewController()
+        scheduleViewController.schedule = schedule
+        scheduleViewController.saveScheduleDelegate = self
+        present(scheduleViewController, animated: true)
+    }
+
+    private func displaySchedule() {
+        scheduleSetupButton.detailedText = schedule == nil ? "" : WeekDay.getDescription(for: schedule!)
+    }
+
+    private func displayCategory() {
+        categorySetupButton.detailedText = category?.name ?? ""
     }
 
     private func displayData() {
-        if let category {
-            categorySetupButton.detailedText = category.name
-        }
-
-        if let schedule {
-            scheduleSetupButton.detailedText = WeekDay.getDescription(for: schedule)
-        }
+        displaySchedule()
+        displayCategory()
     }
 }
 
@@ -151,6 +157,12 @@ private extension NewTrackerViewController {
     }
 }
 
+extension NewTrackerViewController: ScheduleSaverDelegate {
+    func scheduleDidSetup(with newSchedule: [WeekDay]) {
+        self.schedule = newSchedule
+        displaySchedule()
+    }
+}
 
 extension NewTrackerViewController: UITextFieldDelegate {
 
