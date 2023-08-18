@@ -27,7 +27,6 @@ final class ScheduleViewController: UIViewController {
         }
         guard let schedule else {return}
         saveScheduleDelegate?.scheduleDidSetup(with: schedule)
-        dismiss(animated: true)
     }
 }
 

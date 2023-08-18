@@ -15,6 +15,7 @@ class RoundedButton: UIButton {
 
     var roundedButtonStyle: RoundedButtonStyle = .normal {
         didSet {
+            isEnabled = roundedButtonStyle != .disabled
             applyStyle()
         }
     }
@@ -47,6 +48,7 @@ class RoundedButton: UIButton {
         case .normal:
             backgroundColor = .ypBlackDay
         case .disabled:
+            isEnabled = false
             backgroundColor = .ypGray
         }
 

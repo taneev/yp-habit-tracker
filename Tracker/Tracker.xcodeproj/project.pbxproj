@@ -24,9 +24,6 @@
 		22CF5E782A881BF800BEAD2F /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E772A881BF800BEAD2F /* TitleLabel.swift */; };
 		22CF5E7B2A89310E00BEAD2F /* TrackerNameInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7A2A89310E00BEAD2F /* TrackerNameInputView.swift */; };
 		22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */; };
-		22CF5E7F2A8931D800BEAD2F /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */; };
-		22CF5E812A8931EB00BEAD2F /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */; };
-		22CF5E832A89320A00BEAD2F /* OkCancelActionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */; };
 		22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterView.swift */; };
 		22CF5E892A8D5A5100BEAD2F /* StackRoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */; };
 		22CF5E8B2A8E38CE00BEAD2F /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E8A2A8E38CE00BEAD2F /* ScheduleViewController.swift */; };
@@ -57,9 +54,6 @@
 		22CF5E772A881BF800BEAD2F /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
 		22CF5E7A2A89310E00BEAD2F /* TrackerNameInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputView.swift; sourceTree = "<group>"; };
 		22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackRoundedView.swift; sourceTree = "<group>"; };
-		22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
-		22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
-		22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OkCancelActionsViewCell.swift; sourceTree = "<group>"; };
 		22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerNameInputFooterView.swift; sourceTree = "<group>"; };
 		22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackRoundedButton.swift; sourceTree = "<group>"; };
 		22CF5E8A2A8E38CE00BEAD2F /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
@@ -99,10 +93,10 @@
 		220A869C2A81440F0082B271 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				22CF5E8C2A8E38DB00BEAD2F /* Schedule */,
-				22CF5E792A881F5B00BEAD2F /* HelpfulViews */,
 				220A869D2A81442C0082B271 /* TrackerList */,
 				22CF5E742A881B4B00BEAD2F /* CreateTracker */,
+				22CF5E8C2A8E38DB00BEAD2F /* Schedule */,
+				22CF5E792A881F5B00BEAD2F /* HelpfulViews */,
 				22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */,
 			);
 			path = Presentation;
@@ -127,9 +121,6 @@
 				22CF5E752A881B8600BEAD2F /* NewTrackerViewController.swift */,
 				22CF5E7A2A89310E00BEAD2F /* TrackerNameInputView.swift */,
 				22CF5E862A8A46D300BEAD2F /* TrackerNameInputFooterView.swift */,
-				22CF5E7E2A8931D800BEAD2F /* EmojiCollectionViewCell.swift */,
-				22CF5E802A8931EB00BEAD2F /* ColorCollectionViewCell.swift */,
-				22CF5E822A89320A00BEAD2F /* OkCancelActionsViewCell.swift */,
 			);
 			path = CreateTracker;
 			sourceTree = "<group>";
@@ -156,6 +147,15 @@
 			path = Schedule;
 			sourceTree = "<group>";
 		};
+		22CF5E932A8FED3300BEAD2F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				220A869E2A8170710082B271 /* Extensions+UIColor.swift */,
+				22CF5E4C2A84256100BEAD2F /* TextHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		22D371E72A79781500FA5888 = {
 			isa = PBXGroup;
 			children = (
@@ -175,14 +175,13 @@
 		22D371F22A79781500FA5888 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				220A86912A81258B0082B271 /* Model */,
 				22D371F32A79781500FA5888 /* AppDelegate.swift */,
+				220A86912A81258B0082B271 /* Model */,
 				220A869C2A81440F0082B271 /* Presentation */,
+				22CF5E932A8FED3300BEAD2F /* Helpers */,
 				22D371FC2A79781800FA5888 /* Assets.xcassets */,
 				22D371FE2A79781800FA5888 /* LaunchScreen.storyboard */,
 				22D372012A79781800FA5888 /* Info.plist */,
-				220A869E2A8170710082B271 /* Extensions+UIColor.swift */,
-				22CF5E4C2A84256100BEAD2F /* TextHelper.swift */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -264,8 +263,6 @@
 				22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
-				22CF5E7F2A8931D800BEAD2F /* EmojiCollectionViewCell.swift in Sources */,
-				22CF5E832A89320A00BEAD2F /* OkCancelActionsViewCell.swift in Sources */,
 				22CF5E902A8E597A00BEAD2F /* StackRoundedSwitch.swift in Sources */,
 				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */,
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,
@@ -278,7 +275,6 @@
 				22CF5E8B2A8E38CE00BEAD2F /* ScheduleViewController.swift in Sources */,
 				220A86A12A8185140082B271 /* EmptyCollectionPlaceholderView.swift in Sources */,
 				220A86992A8141360082B271 /* TrackerRecord.swift in Sources */,
-				22CF5E812A8931EB00BEAD2F /* ColorCollectionViewCell.swift in Sources */,
 				220A869B2A81419B0082B271 /* TrackerCategory.swift in Sources */,
 				22CF5E762A881B8600BEAD2F /* NewTrackerViewController.swift in Sources */,
 				22CF5E7B2A89310E00BEAD2F /* TrackerNameInputView.swift in Sources */,

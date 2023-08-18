@@ -13,7 +13,7 @@ protocol ScheduleSaverDelegate: AnyObject {
 
 final class NewTrackerViewController: UIViewController {
 
-    var saverDelegate: NewTrackerSaverDelegate?
+    weak var saverDelegate: NewTrackerSaverDelegate?
     var isRegular: Bool!
 
     private var trackerName: String? {
@@ -53,6 +53,14 @@ final class NewTrackerViewController: UIViewController {
         super.viewDidLoad()
         setupSubviews()
         displayData()
+        // Для скрытия курсора с поля ввода при тапе вне поля ввода и вне клавиатуры
+        let anyTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleAnyTap))
+        view.addGestureRecognizer(anyTapGesture)
+    }
+
+    @objc private func handleAnyTap() {
+        trackerName = inputTrackerNameTxtField.text
+        _ = inputTrackerNameTxtField.resignFirstResponder()
     }
 
     @objc private func categoryButtonDidTap() {
@@ -61,6 +69,9 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func scheduleButtonDidTap() {
+        _ = inputTrackerNameTxtField.resignFirstResponder()
+        trackerName = inputTrackerNameTxtField.text
+
         let scheduleViewController = ScheduleViewController()
         scheduleViewController.schedule = schedule
         scheduleViewController.saveScheduleDelegate = self
@@ -68,14 +79,31 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func doneButtonDidTap() {
-        guard let trackerName else {
-            assertionFailure("Не удалось определить название трекера при сохранении")
-            return
-        }
         guard let categoryID = category?.categoryID else {
             assertionFailure("Не удалось определить категорию трекера при сохранении")
             return
         }
+
+        if inputTrackerNameTxtField.isFirstResponder {
+            if inputTrackerNameTxtField.resignFirstResponder() {
+                trackerName = inputTrackerNameTxtField.text
+            }
+            else {
+                assertionFailure("Не удалось завершить ввода названия трекера при сохранении")
+                return
+            }
+        }
+
+        guard let trackerName else {
+            assertionFailure("Не удалось определить название трекера при сохранении")
+            return
+        }
+
+        if trackerName.isEmpty {
+            isAllParametersDidSetup = false
+            return
+        }
+
         let newTracker = Tracker(name: trackerName,
                                  isRegular: isRegular,
                                  emoji: "🏓",
@@ -112,6 +140,7 @@ extension NewTrackerViewController: ScheduleSaverDelegate {
     func scheduleDidSetup(with newSchedule: [WeekDay]) {
         self.schedule = newSchedule
         displaySchedule()
+        dismiss(animated: true)
     }
 }
 
@@ -201,6 +230,7 @@ private extension NewTrackerViewController {
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.translatesAutoresizingMaskIntoConstraints = false
+        // TODO: реализовать коллекцию Emoji и цветов
         collectionView.addSubview(collection)
 
         NSLayoutConstraint.activate([

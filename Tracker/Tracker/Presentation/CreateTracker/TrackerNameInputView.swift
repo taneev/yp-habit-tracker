@@ -14,11 +14,23 @@ final class TrackerNameInputView: UIStackView {
             maxLengthHintView.isHidden = isMaxLengthHintHidden
         }
     }
+
+    var text: String {
+        inputTextField.text ?? ""
+    }
+
     weak var delegate: UITextFieldDelegate? {
         didSet {
             inputTextField.delegate = delegate
         }
     }
+
+    override var isFirstResponder: Bool {
+        get {
+            return inputTextField.isFirstResponder
+        }
+    }
+
     private lazy var inputTextField = { createInputTextField() }()
     private lazy var maxLengthHintView = { createHintView() }()
 
@@ -53,6 +65,10 @@ final class TrackerNameInputView: UIStackView {
         self.init(frame: .zero)
         inputTextField.delegate = delegate
         inputTextField.placeholder = placeholder
+    }
+
+    override func resignFirstResponder() -> Bool {
+        return inputTextField.resignFirstResponder()
     }
 
 }

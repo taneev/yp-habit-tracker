@@ -18,7 +18,7 @@ protocol NewTrackerSaverDelegate: AnyObject {
 
 final class TrackersViewController: UIViewController {
 
-    var categories: [TrackerCategory] = [
+    private var categories: [TrackerCategory] = [
         TrackerCategory(categoryID: UUID(),
                         name: "Домашний уют",
                         activeTrackers: [
@@ -65,8 +65,8 @@ final class TrackersViewController: UIViewController {
                         activeTrackers: []),
 
     ]
-    var completedTrackers: [TrackerRecord] = []
-    var visibleCategories: [TrackerCategory] = []
+    private var completedTrackers: [TrackerRecord] = []
+    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackersIDs: Set<UUID> = Set()
     private var completedTrackersCounter: [UUID: Int] = [:]
 
@@ -243,7 +243,6 @@ extension TrackersViewController: TrackerViewCellProtocol {
     func trackerCounterValue(for trackerID: UUID) -> Int {
         return getCompletedTrackersCount(for: trackerID)
     }
-
 }
 
 // MARK: Navigation bar delegate

@@ -12,6 +12,8 @@ final class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .ypWhiteDay
+        
         let label = UILabel()
         label.text = "Продолжение следует..."
         label.font = UIFont.systemFont(ofSize: 24, weight: .medium)
