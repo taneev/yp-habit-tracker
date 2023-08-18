@@ -12,6 +12,10 @@ protocol TrackersBarControllerProtocol: AnyObject {
     func currentDateDidChange(for selectedDate: Date)
 }
 
+protocol NewTrackerSaverDelegate: AnyObject {
+    func save(tracker: Tracker, in categoryID: UUID)
+}
+
 final class TrackersViewController: UIViewController {
 
     var categories: [TrackerCategory] = [
@@ -140,8 +144,7 @@ final class TrackersViewController: UIViewController {
             }
             let filteredCategory = TrackerCategory(categoryID: category.categoryID,
                                                    name: category.name,
-                                                   activeTrackers: visibleTrackers,
-                                                   completedTrackers: category.completedTrackers)
+                                                   activeTrackers: visibleTrackers)
 
             return filteredCategory
         }
@@ -196,6 +199,34 @@ final class TrackersViewController: UIViewController {
     private func getCompletedTrackersCount(for trackerID: UUID) -> Int {
         completedTrackersCounter[trackerID] ?? 0
     }
+
+    private func save(_ tracker: Tracker, in categoryID: UUID) {
+        var categoryIndexForUpdate: Int?
+        for (i, category) in categories.enumerated() {
+            if category.categoryID == categoryID {
+                categoryIndexForUpdate = i
+                break
+            }
+        }
+        guard let categoryIndexForUpdate else {
+            assertionFailure("Не удалось сохранить трекер в категории \(categoryID)")
+            return
+        }
+        categories[categoryIndexForUpdate] = TrackerCategory(
+            categoryID: categoryID,
+            name: categories[categoryIndexForUpdate].name,
+            activeTrackers: (categories[categoryIndexForUpdate].activeTrackers ?? []) + [tracker]
+        )
+    }
+}
+
+extension TrackersViewController: NewTrackerSaverDelegate {
+    func save(tracker: Tracker, in categoryID: UUID) {
+        save(tracker, in: categoryID)
+        filterVisibleCategories()
+        collectionView.reloadData()
+        dismiss(animated: true)
+    }
 }
 
 // MARK: TrackerViewCellDelegate
@@ -227,6 +258,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
     func addTrackerButtonDidTapped() {
         searchTextField.resignFirstResponder()
         let selectTrackerTypeViewController = CreateTrackerTypeSelectionViewController()
+        selectTrackerTypeViewController.saverDelegate = self
         selectTrackerTypeViewController.modalPresentationStyle = .automatic
         present(selectTrackerTypeViewController, animated: true)
     }

@@ -11,12 +11,10 @@ struct TrackerCategory {
     let categoryID: UUID
     let name: String
     let activeTrackers: [Tracker]?
-    let completedTrackers: [Tracker]?
 
-    init(categoryID: UUID, name: String, activeTrackers: [Tracker]?, completedTrackers: [Tracker]? = nil) {
+    init(categoryID: UUID, name: String, activeTrackers: [Tracker]?) {
         self.categoryID = categoryID
         self.name = name
         self.activeTrackers = activeTrackers
-        self.completedTrackers = completedTrackers
     }
 }

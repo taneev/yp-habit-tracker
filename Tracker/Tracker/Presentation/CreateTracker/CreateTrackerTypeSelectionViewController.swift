@@ -9,6 +9,7 @@ import UIKit
 
 final class CreateTrackerTypeSelectionViewController: UIViewController {
 
+    var saverDelegate: NewTrackerSaverDelegate?
     private lazy var habitButton = { RoundedButton(title: "Привычка") }()
     private lazy var irregularEventButton = { RoundedButton(title: "Нерегулярное событие") }()
 
@@ -34,6 +35,7 @@ final class CreateTrackerTypeSelectionViewController: UIViewController {
     private func createTracker(isRegular: Bool) {
         let viewController = NewTrackerViewController()
         viewController.isRegular = isRegular
+        viewController.saverDelegate = saverDelegate
         present(viewController, animated: true)
     }
 

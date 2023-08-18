@@ -13,14 +13,33 @@ protocol ScheduleSaverDelegate: AnyObject {
 
 final class NewTrackerViewController: UIViewController {
 
+    var saverDelegate: NewTrackerSaverDelegate?
     var isRegular: Bool!
-    var newTracker: Tracker?
-    var trackerName: String?
+
+    private var trackerName: String? {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
     // временная категория для тестирования
-    var category: TrackerCategory? = TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
+    private var category: TrackerCategory? = TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
                                                      name: "Занятия спортом",
-                                                     activeTrackers: nil)
-    var schedule: [WeekDay]?
+                                                     activeTrackers: nil) {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
+    private var schedule: [WeekDay]? {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
+
+    private var isAllParametersDidSetup = false {
+        didSet {
+            doneButton.roundedButtonStyle = isAllParametersDidSetup ? .normal : .disabled
+        }
+    }
 
     private lazy var inputTrackerNameTxtField = { createInputTextField() }()
     private lazy var categorySetupButton = { createCategorySetupButton() }()
@@ -48,6 +67,33 @@ final class NewTrackerViewController: UIViewController {
         present(scheduleViewController, animated: true)
     }
 
+    @objc private func doneButtonDidTap() {
+        guard let trackerName else {
+            assertionFailure("Не удалось определить название трекера при сохранении")
+            return
+        }
+        guard let categoryID = category?.categoryID else {
+            assertionFailure("Не удалось определить категорию трекера при сохранении")
+            return
+        }
+        let newTracker = Tracker(name: trackerName,
+                                 isRegular: isRegular,
+                                 emoji: "🏓",
+                                 color: .ypColorSelection11,
+                                 schedule: schedule)
+        saverDelegate?.save(tracker: newTracker, in: categoryID)
+    }
+
+    @objc private func cancelButtonDidTap() {
+        dismiss(animated: true)
+    }
+
+    private func checkIsAllParametersDidSetup() {
+        isAllParametersDidSetup = trackerName?.isEmpty == false
+            && (!isRegular || schedule?.isEmpty == false)
+            && (category?.name.isEmpty == false)
+    }
+
     private func displaySchedule() {
         scheduleSetupButton.detailedText = schedule == nil ? "" : WeekDay.getDescription(for: schedule!)
     }
@@ -72,7 +118,7 @@ extension NewTrackerViewController: ScheduleSaverDelegate {
 extension NewTrackerViewController: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let maxLength = 5
+        let maxLength = 38
         let currentString = textField.text as? NSString
         let newString = currentString?.replacingCharacters(in: range, with: string) ?? ""
         if newString.count > maxLength {
@@ -172,11 +218,14 @@ private extension NewTrackerViewController {
 
     func createDoneButton() -> RoundedButton {
         let button = RoundedButton(title: "Создать")
+        button.roundedButtonStyle = isAllParametersDidSetup ? .normal : .disabled
+        button.addTarget(self, action: #selector(doneButtonDidTap), for: .touchUpInside)
         return button
     }
 
     func createCancelButton() -> RoundedButton {
-        let button = RoundedButton(title: "Отменить")
+        let button = RoundedButton(title: "Отменить", style: .cancel)
+        button.addTarget(self, action: #selector(cancelButtonDidTap), for: .touchUpInside)
         return button
     }
 

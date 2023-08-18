@@ -7,7 +7,18 @@
 
 import UIKit
 
+enum RoundedButtonStyle {
+    case normal, disabled, cancel
+}
+
 class RoundedButton: UIButton {
+
+    var roundedButtonStyle: RoundedButtonStyle = .normal {
+        didSet {
+            applyStyle()
+        }
+    }
+    private var titleText: String = ""
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -17,22 +28,35 @@ class RoundedButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
 
-    convenience init(title: String) {
+    convenience init(title: String, style: RoundedButtonStyle = .normal) {
         self.init(frame: .zero)
-        setTitleStyle(title: title)
+        self.roundedButtonStyle = style
+        self.titleText = title
+        translatesAutoresizingMaskIntoConstraints = false
         applyStyle()
     }
 
     private func applyStyle() {
         layer.cornerRadius = 16
         layer.masksToBounds = true
-        backgroundColor = .ypBlackDay
-        translatesAutoresizingMaskIntoConstraints = false
-    }
+        switch roundedButtonStyle {
+        case .cancel:
+            backgroundColor = .ypWhiteDay
+            layer.borderWidth = 1
+            layer.borderColor = UIColor.ypRed.cgColor
+        case .normal:
+            backgroundColor = .ypBlackDay
+        case .disabled:
+            backgroundColor = .ypGray
+        }
 
-    private func setTitleStyle(title: String?) {
-        setTitle(title, for: .normal)
-        titleLabel?.textColor = .ypWhiteDay
+        setTitle(titleText, for: .normal)
+        if roundedButtonStyle == .cancel {
+            setTitleColor(.ypRed, for: .normal)
+        }
+        else {
+            setTitleColor(.ypWhiteDay, for: .normal)
+        }
         titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         titleLabel?.textAlignment = .center
     }
