@@ -72,7 +72,7 @@ private extension ScheduleViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
             scheduleStackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             scheduleStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
@@ -82,7 +82,8 @@ private extension ScheduleViewController {
             okButton.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             okButton.topAnchor.constraint(equalTo: scheduleStackView.bottomAnchor, constant: 24),
             okButton.heightAnchor.constraint(equalToConstant: 60),
-            okButton.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor)
+            okButton.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            okButton.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
         ])
         
     }
