@@ -25,8 +25,10 @@ final class NewTrackerViewController: UIViewController {
     private lazy var inputTrackerNameTxtField = { createInputTextField() }()
     private lazy var categorySetupButton = { createCategorySetupButton() }()
     private lazy var scheduleSetupButton = { createScheduleSetupButton() }()
-    private lazy var emojiCollectionView = { createCollectionView() }()
-    private lazy var colorCollectionView = { createCollectionView() }()
+    private lazy var emojiCollectionView = { createCollectionView(title: "Emoji") }()
+    private lazy var colorCollectionView = { createCollectionView(title: "Цвет") }()
+    private lazy var cancelButton = { createCancelButton() }()
+    private lazy var doneButton = { createDoneButton() }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +59,41 @@ final class NewTrackerViewController: UIViewController {
     private func displayData() {
         displaySchedule()
         displayCategory()
+    }
+}
+
+extension NewTrackerViewController: ScheduleSaverDelegate {
+    func scheduleDidSetup(with newSchedule: [WeekDay]) {
+        self.schedule = newSchedule
+        displaySchedule()
+    }
+}
+
+extension NewTrackerViewController: UITextFieldDelegate {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 5
+        let currentString = textField.text as? NSString
+        let newString = currentString?.replacingCharacters(in: range, with: string) ?? ""
+        if newString.count > maxLength {
+            inputTrackerNameTxtField.isMaxLengthHintHidden = false
+        }
+        else if !inputTrackerNameTxtField.isMaxLengthHintHidden {
+            inputTrackerNameTxtField.isMaxLengthHintHidden = true
+        }
+        return newString.count <= maxLength
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        if textField.isFirstResponder {
+            textField.resignFirstResponder()
+        }
+        trackerName = textField.text
     }
 }
 
@@ -102,6 +139,47 @@ private extension NewTrackerViewController {
         return stack
     }
 
+    func createCollectionView(title titleText: String) -> UIView {
+
+        let collectionView = UIView()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        let title = UILabel()
+        title.text = titleText
+        title.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+        title.textColor = .ypBlackDay
+        title.textAlignment = .left
+        title.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.addSubview(title)
+
+        let layout = UICollectionViewFlowLayout()
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.addSubview(collection)
+
+        NSLayoutConstraint.activate([
+            title.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor, constant: 28),
+            title.topAnchor.constraint(equalTo: collectionView.topAnchor),
+
+            collection.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
+            collection.topAnchor.constraint(equalTo: title.bottomAnchor),
+            collection.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
+            collection.heightAnchor.constraint(equalToConstant: 192),
+            collection.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor),
+        ])
+        return collectionView
+    }
+
+    func createDoneButton() -> RoundedButton {
+        let button = RoundedButton(title: "Создать")
+        return button
+    }
+
+    func createCancelButton() -> RoundedButton {
+        let button = RoundedButton(title: "Отменить")
+        return button
+    }
+
     func createScrollView() -> UIScrollView {
         let scrollView = UIScrollView()
         scrollView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 16, right: 0)
@@ -115,6 +193,13 @@ private extension NewTrackerViewController {
         scrollView.addSubview(emojiCollectionView)
         scrollView.addSubview(colorCollectionView)
 
+        let buttons = UIStackView(arrangedSubviews: [cancelButton, doneButton])
+        buttons.axis = .horizontal
+        buttons.spacing = 8
+        buttons.distribution = .fillEqually
+        buttons.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(buttons)
+
         NSLayoutConstraint.activate([
 
             inputTrackerNameTxtField.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
@@ -124,16 +209,24 @@ private extension NewTrackerViewController {
             actionButtonsView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
             actionButtonsView.topAnchor.constraint(equalTo: inputTrackerNameTxtField.bottomAnchor, constant: 24),
             actionButtonsView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
+
+            emojiCollectionView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            emojiCollectionView.topAnchor.constraint(equalTo: actionButtonsView.bottomAnchor, constant: 32),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+
+            colorCollectionView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
+            colorCollectionView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+
+            buttons.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 20),
+            buttons.topAnchor.constraint(equalTo: colorCollectionView.bottomAnchor, constant: 16),
+            buttons.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
+            buttons.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40),
+            buttons.heightAnchor.constraint(equalToConstant: 60),
+            buttons.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
         ])
 
         return scrollView
-    }
-
-    func createCollectionView() -> UICollectionView {
-        let layout = UICollectionViewFlowLayout()
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.translatesAutoresizingMaskIntoConstraints = true
-        return collection
     }
 
     func setupSubviews() {
@@ -157,37 +250,3 @@ private extension NewTrackerViewController {
     }
 }
 
-extension NewTrackerViewController: ScheduleSaverDelegate {
-    func scheduleDidSetup(with newSchedule: [WeekDay]) {
-        self.schedule = newSchedule
-        displaySchedule()
-    }
-}
-
-extension NewTrackerViewController: UITextFieldDelegate {
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let maxLength = 5
-        let currentString = textField.text as? NSString
-        let newString = currentString?.replacingCharacters(in: range, with: string) ?? ""
-        if newString.count > maxLength {
-            inputTrackerNameTxtField.isMaxLengthHintHidden = false
-        }
-        else if !inputTrackerNameTxtField.isMaxLengthHintHidden {
-            inputTrackerNameTxtField.isMaxLengthHintHidden = true
-        }
-        return newString.count <= maxLength
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-        if textField.isFirstResponder {
-            textField.resignFirstResponder()
-        }
-        trackerName = textField.text
-    }
-}

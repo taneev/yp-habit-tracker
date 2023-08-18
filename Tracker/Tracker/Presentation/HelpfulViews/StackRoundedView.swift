@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum RoundedCorderStyle {
+enum RoundedCornerStyle {
     case topOnly
     case bottomOnly
     case topAndBottom
@@ -16,7 +16,7 @@ enum RoundedCorderStyle {
 
 class StackRoundedView: UIView {
 
-    var roundedCornerStyle: RoundedCorderStyle? {
+    var roundedCornerStyle: RoundedCornerStyle? {
         didSet {
             setCornerStyle(roundedCornerStyle)
             // Сепаратор размещается по верхней границе. Поэтому для
@@ -114,7 +114,7 @@ class StackRoundedView: UIView {
         buttonDetailLabel.text = text
     }
 
-    private func setCornerStyle(_ cornerStyle: RoundedCorderStyle?) {
+    private func setCornerStyle(_ cornerStyle: RoundedCornerStyle?) {
         layer.cornerRadius = 16
         layer.masksToBounds = true
         switch cornerStyle {
