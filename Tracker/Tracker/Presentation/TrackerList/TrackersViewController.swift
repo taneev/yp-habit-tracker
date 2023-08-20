@@ -331,9 +331,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader,
-           let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                      withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
-                                                                      for: indexPath) as? TrackersSectionHeaderView {
+           let view = collectionView.dequeueReusableSupplementaryView(
+                            ofKind: kind,
+                            withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
+                            for: indexPath
+                ) as? TrackersSectionHeaderView {
             view.headerLabel.text = visibleCategories[indexPath.section].name
             return view
         }
@@ -414,6 +416,7 @@ private extension TrackersViewController {
 
             searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             searchTextField.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 7),
+            searchTextField.heightAnchor.constraint(equalToConstant: 36),
             searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

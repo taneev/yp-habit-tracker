@@ -40,8 +40,16 @@ final class CreateTrackerTypeSelectionViewController: UIViewController {
     }
 
     private func addButtonTargets(){
-        habitButton.addTarget(self, action: #selector(habitButtonDidTap), for: .touchUpInside)
-        irregularEventButton.addTarget(self, action: #selector(irregularEventButtonDidTap), for: .touchUpInside)
+        habitButton.addTarget(
+                self,
+                action: #selector(habitButtonDidTap),
+                for: .touchUpInside
+        )
+        irregularEventButton.addTarget(
+                self,
+                action: #selector(irregularEventButtonDidTap),
+                for: .touchUpInside
+        )
     }
 }
 

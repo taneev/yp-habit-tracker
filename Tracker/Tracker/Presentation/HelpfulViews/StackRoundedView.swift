@@ -71,38 +71,38 @@ class StackRoundedView: UIView {
     }
 
     private func createNameLabel() -> UILabel {
-        let buttonNameLabel = UILabel()
-        buttonNameLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        buttonNameLabel.textColor = .ypBlackDay
-        buttonNameLabel.textAlignment = .left
-        buttonNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        return buttonNameLabel
+        let view = UILabel()
+        view.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        view.textColor = .ypBlackDay
+        view.textAlignment = .left
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
 
     private func createDetailLabel() -> UILabel {
-        let detailLabel = UILabel()
-        detailLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        detailLabel.textColor = .ypGray
-        detailLabel.textAlignment = .left
-        detailLabel.translatesAutoresizingMaskIntoConstraints = false
-        return detailLabel
+        let view = UILabel()
+        view.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        view.textColor = .ypGray
+        view.textAlignment = .left
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
 
     private func createActionButton() -> UIStackView {
-        let vButtonStackView = UIStackView(arrangedSubviews: [buttonNameLabel, buttonDetailLabel])
-        vButtonStackView.spacing = 2
-        vButtonStackView.alignment = .leading
-        vButtonStackView.axis = .vertical
-        vButtonStackView.translatesAutoresizingMaskIntoConstraints = false
-        return vButtonStackView
+        let view = UIStackView(arrangedSubviews: [buttonNameLabel, buttonDetailLabel])
+        view.spacing = 2
+        view.alignment = .leading
+        view.axis = .vertical
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
 
     func createSeparatorView() -> UIView {
-        let separatorView = UIView()
-        separatorView.layer.borderColor = UIColor.ypGray.cgColor
-        separatorView.layer.borderWidth = 0.5
-        separatorView.translatesAutoresizingMaskIntoConstraints = false
-        return separatorView
+        let view = UIView()
+        view.layer.borderColor = UIColor.ypGray.cgColor
+        view.layer.borderWidth = 0.5
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
 
     private func setDetailText(with text: String?) {

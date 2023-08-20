@@ -17,19 +17,19 @@ final class TrackerViewCell: UICollectionViewCell {
     static let quantityCardHeight = CGFloat(58)
 
     weak var delegate: TrackerViewCellProtocol?
-    var trackerID: UUID!
-    var cellColor: UIColor! {
+    var trackerID: UUID?
+    var cellColor: UIColor? {
         didSet {
             trackerView.backgroundColor = cellColor
             doneButton.backgroundColor = cellColor
         }
     }
-    var cellName: String! {
+    var cellName: String? {
         didSet {
             cellNameLabel.text = cellName
         }
     }
-    var emoji: String! {
+    var emoji: String? {
         didSet {
             emojiLabel.text = emoji
         }
@@ -50,17 +50,17 @@ final class TrackerViewCell: UICollectionViewCell {
             quantityLabel.text = "\(quantity) \(daysText)"
         }
     }
-    var isCompleted: Bool! {
+    var isCompleted: Bool? {
         didSet {
             doneButton.setTitle((isCompleted == true) ? "✓" : "＋", for: .normal)
         }
     }
-    var isDoneButtonEnabled: Bool! {
+    var isDoneButtonEnabled: Bool? {
         didSet {
             // осознанно реализовал более привычную версию UI:
             // - недоступные кнопки (и только они) приглушаются цветом
             // - для выполненных/невыполненных меняется только title
-            doneButton.alpha = isDoneButtonEnabled ? 1 : 0.3
+            doneButton.alpha = (isDoneButtonEnabled == true) ? 1 : 0.3
         }
     }
 
@@ -87,10 +87,14 @@ final class TrackerViewCell: UICollectionViewCell {
     }
 
     @objc private func doneButtonDidTap() {
+        guard let trackerID else {
+            assertionFailure("Не удалось определить ID трекера")
+            return
+        }
 
-        if !isDoneButtonEnabled {return}
+        if !(isDoneButtonEnabled == true) {return}
 
-        isCompleted = !isCompleted
+        isCompleted = !(isCompleted ?? false)
         delegate?.trackerDoneButtonDidTapped(for: trackerID)
         quantity = delegate?.trackerCounterValue(for: trackerID)
     }

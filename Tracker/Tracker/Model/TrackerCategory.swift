@@ -7,12 +7,22 @@
 
 import Foundation
 
+/// Структура для хранения категорий трекеров
 struct TrackerCategory {
+    /// ID категории
     let categoryID: UUID
+
+    /// имя категории
     let name: String
+
+    /// коллекция активных трекеров, привязанных к категории
     let activeTrackers: [Tracker]?
 
-    init(categoryID: UUID, name: String, activeTrackers: [Tracker]?) {
+    init(
+        categoryID: UUID,
+        name: String,
+        activeTrackers: [Tracker]?
+    ) {
         self.categoryID = categoryID
         self.name = name
         self.activeTrackers = activeTrackers
