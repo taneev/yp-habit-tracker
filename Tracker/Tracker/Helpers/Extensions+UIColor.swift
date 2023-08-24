@@ -15,22 +15,33 @@ extension UIColor {
     static let ypRed = UIColor(named: "ypRed")!
     static let ypWhiteDay = UIColor(named: "ypWhiteDay")!
 
-    static let ypColorSelection1 = UIColor(named: "ypColorSelection-1")!
-    static let ypColorSelection2 = UIColor(named: "ypColorSelection-2")!
-    static let ypColorSelection3 = UIColor(named: "ypColorSelection-3")!
-    static let ypColorSelection4 = UIColor(named: "ypColorSelection-4")!
-    static let ypColorSelection5 = UIColor(named: "ypColorSelection-5")!
-    static let ypColorSelection6 = UIColor(named: "ypColorSelection-6")!
-    static let ypColorSelection7 = UIColor(named: "ypColorSelection-7")!
-    static let ypColorSelection8 = UIColor(named: "ypColorSelection-8")!
-    static let ypColorSelection9 = UIColor(named: "ypColorSelection-9")!
-    static let ypColorSelection10 = UIColor(named: "ypColorSelection-10")!
-    static let ypColorSelection11 = UIColor(named: "ypColorSelection-11")!
-    static let ypColorSelection12 = UIColor(named: "ypColorSelection-12")!
-    static let ypColorSelection13 = UIColor(named: "ypColorSelection-13")!
-    static let ypColorSelection14 = UIColor(named: "ypColorSelection-14")!
-    static let ypColorSelection15 = UIColor(named: "ypColorSelection-15")!
-    static let ypColorSelection16 = UIColor(named: "ypColorSelection-16")!
-    static let ypColorSelection17 = UIColor(named: "ypColorSelection-17")!
-    static let ypColorSelection18 = UIColor(named: "ypColorSelection-18")!
+    enum ypColors: String, CaseIterable {
+        case ypColorSelection1 = "ypColorSelection-1"
+        case ypColorSelection2 = "ypColorSelection-2"
+        case ypColorSelection3 =  "ypColorSelection-3"
+        case ypColorSelection4 =  "ypColorSelection-4"
+        case ypColorSelection5 =  "ypColorSelection-5"
+        case ypColorSelection6 =  "ypColorSelection-6"
+        case ypColorSelection7 =  "ypColorSelection-7"
+        case ypColorSelection8 =  "ypColorSelection-8"
+        case ypColorSelection9 =  "ypColorSelection-9"
+        case ypColorSelection10 = "ypColorSelection-10"
+        case ypColorSelection11 = "ypColorSelection-11"
+        case ypColorSelection12 = "ypColorSelection-12"
+        case ypColorSelection13 = "ypColorSelection-13"
+        case ypColorSelection14 = "ypColorSelection-14"
+        case ypColorSelection15 = "ypColorSelection-15"
+        case ypColorSelection16 = "ypColorSelection-16"
+        case ypColorSelection17 = "ypColorSelection-17"
+        case ypColorSelection18 = "ypColorSelection-18"
+
+        static func allColorNames() -> [String] {
+            return allCases.compactMap{ $0.rawValue }
+        }
+
+        func color() -> UIColor? {
+            return UIColor(named: self.rawValue)
+        }
+
+    }
 }
