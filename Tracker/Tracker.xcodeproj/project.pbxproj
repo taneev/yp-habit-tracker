@@ -34,6 +34,7 @@
 		22CF5EDD2A967A5F00BEAD2F /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5EDC2A967A5F00BEAD2F /* EmojiCollectionViewCell.swift */; };
 		22CF5EDF2A967A6E00BEAD2F /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5EDE2A967A6E00BEAD2F /* ColorCollectionViewCell.swift */; };
 		22CF5EE12A97C39500BEAD2F /* PropertyCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5EE02A97C39500BEAD2F /* PropertyCellProtocol.swift */; };
+		22CF5EE72A98EE4100BEAD2F /* HabitTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5EE52A98EE4100BEAD2F /* HabitTracker.xcdatamodeld */; };
 		22D371F42A79781500FA5888 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F32A79781500FA5888 /* AppDelegate.swift */; };
 		22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F72A79781500FA5888 /* TrackersViewController.swift */; };
 		22D371FD2A79781800FA5888 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FC2A79781800FA5888 /* Assets.xcassets */; };
@@ -68,6 +69,7 @@
 		22CF5EDC2A967A5F00BEAD2F /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
 		22CF5EDE2A967A6E00BEAD2F /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		22CF5EE02A97C39500BEAD2F /* PropertyCellProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyCellProtocol.swift; sourceTree = "<group>"; };
+		22CF5EE62A98EE4100BEAD2F /* HabitTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HabitTracker.xcdatamodel; sourceTree = "<group>"; };
 		22D371F02A79781500FA5888 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22D371F32A79781500FA5888 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		22D371F72A79781500FA5888 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
@@ -168,6 +170,30 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		22CF5EE22A98EDE900BEAD2F /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				22CF5EE42A98EE0900BEAD2F /* Model */,
+				22CF5EE32A98EDF800BEAD2F /* DataStore */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		22CF5EE32A98EDF800BEAD2F /* DataStore */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DataStore;
+			sourceTree = "<group>";
+		};
+		22CF5EE42A98EE0900BEAD2F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				22CF5EE52A98EE4100BEAD2F /* HabitTracker.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		22D371E72A79781500FA5888 = {
 			isa = PBXGroup;
 			children = (
@@ -187,6 +213,7 @@
 		22D371F22A79781500FA5888 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				22CF5EE22A98EDE900BEAD2F /* CoreData */,
 				22D371F32A79781500FA5888 /* AppDelegate.swift */,
 				220A86912A81258B0082B271 /* Model */,
 				220A869C2A81440F0082B271 /* Presentation */,
@@ -297,6 +324,7 @@
 				22CF5E892A8D5A5100BEAD2F /* StackRoundedButton.swift in Sources */,
 				22CF5EDD2A967A5F00BEAD2F /* EmojiCollectionViewCell.swift in Sources */,
 				22CF5E782A881BF800BEAD2F /* TitleLabel.swift in Sources */,
+				22CF5EE72A98EE4100BEAD2F /* HabitTracker.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,6 +538,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		22CF5EE52A98EE4100BEAD2F /* HabitTracker.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				22CF5EE62A98EE4100BEAD2F /* HabitTracker.xcdatamodel */,
+			);
+			currentVersion = 22CF5EE62A98EE4100BEAD2F /* HabitTracker.xcdatamodel */;
+			path = HabitTracker.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 22D371E82A79781500FA5888 /* Project object */;
 }
