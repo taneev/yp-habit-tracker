@@ -6,16 +6,32 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    lazy var persistentContainer: NSPersistentContainer? = {
+            let container = NSPersistentContainer(name: "HabitTracker")
+            container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+                if let error {
+                    assertionFailure("Ошибка инициализации хранилища данных")
+                }
+            })
+            return container
+        }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow()
         window?.makeKeyAndVisible()
 
+        createInitialViewControllers()
+
+        return true
+    }
+
+    private func createInitialViewControllers() {
         let tabBarController = UITabBarController()
         tabBarController.tabBar.barStyle = .default
         tabBarController.tabBar.isTranslucent = false
@@ -41,8 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         tabBarController.setViewControllers([trackersListViewController, statisticsViewController], animated: true)
         window?.rootViewController = tabBarController
-
-        return true
     }
 }
 

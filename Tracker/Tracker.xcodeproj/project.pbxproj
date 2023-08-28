@@ -39,6 +39,8 @@
 		22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D371F72A79781500FA5888 /* TrackersViewController.swift */; };
 		22D371FD2A79781800FA5888 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FC2A79781800FA5888 /* Assets.xcassets */; };
 		22D372002A79781800FA5888 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 22D371FE2A79781800FA5888 /* LaunchScreen.storyboard */; };
+		22D566802A9BD4A300B9EEB5 /* MockDataGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D5667F2A9BD4A300B9EEB5 /* MockDataGenerator.swift */; };
+		22D566AA2A9D035A00B9EEB5 /* Extensions+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D566A92A9D035A00B9EEB5 /* Extensions+Date.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +78,8 @@
 		22D371FC2A79781800FA5888 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		22D371FF2A79781800FA5888 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		22D372012A79781800FA5888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		22D5667F2A9BD4A300B9EEB5 /* MockDataGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataGenerator.swift; sourceTree = "<group>"; };
+		22D566A92A9D035A00B9EEB5 /* Extensions+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+Date.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +170,7 @@
 			children = (
 				220A869E2A8170710082B271 /* Extensions+UIColor.swift */,
 				22CF5E4C2A84256100BEAD2F /* TextHelper.swift */,
+				22D566A92A9D035A00B9EEB5 /* Extensions+Date.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -190,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				22CF5EE52A98EE4100BEAD2F /* HabitTracker.xcdatamodeld */,
+				22D5667F2A9BD4A300B9EEB5 /* MockDataGenerator.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -300,9 +306,11 @@
 				220A86932A8125AC0082B271 /* Tracker.swift in Sources */,
 				220A86A52A8292380082B271 /* TrackerViewCell.swift in Sources */,
 				22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */,
+				22D566802A9BD4A300B9EEB5 /* MockDataGenerator.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
 				22CF5E902A8E597A00BEAD2F /* StackRoundedSwitch.swift in Sources */,
+				22D566AA2A9D035A00B9EEB5 /* Extensions+Date.swift in Sources */,
 				22CF5EDB2A96635900BEAD2F /* TrackerPropertyCollectionView.swift in Sources */,
 				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */,
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,

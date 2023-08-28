@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol ScheduleSaverDelegate: AnyObject {
     func scheduleDidSetup(with newSchedule: [WeekDay])
@@ -21,10 +22,13 @@ final class NewTrackerViewController: UIViewController {
             checkIsAllParametersDidSetup()
         }
     }
+
+    private lazy var mainContext = {
+        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer?.viewContext
+    }()
+
     // временная категория для тестирования
-    private var category: TrackerCategory? = TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
-                                                     name: "Занятия спортом",
-                                                     activeTrackers: nil) {
+    private lazy var category = { initDefaultCategory() }() {
         didSet {
             checkIsAllParametersDidSetup()
         }
@@ -90,16 +94,11 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func doneButtonDidTap() {
-        guard let categoryID = category?.categoryID else {
-            assertionFailure("Не удалось определить категорию трекера при сохранении")
-            return
-        }
         guard let selectedEmoji else {
             assertionFailure("Не удалось определить emoji карточки трекера при сохранении")
             return
         }
-        guard let selectedColor,
-              let color = UIColor.ypColors(rawValue: selectedColor)?.color() else {
+        guard let selectedColor else {
             assertionFailure("Не удалось определить цвет карточки трекера при сохранении")
             return
         }
@@ -124,23 +123,48 @@ final class NewTrackerViewController: UIViewController {
             return
         }
 
+        guard let mainContext,
+              let category,
+              let newTracker = NSEntityDescription.insertNewObject(forEntityName: "TrackerCoreData", into: mainContext) as? TrackerCoreData
+        else {
+            assertionFailure("Не удалось проинициализировать контекст при сохранении трекера")
+            return
+        }
 
-        let newTracker = Tracker(name: trackerName,
-                                 isRegular: isRegular,
-                                 emoji: selectedEmoji,
-                                 color: color,
-                                 schedule: schedule)
-        saverDelegate?.save(tracker: newTracker, in: categoryID)
+        newTracker.name = trackerName
+        newTracker.isRegular = isRegular
+        newTracker.emoji = selectedEmoji
+        newTracker.color = selectedColor
+        newTracker.schedule = WeekDay.getDescription(for: schedule ?? [])
+        saverDelegate?.save(tracker: newTracker, in: category)
     }
 
     @objc private func cancelButtonDidTap() {
         dismiss(animated: true)
     }
 
+    private func initDefaultCategory() -> TrackerCategoryCoreData? {
+        guard let mainContext else {return nil}
+
+        // NOTE: временный вариант ининциализации категории первой попавшейся, пока нет
+        // функциональности создания категорий
+        let request = TrackerCategoryCoreData.fetchRequest()
+        let result = try! mainContext.fetch(request)
+        if result.count > 0 {
+            return result.first
+        }
+        else {
+            let newCategory = NSEntityDescription.insertNewObject(forEntityName: "TrackerCategoryCoreData", into: mainContext) as? TrackerCategoryCoreData
+            newCategory?.name = "Дефолтная категория"
+            try? mainContext.save()
+            return newCategory
+        }
+    }
+
     private func checkIsAllParametersDidSetup() {
         isAllParametersDidSetup = trackerName?.isEmpty == false
             && (!isRegular || schedule?.isEmpty == false)
-            && (category?.name.isEmpty == false)
+            && (category?.name?.isEmpty == false)
             && (selectedEmoji?.isEmpty == false)
             && (UIColor.ypColors(rawValue: selectedColor ?? "") != nil)
     }

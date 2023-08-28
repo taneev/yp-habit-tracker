@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol TrackersBarControllerProtocol: AnyObject {
     func addTrackerButtonDidTapped()
@@ -13,62 +14,13 @@ protocol TrackersBarControllerProtocol: AnyObject {
 }
 
 protocol NewTrackerSaverDelegate: AnyObject {
-    func save(tracker: Tracker, in categoryID: UUID)
+    func save(tracker: TrackerCoreData, in category: TrackerCategoryCoreData)
 }
 
 final class TrackersViewController: UIViewController {
 
-    private var categories: [TrackerCategory] = [
-        TrackerCategory(categoryID: UUID(),
-                        name: "Домашний уют",
-                        activeTrackers: [
-                            Tracker(name: "Поливать растения",
-                                    isRegular: true,
-                                    emoji: "❤️",
-                                    color: UIColor.ypColors.ypColorSelection5.color() ?? .clear,
-                                    schedule: [.mon, .tue]),
-                            Tracker(name: "Постричь газон во дворе",
-                                    isRegular: false,
-                                    emoji: "🏝️",
-                                    color: UIColor.ypColors.ypColorSelection2.color() ?? .clear,
-                                    schedule: nil),
-                            Tracker(name: "Постирать шторы",
-                                    isRegular: true,
-                                    emoji: "🤔",
-                                    color: UIColor.ypColors.ypColorSelection15.color() ?? .clear,
-                                    schedule: [.sun]),
-                        ]),
-        TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
-                        name: "Занятия спортом",
-                        activeTrackers: nil),
-        TrackerCategory(categoryID: UUID(),
-                        name: "Радостные мелочи",
-                        activeTrackers: [
-                            Tracker(name: "Кошка заслонила камеру на созвоне",
-                                    isRegular: true,
-                                    emoji: "😻",
-                                    color: UIColor.ypColors.ypColorSelection3.color() ?? .clear,
-                                    schedule: nil),
-                            Tracker(name: "Бабушка прислала открытку в телеге!",
-                                    isRegular: true,
-                                    emoji: "❤️",
-                                    color: UIColor.ypColors.ypColorSelection1.color() ?? .clear,
-                                    schedule: [.fri, .sat, .tue, .mon]),
-                            Tracker(name: "Дать свиньям",
-                                    isRegular: false,
-                                    emoji: "🐶",
-                                    color: UIColor.ypColors.ypColorSelection18.color() ?? .clear,
-                                    schedule: Array(WeekDay.allCases)),
-                        ]),
-        TrackerCategory(categoryID: UUID(),
-                        name: "Самочувствие",
-                        activeTrackers: []),
-
-    ]
-    private var completedTrackers: [TrackerRecord] = []
-    private var visibleCategories: [TrackerCategory] = []
-    private var completedTrackersIDs: Set<UUID> = Set()
-    private var completedTrackersCounter: [UUID: Int] = [:]
+    private lazy var mainContext = { getMainContext() }()
+    private lazy var fetchResultController = { initFetchResultController() }()
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -96,21 +48,40 @@ final class TrackersViewController: UIViewController {
         view.addGestureRecognizer(anyTapGesture)
     }
 
+    private func getMainContext() -> NSManagedObjectContext?  {
+        return (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer?.viewContext
+    }
+
+    private func initFetchResultController() -> NSFetchedResultsController<TrackerCoreData>? {
+        guard let mainContext else {return nil}
+
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: #keyPath(TrackerCoreData.category), ascending: true),
+            NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: true)
+        ]
+        if let predicate = createPredicateWith(selectedDate: Date(), searchString: "") {
+            fetchRequest.predicate = predicate
+        }
+        let controller = NSFetchedResultsController(
+                fetchRequest: fetchRequest,
+                managedObjectContext: mainContext,
+                sectionNameKeyPath: #keyPath(TrackerCoreData.category),
+                cacheName: nil
+        )
+        controller.delegate = self
+        return controller
+    }
+
+
     @objc private func handleAnyTap(_ sender: UITapGestureRecognizer) {
         searchTextField.resignFirstResponder()
     }
 
     private func loadData() {
-        completedTrackersIDs = selectCompletedTrackersIDs(for: currentDate)
-        initCompletedCounters()
-        filterVisibleCategories()
+        MockDataGenerator.setupRecords(with: mainContext)
+        try? fetchResultController?.performFetch()
         collectionView.reloadData()
-    }
-
-    private func initCompletedCounters() {
-        for record in completedTrackers {
-            completedTrackersCounter[record.trackerID] = (completedTrackersCounter[record.trackerID] ?? 0) + 1
-        }
     }
 
     private func isPassedDate(_ date: Date, filter schedule: [WeekDay]?) -> Bool {
@@ -131,99 +102,85 @@ final class TrackersViewController: UIViewController {
         return searchText.isEmpty || name.lowercased().contains(searchText.lowercased())
     }
 
-    private func filterVisibleCategories() {
-        let categoriesFiltered = categories.compactMap{ category -> TrackerCategory? in
-            guard let activeTrackers = category.activeTrackers else { return nil }
+    private func hasCompletedRecords(tracker: TrackerCoreData, for date: Date) -> Bool {
+        guard let completedDates = tracker.completed as? Set<TrackerRecordCoreData>
+        else {return false}
 
-            let visibleTrackers = activeTrackers.filter{
-                (!$0.isRegular || isPassedDate(currentDate, filter: $0.schedule)) && isPassedName($0.name, filter: searchTextFilter)
-            }
-
-            if visibleTrackers.isEmpty {
-                return nil
-            }
-            let filteredCategory = TrackerCategory(categoryID: category.categoryID,
-                                                   name: category.name,
-                                                   activeTrackers: visibleTrackers)
-
-            return filteredCategory
-        }
-        visibleCategories = categoriesFiltered
-        updatePlaceholderType()
+        return completedDates.first(where: { date.isEqual(to: $0.completedAt)}) != nil
     }
 
-    private func isTrackerCompleted(withId trackerID: UUID) -> Bool {
-        return completedTrackersIDs.contains(trackerID)
+    private func completeTracker(tracker: TrackerCoreData, for date: Date) {
+        guard let mainContext,
+              let record = NSEntityDescription.insertNewObject(forEntityName: "TrackerRecordCoreData", into: mainContext) as? TrackerRecordCoreData
+        else {return}
+
+        record.completedAt = date
+        record.tracker = tracker
+        try? mainContext.save()
     }
 
-    private func completeTracker(withID trackerID: UUID) {
-        let record = TrackerRecord(trackerID: trackerID, dateCompleted: currentDate)
-        completedTrackers.append(record)
-        completedTrackersIDs.insert(trackerID)
-        completedTrackersCounter[trackerID] = (completedTrackersCounter[trackerID] ?? 0) + 1
+    private func uncompleteTracker(tracker: TrackerCoreData, for date: Date) {
+        guard let mainContext,
+              let completed = tracker.completed as? Set<TrackerRecordCoreData>
+        else {return}
+
+        completed.forEach{ record in
+            if date.isEqual(to: record.completedAt) {
+                mainContext.delete(record)
+            }
+        }
+        try? mainContext.save()
     }
 
-    private func uncompleteTracker(withID trackerID: UUID) {
-        if completedTrackersIDs.contains(trackerID) {
-            completedTrackersIDs.remove(trackerID)
-            if let counter = completedTrackersCounter[trackerID],
-                counter > 1 {
-                completedTrackersCounter[trackerID] = counter - 1
-            }
-            else {
-                completedTrackersCounter.removeValue(forKey: trackerID)
-            }
-        }
+    private func getCompletedTrackersCount(tracker: TrackerCoreData, for date: Date) -> Int {
+        guard let completedDates = tracker.completed as? Set<TrackerRecordCoreData>
+        else {return 0}
 
-        for (i, record) in completedTrackers.enumerated() {
-            let order = Calendar.current.compare(currentDate,
-                                                 to: record.dateCompleted,
-                                                 toGranularity: .day)
-            if order == .orderedSame {
-                completedTrackers.remove(at: i)
-                break
-            }
+        let records: Set<TrackerRecordCoreData> = completedDates.filter{
+            date.isGreater(than: $0.completedAt) || date.isEqual(to: $0.completedAt)
         }
+        return records.count
     }
 
-    private func selectCompletedTrackersIDs(for selectionDate: Date) -> Set<UUID> {
-        var completedTrackersIDs = Set<UUID>()
-        for record in completedTrackers {
-            if Calendar.current.compare(record.dateCompleted, to: selectionDate, toGranularity: .day) == .orderedSame {
-                completedTrackersIDs.insert(record.trackerID)
-            }
-        }
-        return completedTrackersIDs
-    }
+    private func createPredicateWith(selectedDate: Date, searchString: String? = nil) -> NSPredicate? {
+        guard let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: selectedDate))
+        else {return nil}
+        let weekDayText = WeekDay.shortWeekdayText[currentWeekDay] ?? ""
 
-    private func getCompletedTrackersCount(for trackerID: UUID) -> Int {
-        completedTrackersCounter[trackerID] ?? 0
-    }
+        let searchText = searchString?.trimmingCharacters(in: .whitespaces) ?? ""
 
-    private func save(_ tracker: Tracker, in categoryID: UUID) {
-        var categoryIndexForUpdate: Int?
-        for (i, category) in categories.enumerated() {
-            if category.categoryID == categoryID {
-                categoryIndexForUpdate = i
-                break
-            }
+        if searchText.isEmpty {
+            return NSPredicate(
+                        format: "%K == %@ OR %K CONTAINS[c] %@",
+                        #keyPath(TrackerCoreData.isRegular),
+                        NSNumber(booleanLiteral: false),
+                        #keyPath(TrackerCoreData.schedule),
+                        weekDayText
+                   )
         }
-        guard let categoryIndexForUpdate else {
-            assertionFailure("Не удалось сохранить трекер в категории \(categoryID)")
-            return
+        else {
+            return NSPredicate(
+                        format: "(%K == %@ OR %K CONTAINS[c] %@) AND %K CONTAINS[c] %@",
+                        #keyPath(TrackerCoreData.isRegular),
+                        NSNumber(booleanLiteral: false),
+                        #keyPath(TrackerCoreData.schedule),
+                        weekDayText,
+                        #keyPath(TrackerCoreData.name),
+                        searchText
+                   )
         }
-        categories[categoryIndexForUpdate] = TrackerCategory(
-            categoryID: categoryID,
-            name: categories[categoryIndexForUpdate].name,
-            activeTrackers: (categories[categoryIndexForUpdate].activeTrackers ?? []) + [tracker]
-        )
     }
 }
 
+extension TrackersViewController: NSFetchedResultsControllerDelegate {
+
+}
+
 extension TrackersViewController: NewTrackerSaverDelegate {
-    func save(tracker: Tracker, in categoryID: UUID) {
-        save(tracker, in: categoryID)
-        filterVisibleCategories()
+    func save(tracker: TrackerCoreData, in category: TrackerCategoryCoreData) {
+        tracker.category = category
+        try? mainContext?.save()
+        try? fetchResultController?.performFetch()
         collectionView.reloadData()
         dismiss(animated: true)
     }
@@ -231,17 +188,17 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 
 // MARK: TrackerViewCellDelegate
 extension TrackersViewController: TrackerViewCellProtocol {
-    func trackerDoneButtonDidTapped(for trackerID: UUID) {
-        if isTrackerCompleted(withId: trackerID) {
-            uncompleteTracker(withID: trackerID)
+    func trackerDoneButtonDidTapped(for tracker: TrackerCoreData) {
+        if hasCompletedRecords(tracker: tracker, for: currentDate) {
+            uncompleteTracker(tracker: tracker, for: currentDate)
         }
         else {
-            completeTracker(withID: trackerID)
+            completeTracker(tracker: tracker, for: currentDate)
         }
     }
 
-    func trackerCounterValue(for trackerID: UUID) -> Int {
-        return getCompletedTrackersCount(for: trackerID)
+    func trackerCounterValue(for tracker: TrackerCoreData) -> Int {
+        return getCompletedTrackersCount(tracker: tracker, for: currentDate)
     }
 }
 
@@ -249,9 +206,11 @@ extension TrackersViewController: TrackerViewCellProtocol {
 extension TrackersViewController: TrackersBarControllerProtocol {
     func currentDateDidChange(for selectedDate: Date) {
         currentDate = selectedDate
-        completedTrackersIDs = selectCompletedTrackersIDs(for: currentDate)
-        filterVisibleCategories()
-        collectionView.reloadData()
+        if let predicate = createPredicateWith(selectedDate: selectedDate, searchString: "") {
+            fetchResultController?.fetchRequest.predicate = predicate
+            try? fetchResultController?.performFetch()
+            collectionView.reloadData()
+        }
     }
 
     func addTrackerButtonDidTapped() {
@@ -266,8 +225,9 @@ extension TrackersViewController: TrackersBarControllerProtocol {
 // MARK: Search text delegate
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces) ?? ""
-        filterVisibleCategories()
+        searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces).lowercased() ?? ""
+        fetchResultController?.fetchRequest.predicate = createPredicateWith(selectedDate: currentDate, searchString: searchTextFilter)
+        try? fetchResultController?.performFetch()
         collectionView.reloadData()
     }
 
@@ -279,25 +239,22 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        visibleCategories.count
+        fetchResultController?.sections?.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        visibleCategories[section].activeTrackers?.count ?? 0
+        return fetchResultController?.sections?[section].numberOfObjects ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerViewCell.cellIdentifier, for: indexPath) as? TrackerViewCell,
-              let tracker = visibleCategories[indexPath.section].activeTrackers?[indexPath.row]
+              let tracker = fetchResultController?.object(at: indexPath) as? TrackerCoreData
         else {return UICollectionViewCell()}
-
+     //   print("\(indexPath.section) \(tracker.category?.name): \(indexPath.row) \(tracker.name)")
         cell.delegate = self
-        cell.trackerID = tracker.trackerID
-        cell.cellName = tracker.name
-        cell.cellColor = tracker.color
-        cell.emoji = tracker.emoji
-        cell.isCompleted = isTrackerCompleted(withId: tracker.trackerID)
-        cell.quantity = getCompletedTrackersCount(for: tracker.trackerID)
+        cell.tracker = tracker
+        cell.isCompleted = hasCompletedRecords(tracker: tracker, for: currentDate)
+        cell.quantity = getCompletedTrackersCount(tracker: tracker, for: currentDate)
 
         let order = Calendar.current.compare(Date(), to: currentDate, toGranularity: .day)
         cell.isDoneButtonEnabled = !(order == .orderedAscending)
@@ -336,7 +293,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                             withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
                             for: indexPath
                 ) as? TrackersSectionHeaderView {
-            view.headerLabel.text = visibleCategories[indexPath.section].name
+            view.headerLabel.text = fetchResultController?.object(at: indexPath).category?.name
             return view
         }
         else {
@@ -390,17 +347,17 @@ private extension TrackersViewController {
     }
 
     func updatePlaceholderType() {
-        if categories.isEmpty {
-            emptyCollectionPlaceholder.isHidden = false
-            emptyCollectionPlaceholder.placeholderType = .noData
-        }
-        else if visibleCategories.isEmpty {
-            emptyCollectionPlaceholder.isHidden = false
-            emptyCollectionPlaceholder.placeholderType = .emptyList
-        }
-        else {
+//        if categories.isEmpty {
+//            emptyCollectionPlaceholder.isHidden = false
+//            emptyCollectionPlaceholder.placeholderType = .noData
+//        }
+//        else if visibleCategories.isEmpty {
+//            emptyCollectionPlaceholder.isHidden = false
+//            emptyCollectionPlaceholder.placeholderType = .emptyList
+//        }
+//        else {
             emptyCollectionPlaceholder.isHidden = true
-        }
+//        }
     }
 
     func addPlaceholder() {
