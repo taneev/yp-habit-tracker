@@ -69,7 +69,7 @@ extension ColorCollectionViewCell: PropertyCellProtocol {
     }
 
     func config(with colorName: String) {
-        guard let ypColor = UIColor.ypColors(rawValue: colorName) else {return}
+        guard let ypColor = UIColor.YpColors(rawValue: colorName) else {return}
         self.color = ypColor.color()
     }
 }

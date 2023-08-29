@@ -8,8 +8,8 @@
 import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
-    func trackerDoneButtonDidTapped(for tracker: TrackerCoreData)
-    func trackerCounterValue(for tracker: TrackerCoreData) -> Int
+    func trackerDoneButtonDidTapped(at indexPath: IndexPath)
+    func trackerCounterValue(at indexPath: IndexPath) -> Int
 }
 
 final class TrackerViewCell: UICollectionViewCell {
@@ -17,14 +17,16 @@ final class TrackerViewCell: UICollectionViewCell {
     static let quantityCardHeight = CGFloat(58)
 
     weak var delegate: TrackerViewCellProtocol?
-    var tracker: TrackerCoreData? {
+    var tracker: Tracker? {
         didSet {
             guard let tracker else {return}
             cellName = tracker.name
-            cellColor = UIColor.ypColors(rawValue: tracker.color ?? "")?.color() ?? .clear
+            cellColor = tracker.color.color() ?? .clear
             emoji = tracker.emoji
         }
     }
+
+    var indexPath: IndexPath?
 
     var quantity: Int? {
         didSet {
@@ -98,7 +100,7 @@ final class TrackerViewCell: UICollectionViewCell {
     }
 
     @objc private func doneButtonDidTap() {
-        guard let tracker else {
+        guard let indexPath else {
             assertionFailure("Не удалось определить ID трекера")
             return
         }
@@ -106,8 +108,8 @@ final class TrackerViewCell: UICollectionViewCell {
         if !(isDoneButtonEnabled == true) {return}
 
         isCompleted = !(isCompleted ?? false)
-        delegate?.trackerDoneButtonDidTapped(for: tracker)
-        quantity = delegate?.trackerCounterValue(for: tracker)
+        delegate?.trackerDoneButtonDidTapped(at: indexPath)
+        quantity = delegate?.trackerCounterValue(at: indexPath)
     }
 }
 

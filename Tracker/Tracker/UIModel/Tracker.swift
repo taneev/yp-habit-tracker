@@ -20,7 +20,7 @@ struct Tracker {
     let emoji: String
 
     /// цвет трекера
-    let color: UIColor
+    let color: UIColor.YpColors
 
     /// расписание трекера. Устанавливается для регулярных привычек
     let schedule: [WeekDay]?

@@ -25,14 +25,17 @@ final class MockDataGenerator {
         }
         // Добавляем категорию 2
         let category2 = TrackerCategoryCoreData(context: context)
+        category2.categoryID = UUID()
         category2.name = "Вторая категория, пустая"
 
         // Добавляем категорию 3
         let category3 = TrackerCategoryCoreData(context: context)
+        category3.categoryID = UUID()
         category3.name = "Третья категория"
 
         // Добавляем категорию 1 после категории 3
         let category1 = TrackerCategoryCoreData(context: context)
+        category1.categoryID = UUID()
         category1.name = "Первая категория"
 
         let tracker = TrackerCoreData(context: context)
@@ -80,5 +83,20 @@ final class MockDataGenerator {
         }
 
         try! context.save()
+    }
+
+    static func getDefaultCategory(with context: NSManagedObjectContext?) -> TrackerCategoryCoreData? {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        if let result = try? context?.fetch(request),
+            result.count > 0 {
+            return result.first
+        }
+        else {
+            guard let context else {return nil}
+            let newCategory = NSEntityDescription.insertNewObject(forEntityName: "TrackerCategoryCoreData", into: context) as? TrackerCategoryCoreData
+            newCategory?.name = "Дефолтная категория"
+            try? context.save()
+            return newCategory
+        }
     }
 }

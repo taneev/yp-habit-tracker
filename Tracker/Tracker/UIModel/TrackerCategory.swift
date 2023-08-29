@@ -9,6 +9,9 @@ import Foundation
 
 /// Структура для хранения категорий трекеров
 struct TrackerCategory {
+    /// Уникальный UUID категории
+    let categoryID: UUID
+
     /// имя категории
     let name: String
 
@@ -16,9 +19,11 @@ struct TrackerCategory {
     let activeTrackers: [Tracker]?
 
     init(
+        id: UUID,
         name: String,
         activeTrackers: [Tracker]?
     ) {
+        self.categoryID = id
         self.name = name
         self.activeTrackers = activeTrackers
     }

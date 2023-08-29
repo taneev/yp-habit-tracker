@@ -15,7 +15,7 @@ extension UIColor {
     static let ypRed = UIColor(named: "ypRed")!
     static let ypWhiteDay = UIColor(named: "ypWhiteDay")!
 
-    enum ypColors: String, CaseIterable {
+    enum YpColors: String, CaseIterable {
         case ypColorSelection1 = "ypColorSelection-1"
         case ypColorSelection2 = "ypColorSelection-2"
         case ypColorSelection3 =  "ypColorSelection-3"
@@ -42,6 +42,5 @@ extension UIColor {
         func color() -> UIColor? {
             return UIColor(named: self.rawValue)
         }
-
     }
 }
