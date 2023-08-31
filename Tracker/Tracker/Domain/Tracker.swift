@@ -25,8 +25,10 @@ struct Tracker {
     /// расписание трекера. Устанавливается для регулярных привычек
     let schedule: [WeekDay]?
 
+    /// true - карточка отмечена выполненной
     let isCompleted: Bool
 
+    /// счетчик количества выполненных
     let completedCounter: Int
 
 }
