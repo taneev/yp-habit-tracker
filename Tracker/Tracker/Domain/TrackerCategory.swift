@@ -15,16 +15,11 @@ struct TrackerCategory {
     /// имя категории
     let name: String
 
-    /// коллекция активных трекеров, привязанных к категории
-    let activeTrackers: [Tracker]?
-
     init(
         id: UUID,
-        name: String,
-        activeTrackers: [Tracker]?
+        name: String
     ) {
         self.categoryID = id
         self.name = name
-        self.activeTrackers = activeTrackers
     }
 }

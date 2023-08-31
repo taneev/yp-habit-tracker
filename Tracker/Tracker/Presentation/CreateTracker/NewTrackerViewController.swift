@@ -29,7 +29,7 @@ final class NewTrackerViewController: UIViewController {
             checkIsAllParametersDidSetup()
         }
     }
-    
+
     private var selectedEmoji: String?
     private var selectedColor: String?
 
@@ -130,9 +130,11 @@ final class NewTrackerViewController: UIViewController {
                 isRegular: isRegular,
                 emoji: selectedEmoji,
                 color: color,
-                schedule: schedule
+                schedule: schedule,
+                isCompleted: false,
+                completedCounter: 0
         )
-        saverDelegate?.save(tracker: newTracker, in: category.categoryID)
+        saverDelegate?.save(tracker: newTracker, in: category)
     }
 
     @objc private func cancelButtonDidTap() {

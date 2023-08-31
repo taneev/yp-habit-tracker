@@ -8,8 +8,7 @@
 import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
-    func trackerDoneButtonDidTapped(at indexPath: IndexPath)
-    func trackerCounterValue(at indexPath: IndexPath) -> Int
+    func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath)
 }
 
 final class TrackerViewCell: UICollectionViewCell {
@@ -21,8 +20,10 @@ final class TrackerViewCell: UICollectionViewCell {
         didSet {
             guard let tracker else {return}
             cellName = tracker.name
-            cellColor = tracker.color.color() ?? .clear
+            cellColor = tracker.color?.color() ?? .clear
             emoji = tracker.emoji
+            quantity = tracker.completedCounter
+            isCompleted = tracker.isCompleted
         }
     }
 
@@ -107,12 +108,12 @@ final class TrackerViewCell: UICollectionViewCell {
 
         if !(isDoneButtonEnabled == true) {return}
 
-        isCompleted = !(isCompleted ?? false)
-        delegate?.trackerDoneButtonDidTapped(at: indexPath)
-        quantity = delegate?.trackerCounterValue(at: indexPath)
+        let isButtonChecked = !(isCompleted ?? false)
+        delegate?.trackerDoneButtonDidSwitched(to: isButtonChecked, at: indexPath)
     }
 }
 
+// MARK: Layout
 private extension TrackerViewCell {
     func createTrackerView() -> UIView {
         let trackerView = UIView()

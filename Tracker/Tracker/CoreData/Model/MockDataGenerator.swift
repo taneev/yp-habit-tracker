@@ -9,8 +9,10 @@ import CoreData
 
 final class MockDataGenerator {
 
-    static func setupRecords(with context: NSManagedObjectContext?) {
-        guard let context else {return}
+    private var dataStore: DataStoreProtocol?
+
+    static func setupRecords(in dataStore: DataStoreProtocol) {
+        guard let context = dataStore.getContext() else {return}
 
         let checkRequest = TrackerCoreData.fetchRequest()
         let result = try! context.fetch(checkRequest)
@@ -85,18 +87,20 @@ final class MockDataGenerator {
         try! context.save()
     }
 
-    static func getDefaultCategory(with context: NSManagedObjectContext?) -> TrackerCategoryCoreData? {
+    static func getDefaultCategory(for dataStore: DataStoreProtocol) -> TrackerCategoryStore? {
+        guard let context = dataStore.getContext() else {return nil}
         let request = TrackerCategoryCoreData.fetchRequest()
-        if let result = try? context?.fetch(request),
-            result.count > 0 {
-            return result.first
+        if let result = try? context.fetch(request),
+           let categoryCoreData = result.first {
+            return TrackerCategoryStore(categoryCoreData: categoryCoreData)
         }
         else {
-            guard let context else {return nil}
-            let newCategory = NSEntityDescription.insertNewObject(forEntityName: "TrackerCategoryCoreData", into: context) as? TrackerCategoryCoreData
-            newCategory?.name = "Дефолтная категория"
+            guard let newCategory = NSEntityDescription.insertNewObject(forEntityName: "TrackerCategoryCoreData", into: context) as? TrackerCategoryCoreData
+            else {return nil}
+
+            newCategory.name = "Дефолтная категория"
             try? context.save()
-            return newCategory
+            return TrackerCategoryStore(categoryCoreData: newCategory)
         }
     }
 }

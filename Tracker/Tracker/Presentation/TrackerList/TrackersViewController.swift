@@ -13,12 +13,12 @@ protocol TrackersBarControllerProtocol: AnyObject {
 }
 
 protocol NewTrackerSaverDelegate: AnyObject {
-    func save(tracker: Tracker, in categoryID: UUID)
+    func save(tracker: Tracker, in category: TrackerCategory)
 }
 
 final class TrackersViewController: UIViewController {
 
-    private lazy var dataProvider: DataProviderProtocol? = { createDataProvider() }()
+    private lazy var dataProvider: DataProviderProtocol = { createDataProvider() }()
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -55,49 +55,15 @@ final class TrackersViewController: UIViewController {
     }
 
     private func loadData() {
-        dataProvider?.loadData()
+        dataProvider.setDateFilter(with: currentDate)
+        dataProvider.loadData()
         collectionView.reloadData()
     }
-
-    private func isPassedDate(_ date: Date, filter schedule: [WeekDay]?) -> Bool {
-        guard let schedule
-        else { // регулярная привычка с почему-то не заданным расписанием
-               // - отображать всегда или никогда?
-               // отображаю всегда, чтобы был шанс исправить ошибку (в расписании или коде)
-            return true
-        }
-
-        if let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: date)) {
-            return schedule.contains(currentWeekDay)
-        }
-        return false
-    }
-
-    private func isPassedName(_ name: String, filter searchText: String) -> Bool {
-        return searchText.isEmpty || name.lowercased().contains(searchText.lowercased())
-    }
-
-    private func hasCompletedRecords(at indexPath: IndexPath, for date: Date) -> Bool {
-        dataProvider?.hasCompletedRecords(at: indexPath, for: date) ?? false
-    }
-
-    private func completeTracker(at indexPath: IndexPath, for date: Date) {
-        dataProvider?.completeTracker(at: indexPath, for: date)
-    }
-
-    private func uncompleteTracker(at indexPath: IndexPath, for date: Date) {
-        dataProvider?.uncompleteTracker(at: indexPath, for: date)
-    }
-
-    private func getCompletedTrackersCount(at indexPath: IndexPath, for date: Date) -> Int {
-        dataProvider?.getCompletedTrackersCount(at: indexPath, for: date) ?? 0
-    }
-
 }
 
 extension TrackersViewController: NewTrackerSaverDelegate {
-    func save(tracker: Tracker, in categoryID: UUID) {
-        dataProvider?.save(tracker: tracker, in: categoryID)
+    func save(tracker: Tracker, in category: TrackerCategory) {
+        dataProvider.save(tracker: tracker, in: category)
         collectionView.reloadData()
         dismiss(animated: true)
     }
@@ -105,17 +71,13 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 
 // MARK: TrackerViewCellDelegate
 extension TrackersViewController: TrackerViewCellProtocol {
-    func trackerDoneButtonDidTapped(at indexPath: IndexPath) {
-        if hasCompletedRecords(at: indexPath, for: currentDate) {
-            uncompleteTracker(at: indexPath, for: currentDate)
-        }
-        else {
-            completeTracker(at: indexPath, for: currentDate)
-        }
-    }
+    func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath) {
+        dataProvider.switchTracker(at: indexPath, to: isCompleted, for: currentDate)
 
-    func trackerCounterValue(at indexPath: IndexPath) -> Int {
-        return getCompletedTrackersCount(at: indexPath, for: currentDate)
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell else {return}
+        cell.isCompleted = isCompleted
+        let quantity = cell.quantity ?? 0
+        cell.quantity = isCompleted ? quantity + 1 : quantity - 1
     }
 }
 
@@ -123,7 +85,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
 extension TrackersViewController: TrackersBarControllerProtocol {
     func currentDateDidChange(for selectedDate: Date) {
         currentDate = selectedDate
-        dataProvider?.updateFilterWith(selectedDate: selectedDate, searchString: searchTextFilter)
+        dataProvider.setDateFilter(with: selectedDate)
         collectionView.reloadData()
     }
 
@@ -141,7 +103,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces).lowercased() ?? ""
-        dataProvider?.updateFilterWith(selectedDate: currentDate, searchString: searchTextFilter)
+        dataProvider.setSearchTextFilter(with: searchTextFilter)
         collectionView.reloadData()
     }
 
@@ -153,23 +115,24 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        dataProvider?.numberOfSections ?? 0
+        dataProvider.numberOfSections
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        dataProvider?.numberOfRows(in: section) ?? 0
+        dataProvider.numberOfRows(in: section)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerViewCell.cellIdentifier, for: indexPath) as? TrackerViewCell,
-              let tracker = dataProvider?.object(at: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(
+                                withReuseIdentifier: TrackerViewCell.cellIdentifier,
+                                for: indexPath) as? TrackerViewCell,
+              let tracker = dataProvider.object(at: indexPath)
         else {return UICollectionViewCell()}
+
         cell.delegate = self
         cell.indexPath = indexPath
-        cell.tracker = tracker
-        cell.isCompleted = hasCompletedRecords(at: indexPath, for: currentDate)
-        cell.quantity = getCompletedTrackersCount(at: indexPath, for: currentDate)
         cell.isDoneButtonEnabled = !currentDate.isGreater(than: Date())
+        cell.tracker = tracker
         return cell
     }
 }
@@ -180,7 +143,10 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        CGSize(width: (collectionView.frame.width - params.paddingWidth) / CGFloat(params.cellCount), height: 90 + TrackerViewCell.quantityCardHeight)
+        CGSize(
+            width: (collectionView.frame.width - params.paddingWidth) / CGFloat(params.cellCount),
+            height: 90 + TrackerViewCell.quantityCardHeight
+        )
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -205,7 +171,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                             withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
                             for: indexPath
                 ) as? TrackersSectionHeaderView {
-            view.headerLabel.text = dataProvider?.getCategoryNameForObject(at: indexPath)
+            view.headerLabel.text = dataProvider.getCategoryNameForTracker(at: indexPath)
             return view
         }
         else {
