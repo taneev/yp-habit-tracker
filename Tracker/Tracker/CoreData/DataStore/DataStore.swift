@@ -13,14 +13,22 @@ protocol DataStoreProtocol: AnyObject {
     func deleteRecord(_ record: TrackerRecordStore, forTrackerAt indexPath: IndexPath)
     func saveTracker(_ trackerStore: TrackerStore)
     func getContext() -> NSManagedObjectContext?
+    
 }
 
 final class DataStore: DataStoreProtocol {
     var dataStoreFetchedResultController: DataStoreFetchedControllerProtocol?
     private var context: NSManagedObjectContext?
+    private var persistentContainer: NSPersistentContainer
 
     init() {
-        self.context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer?.viewContext
+        self.persistentContainer = NSPersistentContainer(name: "HabitTracker")
+        self.persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error {
+                assertionFailure("Ошибка инициализации хранилища данных: \(error)")
+            }
+        })
+        self.context = persistentContainer.viewContext
 
         if let context {
             let controller = DataStoreFetchController(context: context)
@@ -79,6 +87,6 @@ final class DataStore: DataStoreProtocol {
     }
 
     func getContext() -> NSManagedObjectContext?  {
-        return (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer?.viewContext
+        return context
     }
 }
