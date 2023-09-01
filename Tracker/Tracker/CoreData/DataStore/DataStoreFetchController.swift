@@ -12,6 +12,7 @@ protocol DataStoreFetchedControllerProtocol {
     var delegate: NSFetchedResultsControllerDelegate? {get set}
     var dataProviderDelegate: DataProviderProtocol? {get set}
     var fetchedTrackerController: NSFetchedResultsController<TrackerCoreData>? {get set}
+    var numberOfObjects: Int? {get}
     var numberOfSections: Int? {get}
     func numberOfRows(in section: Int) -> Int?
     func object(at: IndexPath) -> TrackerStore?
@@ -28,9 +29,12 @@ final class DataStoreFetchController: NSObject {
     var fetchedTrackerController:  NSFetchedResultsController<TrackerCoreData>?
     weak var dataProviderDelegate: DataProviderProtocol?
 
-    private var insertedIndexes: [IndexPath]?
-    private var deletedIndexes: [IndexPath]?
-    
+    private var insertedSections: IndexSet?
+    private var insertedIndexes = [IndexPath]()
+
+    private var deletedSections: IndexSet?
+    private var deletedIndexes = [IndexPath]()
+
     init(context: NSManagedObjectContext) {
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
@@ -78,6 +82,10 @@ final class DataStoreFetchController: NSObject {
 }
 
 extension DataStoreFetchController: DataStoreFetchedControllerProtocol {
+    var numberOfObjects: Int? {
+        fetchedTrackerController?.fetchedObjects?.count
+    }
+
     var numberOfSections: Int? {
         fetchedTrackerController?.sections?.count
     }
@@ -108,17 +116,26 @@ extension DataStoreFetchController: DataStoreFetchedControllerProtocol {
 
 extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedSections = IndexSet()
         insertedIndexes = []
+        deletedSections = IndexSet()
         deletedIndexes = []
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         dataProviderDelegate?.didUpdate(
+            UpdatedIndexes(
+                insertedSections: insertedSections ?? IndexSet(),
                 insertedIndexes: insertedIndexes,
+                deletedSections: deletedSections ?? IndexSet(),
                 deletedIndexes: deletedIndexes
+            )
         )
-        insertedIndexes = nil
-        deletedIndexes = nil
+        insertedSections = nil
+        insertedIndexes = []
+
+        deletedSections = nil
+        deletedIndexes = []
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -126,12 +143,23 @@ extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
         switch type {
         case .delete:
             if let indexPath = indexPath {
-                deletedIndexes?.append(indexPath)
+                deletedIndexes.append(indexPath)
             }
         case .insert:
             if let indexPath = newIndexPath {
-                insertedIndexes?.append(indexPath)
+                insertedIndexes.append(indexPath)
             }
+        default:
+            break
+        }
+    }
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+
+        switch type {
+        case .delete:
+            deletedSections?.insert(sectionIndex)
+        case .insert:
+            insertedSections?.insert(sectionIndex)
         default:
             break
         }

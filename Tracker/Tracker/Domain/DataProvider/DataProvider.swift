@@ -6,8 +6,11 @@
 //
 import UIKit
 
+
 protocol DataProviderProtocol: AnyObject {
+    var numberOfObjects: Int {get}
     var numberOfSections: Int {get}
+    var dataStore: DataStoreProtocol {get}
     func numberOfRows(in section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
     func loadData()
@@ -18,12 +21,19 @@ protocol DataProviderProtocol: AnyObject {
     func setSearchTextFilter(with searchText: String)
     func switchTracker(at indexPath: IndexPath, to isCompleted: Bool, for date: Date)
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
-    func didUpdate(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?)
+    func didUpdate(_ updatedIndexes: UpdatedIndexes)
+}
+
+struct UpdatedIndexes {
+    let insertedSections: IndexSet
+    let insertedIndexes: [IndexPath]
+    let deletedSections: IndexSet
+    let deletedIndexes: [IndexPath]
 }
 
 final class DataProvider {
     private weak var delegate: DataProviderDelegate?
-    private var dataStore: DataStoreProtocol
+    var dataStore: DataStoreProtocol
     private var dataStoreFetchedController: DataStoreFetchedControllerProtocol?
     private var currentDate: Date = Date()
     private var searchText: String = ""
@@ -47,8 +57,8 @@ final class DataProvider {
 }
 
 extension DataProvider: DataProviderProtocol {
-    func didUpdate(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?) {
-        delegate?.didUpdateIndexPath(insertedIndexes: insertedIndexes, deletedIndexes: deletedIndexes)
+    func didUpdate(_ updatedIndexes: UpdatedIndexes) {
+        delegate?.didUpdateIndexPath(updatedIndexes)
     }
 
     func switchTracker(at indexPath: IndexPath, to isCompleted: Bool, for date: Date) {
@@ -75,8 +85,12 @@ extension DataProvider: DataProviderProtocol {
         dataStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
     }
 
+    var numberOfObjects: Int {
+        dataStoreFetchedController?.numberOfObjects ?? 0
+    }
+
     var numberOfSections: Int {
-        dataStoreFetchedController?.numberOfSections ?? 0
+        dataStoreFetchedController?.numberOfSections ?? 1
     }
 
     func numberOfRows(in section: Int) -> Int {
@@ -104,8 +118,6 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func loadData() {
-        // Загрузим мок-данные в БД для тестирования пока нет функциональности добавления категорий
-        MockDataGenerator.setupRecords(in: dataStore)
         dataStoreFetchedController?.fetchData()
     }
 

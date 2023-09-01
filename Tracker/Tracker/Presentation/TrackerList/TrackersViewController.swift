@@ -8,7 +8,7 @@
 import UIKit
 
 protocol DataProviderDelegate: AnyObject {
-    func didUpdateIndexPath(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?)
+    func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes)
 }
 
 protocol TrackersBarControllerProtocol: AnyObject {
@@ -41,6 +41,10 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .ypWhiteDay
+
+        // Загрузим мок-данные в БД для тестирования пока нет функциональности добавления категорий
+        MockDataGenerator.setupRecords(with: dataProvider)
+
         addSubviews()
         addConstraints()
         loadData()
@@ -62,9 +66,11 @@ final class TrackersViewController: UIViewController {
         dataProvider.setDateFilter(with: currentDate)
         dataProvider.loadData()
         collectionView.reloadData()
+        updatePlaceholderType()
     }
 }
 
+// MARK: NewTrackerSaverDelegate
 extension TrackersViewController: NewTrackerSaverDelegate {
     func save(tracker: Tracker, in category: TrackerCategory) {
         dataProvider.save(tracker: tracker, in: category)
@@ -89,6 +95,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
         currentDate = selectedDate
         dataProvider.setDateFilter(with: selectedDate)
         collectionView.reloadData()
+        updatePlaceholderType()
     }
 
     func addTrackerButtonDidTapped() {
@@ -107,6 +114,7 @@ extension TrackersViewController: UITextFieldDelegate {
         searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces).lowercased() ?? ""
         dataProvider.setSearchTextFilter(with: searchTextFilter)
         collectionView.reloadData()
+        updatePlaceholderType()
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -189,18 +197,19 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: DataProviderDelegate
 extension TrackersViewController: DataProviderDelegate {
-    func didUpdateIndexPath(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?) {
-        if insertedIndexes == nil && deletedIndexes == nil {
-            return
-        }
+    func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
 
         collectionView.performBatchUpdates{
-            if let insertedIndexes {
-                collectionView.insertItems(at: insertedIndexes)
+            collectionView.deleteItems(at: updatedIndexes.deletedIndexes)
+            collectionView.insertItems(at: updatedIndexes.insertedIndexes)
+
+            if !updatedIndexes.deletedSections.isEmpty {
+                collectionView.deleteSections(updatedIndexes.deletedSections)
             }
-            if let deletedIndexes {
-                collectionView.deleteItems(at: deletedIndexes)
+            if !updatedIndexes.insertedSections.isEmpty {
+                collectionView.insertSections(updatedIndexes.insertedSections)
             }
         }
     }
@@ -244,22 +253,22 @@ private extension TrackersViewController {
     }
 
     func updatePlaceholderType() {
-//        if categories.isEmpty {
-//            emptyCollectionPlaceholder.isHidden = false
-//            emptyCollectionPlaceholder.placeholderType = .noData
-//        }
-//        else if visibleCategories.isEmpty {
-//            emptyCollectionPlaceholder.isHidden = false
-//            emptyCollectionPlaceholder.placeholderType = .emptyList
-//        }
-//        else {
+        if dataProvider.numberOfObjects != 0 {
             emptyCollectionPlaceholder.isHidden = true
-//        }
+        }
+        else if searchTextFilter.isEmpty {
+            emptyCollectionPlaceholder.isHidden = false
+            emptyCollectionPlaceholder.placeholderType = .noData
+        }
+        else {
+            emptyCollectionPlaceholder.isHidden = false
+            emptyCollectionPlaceholder.placeholderType = .emptyList
+        }
     }
 
     func addPlaceholder() {
         view.addSubview(emptyCollectionPlaceholder)
-        updatePlaceholderType()
+        emptyCollectionPlaceholder.isHidden = true
     }
 
     func addConstraints() {
