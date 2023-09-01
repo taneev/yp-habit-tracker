@@ -30,8 +30,16 @@ final class NewTrackerViewController: UIViewController {
         }
     }
 
-    private var selectedEmoji: String?
-    private var selectedColor: String?
+    private var selectedEmoji: String? {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
+    private var selectedColor: String? {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
 
     private var emojies = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡","🥶",
