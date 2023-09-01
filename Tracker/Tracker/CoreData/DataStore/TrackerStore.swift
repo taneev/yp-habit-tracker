@@ -29,7 +29,7 @@ struct TrackerStore {
     init(trackerCoreData: TrackerCoreData) {
         let completedRecords = trackerCoreData.completed as? Set<TrackerRecordCoreData>
         let completedStoreRecords = completedRecords?.compactMap{ record -> TrackerRecordStore? in
-            guard let completedAt = record.completedAt else {return nil}
+            guard let completedAt = record.completedAt?.truncated() else {return nil}
             return TrackerRecordStore(completedAt: completedAt)
         }
 

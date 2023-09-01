@@ -39,11 +39,12 @@ final class DataStore: DataStoreProtocol {
 
     func addRecord(_ record: TrackerRecordStore, toTrackerAt indexPath: IndexPath) {
         guard let context,
+              let completedAt = record.completedAt.truncated(),
               let fetchedTrackerController = dataStoreFetchedResultController?.fetchedTrackerController
         else {return}
 
         let recordCoreData = TrackerRecordCoreData(context: context)
-        recordCoreData.completedAt = record.completedAt
+        recordCoreData.completedAt = completedAt
         recordCoreData.tracker = fetchedTrackerController.object(at: indexPath)
 
         try? context.save()
@@ -51,13 +52,14 @@ final class DataStore: DataStoreProtocol {
 
     func deleteRecord(_ record: TrackerRecordStore, forTrackerAt indexPath: IndexPath) {
         guard let context,
+              let completedAt = record.completedAt.truncated(),
               let fetchedTrackerController = dataStoreFetchedResultController?.fetchedTrackerController
         else {return}
 
         let tracker = fetchedTrackerController.object(at: indexPath)
         if let completed = tracker.completed as? Set<TrackerRecordCoreData> {
             completed.forEach{
-                if record.completedAt.isEqual(to: $0.completedAt) {
+                if completedAt.isEqual(to: $0.completedAt) {
                     context.delete($0)
                 }
             }

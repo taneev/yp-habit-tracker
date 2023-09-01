@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct TrackerRecordStore: Hashable {
+struct TrackerRecordStore {
     let completedAt: Date
 }
