@@ -40,7 +40,7 @@ struct TrackerStore {
             color: trackerCoreData.color ?? "",
             schedule: trackerCoreData.schedule,
             category: TrackerCategoryStore(
-                    categoryID: trackerCoreData.category?.categoryID,
+                    categoryID: trackerCoreData.objectID.uriRepresentation(),
                     name: trackerCoreData.category?.name ?? ""
             ),
             completed: completedStoreRecords

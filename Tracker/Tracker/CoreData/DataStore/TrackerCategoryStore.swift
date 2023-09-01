@@ -8,15 +8,18 @@
 import Foundation
 
 struct TrackerCategoryStore {
-    let categoryID: UUID
+    let categoryID: URL
     let name: String
 
-    init(categoryID: UUID?, name: String) {
-        self.categoryID = categoryID ?? UUID()
+    init(categoryID: URL, name: String) {
+        self.categoryID = categoryID
         self.name = name
     }
 
     init(categoryCoreData: TrackerCategoryCoreData) {
-        self.init(categoryID: categoryCoreData.categoryID, name: categoryCoreData.name ?? "")
+        self.init(
+            categoryID: categoryCoreData.objectID.uriRepresentation(),
+            name: categoryCoreData.name ?? ""
+        )
     }
 }

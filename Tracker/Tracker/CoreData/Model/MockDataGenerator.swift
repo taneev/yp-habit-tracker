@@ -27,17 +27,14 @@ final class MockDataGenerator {
         }
         // Добавляем категорию 2
         let category2 = TrackerCategoryCoreData(context: context)
-        category2.categoryID = UUID()
         category2.name = "Вторая категория, пустая"
 
         // Добавляем категорию 3
         let category3 = TrackerCategoryCoreData(context: context)
-        category3.categoryID = UUID()
         category3.name = "Третья категория"
 
         // Добавляем категорию 1 после категории 3
         let category1 = TrackerCategoryCoreData(context: context)
-        category1.categoryID = UUID()
         category1.name = "Первая категория"
 
         let tracker = TrackerCoreData(context: context)
@@ -49,7 +46,7 @@ final class MockDataGenerator {
         tracker.category = category1
 
         let completed = TrackerRecordCoreData(context: context)
-        completed.completedAt = Date()
+        completed.completedAt = Date().truncated()
         completed.tracker = tracker
 
         // а трекеры добавляем сначала для первой категории -

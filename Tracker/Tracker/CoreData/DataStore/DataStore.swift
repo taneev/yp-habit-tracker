@@ -57,12 +57,17 @@ final class DataStore: DataStoreProtocol {
         else {return}
 
         let tracker = fetchedTrackerController.object(at: indexPath)
-        if let completed = tracker.completed as? Set<TrackerRecordCoreData> {
-            completed.forEach{
-                if completedAt.isEqual(to: $0.completedAt) {
-                    context.delete($0)
-                }
-            }
+
+        let recordsRequest = TrackerRecordCoreData.fetchRequest()
+        recordsRequest.predicate = NSPredicate(
+            format: "%K == %@ and %K == %@",
+            #keyPath(TrackerRecordCoreData.completedAt),
+            completedAt as CVarArg,
+            #keyPath(TrackerRecordCoreData.tracker),
+            tracker
+        )
+        if let records = try? context.fetch(recordsRequest) {
+            records.forEach{context.delete($0)}
             try? context.save()
         }
     }
@@ -70,13 +75,14 @@ final class DataStore: DataStoreProtocol {
     func saveTracker(_ trackerStore: TrackerStore) {
         guard let context else {return}
 
-        let request = TrackerCategoryCoreData.fetchRequest()
-        request.predicate = NSPredicate(
-                format: "%K == %@",
-                #keyPath(TrackerCategoryCoreData.categoryID),
-                trackerStore.category.categoryID.uuidString
-        )
-        guard let categoryCoreData = try? context.fetch(request).first else {return}
+        let categoryURI = trackerStore.category.categoryID
+        guard let categoryObjectID = persistentContainer
+                                    .persistentStoreCoordinator
+                                    .managedObjectID(
+                                            forURIRepresentation: categoryURI
+                                     ),
+              let category = context.object(with: categoryObjectID) as? TrackerCategoryCoreData
+        else {return}
 
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.name = trackerStore.name
@@ -84,7 +90,7 @@ final class DataStore: DataStoreProtocol {
         trackerCoreData.emoji = trackerStore.emoji
         trackerCoreData.color = trackerStore.color
         trackerCoreData.schedule = trackerStore.schedule
-        trackerCoreData.category = categoryCoreData
+        trackerCoreData.category = category
         try? context.save()
     }
 
