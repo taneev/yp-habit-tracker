@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol DataProviderDelegate: AnyObject {
+    func didUpdateIndexPath(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?)
+}
+
 protocol TrackersBarControllerProtocol: AnyObject {
     func addTrackerButtonDidTapped()
     func currentDateDidChange(for selectedDate: Date)
@@ -51,7 +55,7 @@ final class TrackersViewController: UIViewController {
     }
 
     private func createDataProvider() -> DataProvider {
-        return DataProvider()
+        return DataProvider(delegate: self)
     }
 
     private func loadData() {
@@ -64,7 +68,6 @@ final class TrackersViewController: UIViewController {
 extension TrackersViewController: NewTrackerSaverDelegate {
     func save(tracker: Tracker, in category: TrackerCategory) {
         dataProvider.save(tracker: tracker, in: category)
-        collectionView.reloadData()
         dismiss(animated: true)
     }
 }
@@ -76,8 +79,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
 
         guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell else {return}
         cell.isCompleted = isCompleted
-        let quantity = cell.quantity ?? 0
-        cell.quantity = isCompleted ? quantity + 1 : quantity - 1
+        cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)
     }
 }
 
@@ -184,6 +186,23 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
 
         return CGSize(width: collectionView.frame.width, height: 18)
+    }
+}
+
+extension TrackersViewController: DataProviderDelegate {
+    func didUpdateIndexPath(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?) {
+        if insertedIndexes == nil && deletedIndexes == nil {
+            return
+        }
+
+        collectionView.performBatchUpdates{
+            if let insertedIndexes {
+                collectionView.insertItems(at: insertedIndexes)
+            }
+            if let deletedIndexes {
+                collectionView.deleteItems(at: deletedIndexes)
+            }
+        }
     }
 }
 

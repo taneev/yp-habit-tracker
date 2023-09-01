@@ -8,8 +8,9 @@
 import UIKit
 import CoreData
 
-protocol DataStoreFetchedControllerProtocol: NSFetchedResultsControllerDelegate {
+protocol DataStoreFetchedControllerProtocol {
     var delegate: NSFetchedResultsControllerDelegate? {get set}
+    var dataProviderDelegate: DataProviderProtocol? {get set}
     var fetchedTrackerController: NSFetchedResultsController<TrackerCoreData>? {get set}
     var numberOfSections: Int? {get}
     func numberOfRows(in section: Int) -> Int?
@@ -25,6 +26,10 @@ final class DataStoreFetchController: NSObject {
         }
     }
     var fetchedTrackerController:  NSFetchedResultsController<TrackerCoreData>?
+    weak var dataProviderDelegate: DataProviderProtocol?
+
+    private var insertedIndexes: [IndexPath]?
+    private var deletedIndexes: [IndexPath]?
     
     init(context: NSManagedObjectContext) {
         let fetchRequest = TrackerCoreData.fetchRequest()
@@ -99,5 +104,36 @@ extension DataStoreFetchController: DataStoreFetchedControllerProtocol {
         )
         try? fetchedTrackerController?.performFetch()
     }
+}
 
+extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexes = []
+        deletedIndexes = []
+    }
+
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        dataProviderDelegate?.didUpdate(
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes
+        )
+        insertedIndexes = nil
+        deletedIndexes = nil
+    }
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+        switch type {
+        case .delete:
+            if let indexPath = indexPath {
+                deletedIndexes?.append(indexPath)
+            }
+        case .insert:
+            if let indexPath = newIndexPath {
+                insertedIndexes?.append(indexPath)
+            }
+        default:
+            break
+        }
+    }
 }

@@ -6,7 +6,7 @@
 //
 import UIKit
 
-protocol DataProviderProtocol {
+protocol DataProviderProtocol: AnyObject {
     var numberOfSections: Int {get}
     func numberOfRows(in section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
@@ -17,17 +17,22 @@ protocol DataProviderProtocol {
     func setDateFilter(with date: Date)
     func setSearchTextFilter(with searchText: String)
     func switchTracker(at indexPath: IndexPath, to isCompleted: Bool, for date: Date)
+    func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
+    func didUpdate(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?)
 }
 
 final class DataProvider {
+    private weak var delegate: DataProviderDelegate?
     private var dataStore: DataStoreProtocol
     private var dataStoreFetchedController: DataStoreFetchedControllerProtocol?
     private var currentDate: Date = Date()
     private var searchText: String = ""
 
-    init() {
+    init(delegate: DataProviderDelegate) {
+        self.delegate = delegate
         self.dataStore = DataStore()
         self.dataStoreFetchedController = dataStore.dataStoreFetchedResultController
+        self.dataStoreFetchedController?.dataProviderDelegate = self
     }
 
     private func completeTracker(at indexPath: IndexPath, for date: Date) {
@@ -42,6 +47,10 @@ final class DataProvider {
 }
 
 extension DataProvider: DataProviderProtocol {
+    func didUpdate(insertedIndexes: [IndexPath]?, deletedIndexes: [IndexPath]?) {
+        delegate?.didUpdateIndexPath(insertedIndexes: insertedIndexes, deletedIndexes: deletedIndexes)
+    }
+
     func switchTracker(at indexPath: IndexPath, to isCompleted: Bool, for date: Date) {
         if isCompleted {
             completeTracker(at: indexPath, for: date)
@@ -49,6 +58,11 @@ extension DataProvider: DataProviderProtocol {
         else {
             uncompleteTracker(at: indexPath, for: date)
         }
+    }
+
+    func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int {
+        guard let tracker = dataStoreFetchedController?.object(at: indexPath) else {return 0}
+        return tracker.completed?.count ?? 0
     }
 
     func setDateFilter(with date: Date) {
@@ -77,9 +91,6 @@ extension DataProvider: DataProviderProtocol {
         let schedule = WeekDay.getWeekDays(from: trackerStore.schedule ?? "")
         let completedDates = trackerStore.completed
         let isCompleted = completedDates?.first(where: { currentDate.isEqual(to: $0.completedAt)}) != nil
-        let completedByDate = completedDates?.filter{
-                currentDate.isGreater(than: $0.completedAt) || currentDate.isEqual(to: $0.completedAt)
-            }
         let tracker = Tracker(
                         name: trackerStore.name,
                         isRegular: trackerStore.isRegular,
@@ -87,7 +98,7 @@ extension DataProvider: DataProviderProtocol {
                         color: color,
                         schedule: schedule,
                         isCompleted: isCompleted,
-                        completedCounter: completedByDate == nil ? 0 : completedByDate!.count
+                        completedCounter: completedDates?.count ?? 0
         )
         return tracker
     }
@@ -118,7 +129,6 @@ extension DataProvider: DataProviderProtocol {
         )
 
         dataStore.saveTracker(trackerStore)
-        dataStoreFetchedController?.fetchData()
     }
 
     func getCategoryNameForTracker(at indexPath: IndexPath) -> String {
