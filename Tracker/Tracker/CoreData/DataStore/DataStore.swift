@@ -4,8 +4,8 @@
 //
 //  Created by Тимур Танеев on 30.08.2023.
 //
-import UIKit
 import CoreData
+import UIKit
 
 protocol DataStoreProtocol: AnyObject {
     var dataStoreFetchedResultController: DataStoreFetchedControllerProtocol? {get}
@@ -13,7 +13,6 @@ protocol DataStoreProtocol: AnyObject {
     func deleteRecord(_ record: TrackerRecordStore, forTrackerAt indexPath: IndexPath)
     func saveTracker(_ trackerStore: TrackerStore)
     func getContext() -> NSManagedObjectContext?
-    
 }
 
 final class DataStore: DataStoreProtocol {
@@ -21,8 +20,13 @@ final class DataStore: DataStoreProtocol {
     private var context: NSManagedObjectContext?
     private var persistentContainer: NSPersistentContainer
 
+    private enum Constants {
+        static let persistentContainerName = "HabitTracker"
+        static let recordForTrackerPredicate = "%K == %@ and %K == %@"
+    }
+
     init() {
-        self.persistentContainer = NSPersistentContainer(name: "HabitTracker")
+        self.persistentContainer = NSPersistentContainer(name: Constants.persistentContainerName)
         self.persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error {
                 assertionFailure("Ошибка инициализации хранилища данных: \(error)")
@@ -60,7 +64,7 @@ final class DataStore: DataStoreProtocol {
 
         let recordsRequest = TrackerRecordCoreData.fetchRequest()
         recordsRequest.predicate = NSPredicate(
-            format: "%K == %@ and %K == %@",
+            format: Constants.recordForTrackerPredicate,
             #keyPath(TrackerRecordCoreData.completedAt),
             completedAt as CVarArg,
             #keyPath(TrackerRecordCoreData.tracker),

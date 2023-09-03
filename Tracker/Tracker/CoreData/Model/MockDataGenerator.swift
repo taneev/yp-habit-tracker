@@ -82,7 +82,7 @@ final class MockDataGenerator {
                 return tracker
         }
 
-        try! context.save()
+        try? context.save()
     }
 
     static func getDefaultCategory(for dataStore: DataStoreProtocol) -> TrackerCategoryStore? {

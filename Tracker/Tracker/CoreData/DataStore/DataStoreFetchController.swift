@@ -5,8 +5,8 @@
 //  Created by Тимур Танеев on 30.08.2023.
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 protocol DataStoreFetchedControllerProtocol {
     var delegate: NSFetchedResultsControllerDelegate? {get set}
@@ -138,7 +138,13 @@ extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
         deletedIndexes = []
     }
 
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any,
+        at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
 
         switch type {
         case .delete:
@@ -153,7 +159,12 @@ extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
             break
         }
     }
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange sectionInfo: NSFetchedResultsSectionInfo,
+        atSectionIndex sectionIndex: Int,
+        for type: NSFetchedResultsChangeType
+    ) {
 
         switch type {
         case .delete:

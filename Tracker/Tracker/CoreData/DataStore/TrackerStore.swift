@@ -16,7 +16,15 @@ struct TrackerStore {
     let category: TrackerCategoryStore
     let completed: [TrackerRecordStore]?
 
-    init(name: String, isRegular: Bool, emoji: String, color: String, schedule: String?, category: TrackerCategoryStore, completed: [TrackerRecordStore]?) {
+    init(
+        name: String,
+        isRegular: Bool,
+        emoji: String,
+        color: String,
+        schedule: String?,
+        category: TrackerCategoryStore,
+        completed: [TrackerRecordStore]?
+    ) {
         self.name = name
         self.isRegular = isRegular
         self.emoji = emoji

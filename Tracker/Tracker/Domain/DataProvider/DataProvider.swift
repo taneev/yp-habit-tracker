@@ -6,7 +6,6 @@
 //
 import UIKit
 
-
 protocol DataProviderProtocol: AnyObject {
     var numberOfObjects: Int {get}
     var numberOfSections: Int {get}

@@ -150,7 +150,7 @@ final class NewTrackerViewController: UIViewController {
     }
 
     private func initDefaultCategory() -> TrackerCategory? {
-        // NOTE: временный вариант инициализации категории первой попавшейся, пока нет
+        // TODO: временный вариант инициализации категории первой попавшейся, пока нет
         // функциональности создания категорий
         return dataProvider?.getDefaultCategory()
     }

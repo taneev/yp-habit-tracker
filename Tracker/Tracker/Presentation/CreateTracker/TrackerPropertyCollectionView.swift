@@ -98,7 +98,7 @@ extension TrackerPropertyCollectionView: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
+// MARK: DataSource
 extension TrackerPropertyCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let propertyType,
@@ -170,5 +170,4 @@ private extension TrackerPropertyCollectionView {
 
         return collection
     }
-
 }
