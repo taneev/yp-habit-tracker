@@ -9,8 +9,8 @@ import UIKit
 
 protocol DataStoreProtocol: AnyObject {
     var dataStoreFetchedResultController: DataStoreFetchedControllerProtocol? {get}
-    func addRecord(_ record: TrackerRecordStore, toTrackerAt indexPath: IndexPath)
-    func deleteRecord(_ record: TrackerRecordStore, forTrackerAt indexPath: IndexPath)
+    func addRecord(_ record: TrackerRecordStore)
+    func deleteRecord(_ record: TrackerRecordStore)
     func saveTracker(_ trackerStore: TrackerStore)
     func getContext() -> NSManagedObjectContext?
 }
@@ -23,6 +23,7 @@ final class DataStore: DataStoreProtocol {
     private enum Constants {
         static let persistentContainerName = "HabitTracker"
         static let recordForTrackerPredicate = "%K == %@ and %K == %@"
+        static let recordForUUIDPredicate = "%K == %@"
     }
 
     init() {
@@ -41,32 +42,31 @@ final class DataStore: DataStoreProtocol {
         }
     }
 
-    func addRecord(_ record: TrackerRecordStore, toTrackerAt indexPath: IndexPath) {
-        guard let context,
-              let completedAt = record.completedAt.truncated(),
-              let fetchedTrackerController = dataStoreFetchedResultController?.fetchedTrackerController
-        else {return}
+    func addRecord(_ record: TrackerRecordStore) {
+        guard let context else {return}
 
+        let tracker = getTracker(for: record.trackerID)
         let recordCoreData = TrackerRecordCoreData(context: context)
+        let completedAt = record.completedAt.truncated() ?? record.completedAt
+
         recordCoreData.completedAt = completedAt
-        recordCoreData.tracker = fetchedTrackerController.object(at: indexPath)
+        recordCoreData.tracker = tracker
+        recordCoreData.trackerID = record.trackerID
 
         try? context.save()
     }
 
-    func deleteRecord(_ record: TrackerRecordStore, forTrackerAt indexPath: IndexPath) {
+    func deleteRecord(_ record: TrackerRecordStore) {
         guard let context,
               let completedAt = record.completedAt.truncated(),
-              let fetchedTrackerController = dataStoreFetchedResultController?.fetchedTrackerController
+              let tracker = getTracker(for: record.trackerID)
         else {return}
-
-        let tracker = fetchedTrackerController.object(at: indexPath)
 
         let recordsRequest = TrackerRecordCoreData.fetchRequest()
         recordsRequest.predicate = NSPredicate(
             format: Constants.recordForTrackerPredicate,
             #keyPath(TrackerRecordCoreData.completedAt),
-            completedAt as CVarArg,
+            completedAt as NSDate,
             #keyPath(TrackerRecordCoreData.tracker),
             tracker
         )
@@ -79,26 +79,46 @@ final class DataStore: DataStoreProtocol {
     func saveTracker(_ trackerStore: TrackerStore) {
         guard let context else {return}
 
-        let categoryURI = trackerStore.category.categoryID
-        guard let categoryObjectID = persistentContainer
-                                    .persistentStoreCoordinator
-                                    .managedObjectID(
-                                            forURIRepresentation: categoryURI
-                                     ),
-              let category = context.object(with: categoryObjectID) as? TrackerCategoryCoreData
+        let categoryID = trackerStore.category.categoryID
+        guard let category = getCategory(for: categoryID)
         else {return}
 
         let trackerCoreData = TrackerCoreData(context: context)
+        trackerCoreData.trackerID = trackerStore.trackerID
         trackerCoreData.name = trackerStore.name
         trackerCoreData.isRegular = trackerStore.isRegular
         trackerCoreData.emoji = trackerStore.emoji
         trackerCoreData.color = trackerStore.color
         trackerCoreData.schedule = trackerStore.schedule
         trackerCoreData.category = category
+        trackerCoreData.categoryID = categoryID
         try? context.save()
     }
 
     func getContext() -> NSManagedObjectContext?  {
         return context
     }
+
+    private func getCategory(for id: UUID) -> TrackerCategoryCoreData? {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(
+            format: Constants.recordForUUIDPredicate,
+            #keyPath(TrackerCategoryCoreData.categoryID),
+            id as NSUUID
+        )
+
+        return try? context?.fetch(request).first as? TrackerCategoryCoreData
+    }
+
+    private func getTracker(for id: UUID) -> TrackerCoreData? {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(
+            format: Constants.recordForUUIDPredicate,
+            #keyPath(TrackerCoreData.trackerID),
+            id as NSUUID
+        )
+
+        return try? context?.fetch(request).first as? TrackerCoreData
+    }
+
 }

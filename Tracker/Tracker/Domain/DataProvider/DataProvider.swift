@@ -18,7 +18,7 @@ protocol DataProviderProtocol: AnyObject {
     func getCategoryNameForTracker(at indexPath: IndexPath) -> String
     func setDateFilter(with date: Date)
     func setSearchTextFilter(with searchText: String)
-    func switchTracker(at indexPath: IndexPath, to isCompleted: Bool, for date: Date)
+    func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date)
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
     func didUpdate(_ updatedIndexes: UpdatedIndexes)
 }
@@ -44,14 +44,14 @@ final class DataProvider {
         self.dataStoreFetchedController?.dataProviderDelegate = self
     }
 
-    private func completeTracker(at indexPath: IndexPath, for date: Date) {
-        let recordStore = TrackerRecordStore(completedAt: date)
-        dataStore.addRecord(recordStore, toTrackerAt: indexPath)
+    private func completeTracker(withID trackerID: UUID, for date: Date) {
+        let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
+        dataStore.addRecord(recordStore)
     }
 
-    private func uncompleteTracker(at indexPath: IndexPath, for date: Date) {
-        let recordStore = TrackerRecordStore(completedAt: date)
-        dataStore.deleteRecord(recordStore, forTrackerAt: indexPath)
+    private func uncompleteTracker(withID trackerID: UUID, for date: Date) {
+        let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
+        dataStore.deleteRecord(recordStore)
     }
 }
 
@@ -60,12 +60,12 @@ extension DataProvider: DataProviderProtocol {
         delegate?.didUpdateIndexPath(updatedIndexes)
     }
 
-    func switchTracker(at indexPath: IndexPath, to isCompleted: Bool, for date: Date) {
+    func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date) {
         if isCompleted {
-            completeTracker(at: indexPath, for: date)
+            completeTracker(withID: trackerID, for: date)
         }
         else {
-            uncompleteTracker(at: indexPath, for: date)
+            uncompleteTracker(withID: trackerID, for: date)
         }
     }
 
@@ -105,6 +105,7 @@ extension DataProvider: DataProviderProtocol {
         let completedDates = trackerStore.completed
         let isCompleted = completedDates?.first(where: { currentDate.isEqual(to: $0.completedAt)}) != nil
         let tracker = Tracker(
+                        trackerID: trackerStore.trackerID,
                         name: trackerStore.name,
                         isRegular: trackerStore.isRegular,
                         emoji: trackerStore.emoji,
@@ -130,6 +131,7 @@ extension DataProvider: DataProviderProtocol {
     func save(tracker: Tracker, in category: TrackerCategory) {
 
         let trackerStore = TrackerStore(
+            trackerID: tracker.trackerID,
             name: tracker.name,
             isRegular: tracker.isRegular,
             emoji: tracker.emoji,

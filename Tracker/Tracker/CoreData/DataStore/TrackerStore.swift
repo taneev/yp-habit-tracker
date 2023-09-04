@@ -8,6 +8,7 @@
 import CoreData
 
 struct TrackerStore {
+    let trackerID: UUID
     let name: String
     let isRegular: Bool
     let emoji: String
@@ -17,6 +18,7 @@ struct TrackerStore {
     let completed: [TrackerRecordStore]?
 
     init(
+        trackerID: UUID,
         name: String,
         isRegular: Bool,
         emoji: String,
@@ -25,6 +27,7 @@ struct TrackerStore {
         category: TrackerCategoryStore,
         completed: [TrackerRecordStore]?
     ) {
+        self.trackerID = trackerID
         self.name = name
         self.isRegular = isRegular
         self.emoji = emoji
@@ -35,21 +38,23 @@ struct TrackerStore {
     }
 
     init(trackerCoreData: TrackerCoreData) {
+        let trackerID = trackerCoreData.trackerID ?? UUID()
         let completedRecords = trackerCoreData.completed as? Set<TrackerRecordCoreData>
         let completedStoreRecords = completedRecords?.compactMap{ record -> TrackerRecordStore? in
             guard let completedAt = record.completedAt?.truncated() else {return nil}
-            return TrackerRecordStore(completedAt: completedAt)
+            return TrackerRecordStore(trackerID: trackerID, completedAt: completedAt)
         }
 
         self.init(
+            trackerID: trackerID,
             name: trackerCoreData.name ?? "",
             isRegular: trackerCoreData.isRegular,
             emoji: trackerCoreData.emoji ?? "",
             color: trackerCoreData.color ?? "",
             schedule: trackerCoreData.schedule,
             category: TrackerCategoryStore(
-                    categoryID: trackerCoreData.objectID.uriRepresentation(),
-                    name: trackerCoreData.category?.name ?? ""
+                categoryID: trackerCoreData.categoryID ?? UUID(),
+                name: trackerCoreData.category?.name ?? ""
             ),
             completed: completedStoreRecords
         )

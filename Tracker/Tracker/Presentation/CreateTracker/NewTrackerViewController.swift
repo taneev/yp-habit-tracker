@@ -134,6 +134,7 @@ final class NewTrackerViewController: UIViewController {
         }
 
         let newTracker = Tracker(
+                trackerID: UUID(),
                 name: trackerName,
                 isRegular: isRegular,
                 emoji: selectedEmoji,

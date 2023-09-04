@@ -10,6 +10,8 @@ import UIKit
 /// Структура трекера привычки или нерегулярного события для слоя UI
 struct Tracker {
 
+    let trackerID: UUID
+
     /// имя трекера
     let name: String
 

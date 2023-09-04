@@ -10,13 +10,13 @@ import Foundation
 /// Структура для хранения категорий трекеров
 struct TrackerCategory {
     /// ID категории
-    let categoryID: URL
+    let categoryID: UUID
 
     /// имя категории
     let name: String
 
     init(
-        id: URL,
+        id: UUID,
         name: String
     ) {
         self.categoryID = id
