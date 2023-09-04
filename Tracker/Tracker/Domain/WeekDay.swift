@@ -42,4 +42,14 @@ enum WeekDay: Int, CaseIterable {
         let description = schedule.compactMap{ WeekDay.shortWeekdayText[$0] }.joined(separator: ", ")
         return description
     }
+
+    static func getWeekDays(from string: String) -> [WeekDay] {
+        let invertedShortWD = Dictionary(
+                uniqueKeysWithValues: shortWeekdayText.map { ($0.value.lowercased(), $0.key) }
+        )
+        return string.split(separator: ",").compactMap{
+            let normalizedWeekDay = $0.trimmingCharacters(in: .whitespaces).lowercased()
+            return invertedShortWD[normalizedWeekDay]
+        }
+    }
 }

@@ -9,9 +9,7 @@ import Foundation
 
 /// Структура для хранения записейе о выполненных событиях
 struct TrackerRecord: Hashable {
-    /// ID трекера, соответствует Tracker.trackerID
     let trackerID: UUID
-
     /// Дата выполнения события
     let dateCompleted: Date
 }

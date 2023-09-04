@@ -36,6 +36,8 @@ final class TrackerNavigationBar: UINavigationBar {
                                           style: .plain,
                                           target: self,
                                           action: #selector(createTrackerTapped))
+        leftBarItem.imageInsets = UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 0)
+        layoutMargins.left = 16
         navigationItem.leftBarButtonItem = leftBarItem
         navigationItem.title = "Трекеры"
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)

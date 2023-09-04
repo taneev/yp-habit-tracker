@@ -16,6 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         window?.makeKeyAndVisible()
 
+        createInitialViewControllers()
+        return true
+    }
+
+    private func createInitialViewControllers() {
         let tabBarController = UITabBarController()
         tabBarController.tabBar.barStyle = .default
         tabBarController.tabBar.isTranslucent = false
@@ -41,8 +46,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         tabBarController.setViewControllers([trackersListViewController, statisticsViewController], animated: true)
         window?.rootViewController = tabBarController
-
-        return true
     }
 }
 

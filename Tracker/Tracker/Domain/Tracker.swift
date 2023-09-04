@@ -7,10 +7,10 @@
 
 import UIKit
 
-/// Структура для хранения трекера привычки или нерегулярного события
+/// Структура трекера привычки или нерегулярного события для слоя UI
 struct Tracker {
-    /// ID трекера, создается всегда  автоматически
-    let trackerID = UUID()
+
+    let trackerID: UUID
 
     /// имя трекера
     let name: String
@@ -22,8 +22,15 @@ struct Tracker {
     let emoji: String
 
     /// цвет трекера
-    let color: UIColor
+    let color: UIColor.YpColors?
 
     /// расписание трекера. Устанавливается для регулярных привычек
     let schedule: [WeekDay]?
+
+    /// true - карточка отмечена выполненной
+    let isCompleted: Bool
+
+    /// счетчик количества выполненных
+    let completedCounter: Int
+
 }

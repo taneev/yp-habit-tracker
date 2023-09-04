@@ -14,6 +14,7 @@ protocol ScheduleSaverDelegate: AnyObject {
 final class NewTrackerViewController: UIViewController {
 
     weak var saverDelegate: NewTrackerSaverDelegate?
+    var dataProvider: DataProviderProtocol?
     var isRegular: Bool!
 
     private var trackerName: String? {
@@ -21,14 +22,32 @@ final class NewTrackerViewController: UIViewController {
             checkIsAllParametersDidSetup()
         }
     }
+
     // временная категория для тестирования
-    private var category: TrackerCategory? = TrackerCategory(categoryID: UUID(uuidString: "8BFB9644-098E-46CF-9C47-BF3740038E1C")!,
-                                                     name: "Занятия спортом",
-                                                     activeTrackers: nil) {
+    private lazy var category: TrackerCategory? = { initDefaultCategory() }() {
         didSet {
             checkIsAllParametersDidSetup()
         }
     }
+
+    private var selectedEmoji: String? {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
+    private var selectedColor: String? {
+        didSet {
+            checkIsAllParametersDidSetup()
+        }
+    }
+
+    private var emojies = [
+        "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡","🥶",
+        "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
+    ]
+
+    private var colors: [String] = UIColor.YpColors.allColorNames()
+
     private var schedule: [WeekDay]? {
         didSet {
             checkIsAllParametersDidSetup()
@@ -44,8 +63,8 @@ final class NewTrackerViewController: UIViewController {
     private lazy var inputTrackerNameTxtField = { createInputTextField() }()
     private lazy var categorySetupButton = { createCategorySetupButton() }()
     private lazy var scheduleSetupButton = { createScheduleSetupButton() }()
-    private lazy var emojiCollectionView = { createCollectionView(title: "Emoji") }()
-    private lazy var colorCollectionView = { createCollectionView(title: "Цвет") }()
+    private lazy var emojiCollectionView = { createEmojiCollectionView() }()
+    private lazy var colorCollectionView = { createColorCollectionView() }()
     private lazy var cancelButton = { createCancelButton() }()
     private lazy var doneButton = { createDoneButton() }()
 
@@ -55,6 +74,7 @@ final class NewTrackerViewController: UIViewController {
         displayData()
         // Для скрытия курсора с поля ввода при тапе вне поля ввода и вне клавиатуры
         let anyTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleAnyTap))
+        anyTapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(anyTapGesture)
     }
 
@@ -79,8 +99,17 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func doneButtonDidTap() {
-        guard let categoryID = category?.categoryID else {
-            assertionFailure("Не удалось определить категорию трекера при сохранении")
+        guard let selectedEmoji else {
+            assertionFailure("Не удалось определить emoji карточки трекера при сохранении")
+            return
+        }
+        guard let selectedColor,
+              let color = UIColor.YpColors(rawValue: selectedColor) else {
+            assertionFailure("Не удалось определить цвет карточки трекера при сохранении")
+            return
+        }
+        guard let category else {
+            assertionFailure("Не удалось определить категорию для сохранения трекера")
             return
         }
 
@@ -104,22 +133,35 @@ final class NewTrackerViewController: UIViewController {
             return
         }
 
-        let newTracker = Tracker(name: trackerName,
-                                 isRegular: isRegular,
-                                 emoji: "🏓",
-                                 color: .ypColorSelection11,
-                                 schedule: schedule)
-        saverDelegate?.save(tracker: newTracker, in: categoryID)
+        let newTracker = Tracker(
+                trackerID: UUID(),
+                name: trackerName,
+                isRegular: isRegular,
+                emoji: selectedEmoji,
+                color: color,
+                schedule: schedule,
+                isCompleted: false,
+                completedCounter: 0
+        )
+        saverDelegate?.save(tracker: newTracker, in: category)
     }
 
     @objc private func cancelButtonDidTap() {
         dismiss(animated: true)
     }
 
+    private func initDefaultCategory() -> TrackerCategory? {
+        // TODO: временный вариант инициализации категории первой попавшейся, пока нет
+        // функциональности создания категорий
+        return dataProvider?.getDefaultCategory()
+    }
+
     private func checkIsAllParametersDidSetup() {
         isAllParametersDidSetup = trackerName?.isEmpty == false
             && (!isRegular || schedule?.isEmpty == false)
             && (category?.name.isEmpty == false)
+            && (selectedEmoji?.isEmpty == false)
+            && (UIColor.YpColors(rawValue: selectedColor ?? "") != nil)
     }
 
     private func displaySchedule() {
@@ -172,6 +214,37 @@ extension NewTrackerViewController: UITextFieldDelegate {
     }
 }
 
+extension NewTrackerViewController: PropertyCollectionViewDelegate {
+    func didSelectItem(at indexPath: IndexPath, for propertyType: TrackerProperty) {
+        switch propertyType {
+        case .emoji:
+            selectedEmoji = emojies[indexPath.row]
+        case .color:
+            selectedColor = colors[indexPath.row]
+        }
+    }
+}
+
+extension NewTrackerViewController: PropertyCollectionDataSource {
+    func getItem(at indexPath: IndexPath, for propertyType: TrackerProperty) -> String {
+        switch propertyType {
+        case .emoji:
+            return emojies[indexPath.row]
+        case .color:
+            return colors[indexPath.row]
+        }
+    }
+
+    func numberOfItems(in section: Int, for propertyType: TrackerProperty) -> Int {
+        switch propertyType {
+        case .emoji:
+            return emojies.count
+        case .color:
+            return colors.count
+        }
+    }
+}
+
 // MARK: Layout
 private extension NewTrackerViewController {
 
@@ -214,36 +287,30 @@ private extension NewTrackerViewController {
         return stack
     }
 
-    func createCollectionView(title titleText: String) -> UIView {
+    func createEmojiCollectionView() -> UIView {
 
-        let collectionView = UIView()
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        let view = TrackerPropertyCollectionView(
+                        title: "Emoji",
+                        propertyType: .emoji,
+                        delegate: self,
+                        dataSource: self
+        )
 
-        let title = UILabel()
-        title.text = titleText
-        title.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-        title.textColor = .ypBlackDay
-        title.textAlignment = .left
-        title.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.addSubview(title)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }
 
-        let layout = UICollectionViewFlowLayout()
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.translatesAutoresizingMaskIntoConstraints = false
-        // TODO: реализовать коллекцию Emoji и цветов
-        collectionView.addSubview(collection)
+    func createColorCollectionView() -> UIView {
 
-        NSLayoutConstraint.activate([
-            title.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor, constant: 28),
-            title.topAnchor.constraint(equalTo: collectionView.topAnchor),
+        let view = TrackerPropertyCollectionView(
+                        title: "Цвет",
+                        propertyType: .color,
+                        delegate: self,
+                        dataSource: self
+        )
 
-            collection.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
-            collection.topAnchor.constraint(equalTo: title.bottomAnchor),
-            collection.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
-            collection.heightAnchor.constraint(equalToConstant: 192),
-            collection.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor),
-        ])
-        return collectionView
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
 
     func createDoneButton() -> RoundedButton {
