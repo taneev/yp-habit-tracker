@@ -10,17 +10,30 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    lazy var startViewController = { createStartViewController() }()
+
+    private lazy var onboardingViewController = OnboardingViewController(
+            transitionStyle: .scroll,
+            navigationOrientation: .horizontal,
+            options: nil
+    )
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow()
         window?.makeKeyAndVisible()
 
-        createInitialViewControllers()
+        if AppData.isFirstAppStart {
+            AppData.isFirstAppStart = false
+            window?.rootViewController = onboardingViewController
+        }
+        else {
+            window?.rootViewController = startViewController
+        }
         return true
     }
 
-    private func createInitialViewControllers() {
+    private func createStartViewController() -> UITabBarController {
         let tabBarController = UITabBarController()
         tabBarController.tabBar.barStyle = .default
         tabBarController.tabBar.isTranslucent = false
@@ -45,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
 
         tabBarController.setViewControllers([trackersListViewController, statisticsViewController], animated: true)
-        window?.rootViewController = tabBarController
+        return tabBarController
     }
 }
 
