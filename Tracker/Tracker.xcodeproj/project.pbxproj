@@ -18,6 +18,8 @@
 		227FBB0A2AA75738001E05B7 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */; };
 		227FBB0C2AA761BD001E05B7 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */; };
 		227FBB0E2AA77DC7001E05B7 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0D2AA77DC7001E05B7 /* AppData.swift */; };
+		227FBB112AA8AE03001E05B7 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB102AA8AE03001E05B7 /* CategoryListViewController.swift */; };
+		227FBB132AA8BF40001E05B7 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB122AA8BF40001E05B7 /* PlaceholderView.swift */; };
 		22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E482A83E31400BEAD2F /* TrackersSectionHeaderView.swift */; };
 		22CF5E4D2A84256100BEAD2F /* TextHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E4C2A84256100BEAD2F /* TextHelper.swift */; };
 		22CF5E4F2A87D7E600BEAD2F /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */; };
@@ -64,6 +66,8 @@
 		227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		227FBB0D2AA77DC7001E05B7 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
+		227FBB102AA8AE03001E05B7 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
+		227FBB122AA8BF40001E05B7 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
 		22CF5E482A83E31400BEAD2F /* TrackersSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersSectionHeaderView.swift; sourceTree = "<group>"; };
 		22CF5E4C2A84256100BEAD2F /* TextHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHelper.swift; sourceTree = "<group>"; };
 		22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
@@ -128,6 +132,7 @@
 			children = (
 				227FBB082AA756F0001E05B7 /* Onboarding */,
 				220A869D2A81442C0082B271 /* TrackerList */,
+				227FBB0F2AA8AD22001E05B7 /* CategoryList */,
 				22CF5E742A881B4B00BEAD2F /* CreateTracker */,
 				22CF5E8C2A8E38DB00BEAD2F /* Schedule */,
 				22CF5E792A881F5B00BEAD2F /* HelpfulViews */,
@@ -157,6 +162,14 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		227FBB0F2AA8AD22001E05B7 /* CategoryList */ = {
+			isa = PBXGroup;
+			children = (
+				227FBB102AA8AE03001E05B7 /* CategoryListViewController.swift */,
+			);
+			path = CategoryList;
+			sourceTree = "<group>";
+		};
 		22CF5E742A881B4B00BEAD2F /* CreateTracker */ = {
 			isa = PBXGroup;
 			children = (
@@ -180,6 +193,7 @@
 				22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */,
 				22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */,
 				22CF5E8D2A8E424800BEAD2F /* RoundedViewsStackView.swift */,
+				227FBB122AA8BF40001E05B7 /* PlaceholderView.swift */,
 			);
 			path = HelpfulViews;
 			sourceTree = "<group>";
@@ -352,7 +366,9 @@
 				227FBB0E2AA77DC7001E05B7 /* AppData.swift in Sources */,
 				220A86932A8125AC0082B271 /* Tracker.swift in Sources */,
 				220A86A52A8292380082B271 /* TrackerViewCell.swift in Sources */,
+				227FBB112AA8AE03001E05B7 /* CategoryListViewController.swift in Sources */,
 				22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */,
+				227FBB132AA8BF40001E05B7 /* PlaceholderView.swift in Sources */,
 				22D566802A9BD4A300B9EEB5 /* MockDataGenerator.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,

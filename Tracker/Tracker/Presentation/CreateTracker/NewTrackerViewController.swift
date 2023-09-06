@@ -84,8 +84,9 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func categoryButtonDidTap() {
-        // TODO: next sprint
-        print("Category did tap")
+        let viewController = CategoryListViewController()
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true)
     }
 
     @objc private func scheduleButtonDidTap() {
