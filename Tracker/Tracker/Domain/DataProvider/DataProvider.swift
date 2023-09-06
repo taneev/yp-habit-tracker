@@ -33,25 +33,29 @@ struct UpdatedIndexes {
 final class DataProvider {
     private weak var delegate: DataProviderDelegate?
     var dataStore: DataStoreProtocol
-    private var dataStoreFetchedController: DataStoreFetchedControllerProtocol?
+    private var trackerStoreFetchedController: DataStoreFetchedControllerProtocol?
     private var currentDate: Date = Date()
     private var searchText: String = ""
 
     init(delegate: DataProviderDelegate) {
         self.delegate = delegate
         self.dataStore = DataStore()
-        self.dataStoreFetchedController = dataStore.dataStoreFetchedResultController
-        self.dataStoreFetchedController?.dataProviderDelegate = self
+        self.trackerStoreFetchedController = TrackerStoreFetchController(dataStore: dataStore)
+        self.trackerStoreFetchedController?.dataProviderDelegate = self
     }
 
     private func completeTracker(withID trackerID: UUID, for date: Date) {
+        guard let context = dataStore.getContext() else {return}
+
         let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
-        dataStore.addRecord(recordStore)
+        recordStore.addRecord(context: context)
     }
 
     private func uncompleteTracker(withID trackerID: UUID, for date: Date) {
+        guard let context = dataStore.getContext() else {return}
+
         let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
-        dataStore.deleteRecord(recordStore)
+        recordStore.deleteRecord(context: context)
     }
 }
 
@@ -70,34 +74,34 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int {
-        guard let tracker = dataStoreFetchedController?.object(at: indexPath) else {return 0}
+        guard let tracker = trackerStoreFetchedController?.object(at: indexPath) else {return 0}
         return tracker.completed?.count ?? 0
     }
 
     func setDateFilter(with date: Date) {
         self.currentDate = date
-        dataStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
+        trackerStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
     }
 
     func setSearchTextFilter(with searchText: String) {
         self.searchText = searchText
-        dataStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
+        trackerStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
     }
 
     var numberOfObjects: Int {
-        dataStoreFetchedController?.numberOfObjects ?? 0
+        trackerStoreFetchedController?.numberOfObjects ?? 0
     }
 
     var numberOfSections: Int {
-        dataStoreFetchedController?.numberOfSections ?? 1
+        trackerStoreFetchedController?.numberOfSections ?? 1
     }
 
     func numberOfRows(in section: Int) -> Int {
-        dataStoreFetchedController?.numberOfRows(in: section) ?? 0
+        trackerStoreFetchedController?.numberOfRows(in: section) ?? 0
     }
 
     func object(at indexPath: IndexPath) -> Tracker? {
-        guard let trackerStore = dataStoreFetchedController?.object(at: indexPath)
+        guard let trackerStore = trackerStoreFetchedController?.object(at: indexPath)
         else {return nil}
 
         let color = UIColor.YpColors(rawValue: trackerStore.color)
@@ -118,7 +122,7 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func loadData() {
-        dataStoreFetchedController?.fetchData()
+        trackerStoreFetchedController?.fetchData()
     }
 
     func getDefaultCategory() -> TrackerCategory? {
@@ -129,6 +133,8 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func save(tracker: Tracker, in category: TrackerCategory) {
+
+        guard let context = dataStore.getContext() else {return}
 
         let trackerStore = TrackerStore(
             trackerID: tracker.trackerID,
@@ -141,11 +147,11 @@ extension DataProvider: DataProviderProtocol {
             completed: nil
         )
 
-        dataStore.saveTracker(trackerStore)
+        trackerStore.addRecord(context: context)
     }
 
     func getCategoryNameForTracker(at indexPath: IndexPath) -> String {
-        guard let tracker = dataStoreFetchedController?.object(at: indexPath) else {return ""}
+        guard let tracker = trackerStoreFetchedController?.object(at: indexPath) else {return ""}
         return tracker.category.name
     }
 }

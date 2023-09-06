@@ -7,7 +7,12 @@
 
 import UIKit
 
-class CategoryListViewController: UIViewController {
+final class CategoryListViewController: UIViewController {
+
+    var viewModel: CategoryListViewModel?
+    var categoriesCount: Int?
+
+    private var cellViewModels: [CategoryViewModel]?
 
     private lazy var placholderView = { createPlaceholderView() }()
     private lazy var tableView = { createTableView() }()
@@ -24,11 +29,15 @@ class CategoryListViewController: UIViewController {
 
 extension CategoryListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        0
+        categoriesCount ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath) as? CategoryCell
+        else {return UITableViewCell()}
+
+        cell.viewModel = CategoryViewModel(forCellAt: indexPath)
+        return cell
     }
 }
 
@@ -57,9 +66,9 @@ private extension CategoryListViewController {
         ])
 
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 38),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -20)
         ])
 
@@ -84,9 +93,10 @@ private extension CategoryListViewController {
     }
 
     func createTableView() -> UITableView {
-        let view = UITableView()
+        let view = UITableView(frame: .zero, style: .insetGrouped)
         view.dataSource = self
         view.delegate = self
+        view.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }

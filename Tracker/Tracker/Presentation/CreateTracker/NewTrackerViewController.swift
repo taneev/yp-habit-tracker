@@ -85,6 +85,7 @@ final class NewTrackerViewController: UIViewController {
 
     @objc private func categoryButtonDidTap() {
         let viewController = CategoryListViewController()
+        let viewModel = CategoryListViewModel(dataProvider: dataProvider!)
         viewController.modalPresentationStyle = .automatic
         present(viewController, animated: true)
     }
@@ -179,6 +180,8 @@ final class NewTrackerViewController: UIViewController {
     }
 }
 
+// MARK: Save new tracker delegate
+
 extension NewTrackerViewController: ScheduleSaverDelegate {
     func scheduleDidSetup(with newSchedule: [WeekDay]) {
         self.schedule = newSchedule
@@ -186,6 +189,8 @@ extension NewTrackerViewController: ScheduleSaverDelegate {
         dismiss(animated: true)
     }
 }
+
+// MARK: TextFieldDelegate
 
 extension NewTrackerViewController: UITextFieldDelegate {
 
@@ -215,6 +220,8 @@ extension NewTrackerViewController: UITextFieldDelegate {
     }
 }
 
+// MARK: CollectionDelegate
+
 extension NewTrackerViewController: PropertyCollectionViewDelegate {
     func didSelectItem(at indexPath: IndexPath, for propertyType: TrackerProperty) {
         switch propertyType {
@@ -225,6 +232,8 @@ extension NewTrackerViewController: PropertyCollectionViewDelegate {
         }
     }
 }
+
+// MARK: CollectionDataSource
 
 extension NewTrackerViewController: PropertyCollectionDataSource {
     func getItem(at indexPath: IndexPath, for propertyType: TrackerProperty) -> String {
