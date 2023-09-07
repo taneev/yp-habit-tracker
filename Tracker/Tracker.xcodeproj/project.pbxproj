@@ -30,6 +30,7 @@
 		227FBB272AAA14DC001E05B7 /* CategoryDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB262AAA14DC001E05B7 /* CategoryDataProvider.swift */; };
 		227FBB292AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB282AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift */; };
 		227FBB2B2AAA1B08001E05B7 /* DataStoreFetchedControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB2A2AAA1B08001E05B7 /* DataStoreFetchedControllerProtocol.swift */; };
+		227FBB2D2AAA370A001E05B7 /* DataProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB2C2AAA370A001E05B7 /* DataProviderProtocols.swift */; };
 		22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E482A83E31400BEAD2F /* TrackersSectionHeaderView.swift */; };
 		22CF5E4D2A84256100BEAD2F /* TextHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E4C2A84256100BEAD2F /* TextHelper.swift */; };
 		22CF5E4F2A87D7E600BEAD2F /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */; };
@@ -88,6 +89,7 @@
 		227FBB262AAA14DC001E05B7 /* CategoryDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryDataProvider.swift; sourceTree = "<group>"; };
 		227FBB282AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStoreFetchController.swift; sourceTree = "<group>"; };
 		227FBB2A2AAA1B08001E05B7 /* DataStoreFetchedControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFetchedControllerProtocol.swift; sourceTree = "<group>"; };
+		227FBB2C2AAA370A001E05B7 /* DataProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderProtocols.swift; sourceTree = "<group>"; };
 		22CF5E482A83E31400BEAD2F /* TrackersSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersSectionHeaderView.swift; sourceTree = "<group>"; };
 		22CF5E4C2A84256100BEAD2F /* TextHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHelper.swift; sourceTree = "<group>"; };
 		22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 		22D566AD2A9F71A900B9EEB5 /* DataProvider */ = {
 			isa = PBXGroup;
 			children = (
+				227FBB2C2AAA370A001E05B7 /* DataProviderProtocols.swift */,
 				22D566AB2A9E1CBD00B9EEB5 /* TrackerDataProvider.swift */,
 				227FBB262AAA14DC001E05B7 /* CategoryDataProvider.swift */,
 			);
@@ -404,6 +407,7 @@
 				22D566802A9BD4A300B9EEB5 /* MockDataGenerator.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
+				227FBB2D2AAA370A001E05B7 /* DataProviderProtocols.swift in Sources */,
 				227FBB272AAA14DC001E05B7 /* CategoryDataProvider.swift in Sources */,
 				227FBB172AA8E611001E05B7 /* CategoryCell.swift in Sources */,
 				22CF5E902A8E597A00BEAD2F /* StackRoundedSwitch.swift in Sources */,

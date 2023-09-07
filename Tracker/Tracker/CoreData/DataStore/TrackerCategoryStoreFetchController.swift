@@ -8,7 +8,7 @@
 import CoreData
 
 final class CategoryStoreFetchController: NSObject {
-    private weak var dataProviderDelegate: (any CategoryDataProviderProtocol)?
+    private weak var dataProviderDelegate: DataProviderForCollectionLayoutDelegate?
 
     private var dataStore: DataStoreProtocol?
     private var fetchedController:  NSFetchedResultsController<TrackerCategoryCoreData>?
@@ -16,7 +16,7 @@ final class CategoryStoreFetchController: NSObject {
     private var insertedIndexes = [IndexPath]()
     private var deletedIndexes = [IndexPath]()
 
-    init(dataStore: DataStoreProtocol, dataProviderDelegate: any CategoryDataProviderProtocol) {
+    init(dataStore: DataStoreProtocol, dataProviderDelegate: DataProviderForCollectionLayoutDelegate) {
         super.init()
         self.dataStore = dataStore
         self.dataProviderDelegate = dataProviderDelegate

@@ -7,12 +7,12 @@
 
 import CoreData
 
-protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol {
+protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol where T == TrackerStore {
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String)
 }
 
 final class TrackerStoreFetchController: NSObject {
-    private weak var dataProviderDelegate: (any TrackerDataProviderProtocol)?
+    private weak var dataProviderDelegate: DataProviderForCollectionLayoutDelegate?
     private var dataStore: DataStoreProtocol?
     private var fetchedController:  NSFetchedResultsController<TrackerCoreData>?
 
@@ -22,7 +22,7 @@ final class TrackerStoreFetchController: NSObject {
     private var deletedSections: IndexSet?
     private var deletedIndexes = [IndexPath]()
 
-    init(dataStore: DataStoreProtocol, dataProviderDelegate: any TrackerDataProviderProtocol) {
+    init(dataStore: DataStoreProtocol, dataProviderDelegate: DataProviderForCollectionLayoutDelegate) {
         super.init()
         self.dataStore = dataStore
         self.dataProviderDelegate = dataProviderDelegate

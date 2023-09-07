@@ -21,7 +21,7 @@ final class CategoryDataProvider {
 
     init(delegate: DataProviderDelegate) {
         self.delegate = delegate
-        self.dataStore = DataStore()
+        self.dataStore = DataStore.shared
         self.fetchedController = CategoryStoreFetchController(
             dataStore: dataStore,
             dataProviderDelegate: self
@@ -56,7 +56,6 @@ extension CategoryDataProvider: DataProviderForCollectionLayoutDelegate {
 }
 
 extension CategoryDataProvider: CategoryDataProviderProtocol {
-
     var numberOfObjects: Int {
         fetchedController?.numberOfObjects ?? 0
     }

@@ -11,12 +11,12 @@ protocol DataStoreProtocol: AnyObject {
 }
 
 final class DataStore: DataStoreProtocol {
-    private var context: NSManagedObjectContext?
+
+    static var shared: DataStore = DataStore()
     private var persistentContainer: NSPersistentContainer
 
     private enum Constants {
         static let persistentContainerName = "HabitTracker"
-        static let recordForUUIDPredicate = "%K == %@"
     }
 
     init() {
@@ -26,10 +26,9 @@ final class DataStore: DataStoreProtocol {
                 assertionFailure("Ошибка инициализации хранилища данных: \(error)")
             }
         })
-        self.context = persistentContainer.viewContext
     }
 
     func getContext() -> NSManagedObjectContext?  {
-        return context
+        return persistentContainer.viewContext
     }
 }

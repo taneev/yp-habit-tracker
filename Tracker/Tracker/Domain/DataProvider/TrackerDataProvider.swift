@@ -6,17 +6,6 @@
 //
 import UIKit
 
-protocol DataProviderForDataSource {
-    associatedtype T
-    var numberOfSections: Int {get}
-    func numberOfRows(in section: Int) -> Int
-    func object(at: IndexPath) -> T?
-}
-
-protocol DataProviderForCollectionLayoutDelegate {
-    func didUpdate(_ updatedIndexes: UpdatedIndexes)
-}
-
 protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForCollectionLayoutDelegate {
     var dataStore: DataStoreProtocol {get}
     var numberOfObjects: Int {get}
@@ -30,13 +19,6 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
 }
 
-struct UpdatedIndexes {
-    let insertedSections: IndexSet
-    let insertedIndexes: [IndexPath]
-    let deletedSections: IndexSet
-    let deletedIndexes: [IndexPath]
-}
-
 final class TrackerDataProvider {
     private weak var delegate: DataProviderDelegate?
     var dataStore: DataStoreProtocol
@@ -46,7 +28,7 @@ final class TrackerDataProvider {
 
     init(delegate: DataProviderDelegate) {
         self.delegate = delegate
-        self.dataStore = DataStore()
+        self.dataStore = DataStore.shared
         self.fetchedController = TrackerStoreFetchController(
                 dataStore: dataStore,
                 dataProviderDelegate: self
