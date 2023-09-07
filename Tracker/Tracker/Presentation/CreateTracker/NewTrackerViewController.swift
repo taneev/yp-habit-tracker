@@ -14,7 +14,7 @@ protocol ScheduleSaverDelegate: AnyObject {
 final class NewTrackerViewController: UIViewController {
 
     weak var saverDelegate: NewTrackerSaverDelegate?
-    var dataProvider: DataProviderProtocol?
+    var dataProvider: (any TrackerDataProviderProtocol)?
     var isRegular: Bool!
 
     private var trackerName: String? {
@@ -85,7 +85,7 @@ final class NewTrackerViewController: UIViewController {
 
     @objc private func categoryButtonDidTap() {
         let viewController = CategoryListViewController()
-        let viewModel = CategoryListViewModel(dataProvider: dataProvider!)
+        let viewModel = CategoryListViewModel(dataProvider: dataProvider as! (any CategoryDataProviderProtocol))
         viewController.modalPresentationStyle = .automatic
         present(viewController, animated: true)
     }

@@ -5,7 +5,7 @@
 //  Created by Тимур Танеев on 30.08.2023.
 //
 
-import Foundation
+import CoreData
 
 struct TrackerCategoryStore {
     let categoryID: UUID
@@ -21,5 +21,12 @@ struct TrackerCategoryStore {
             categoryID: categoryCoreData.categoryID ?? UUID(),
             name: categoryCoreData.name ?? ""
         )
+    }
+
+    func addRecord(context: NSManagedObjectContext) {
+        let categoryCoreData = TrackerCategoryCoreData(context: context)
+        categoryCoreData.categoryID = categoryID
+        categoryCoreData.name = name
+        try? context.save()
     }
 }

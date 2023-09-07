@@ -7,20 +7,12 @@
 
 import CoreData
 
-protocol DataStoreFetchedControllerProtocol {
-    var dataProviderDelegate: DataProviderProtocol? {get set}
-    //var fetchedTrackerController: NSFetchedResultsController<TrackerCoreData>? {get set}
-    var numberOfObjects: Int? {get}
-    var numberOfSections: Int? {get}
-    func numberOfRows(in section: Int) -> Int?
-    func object(at: IndexPath) -> TrackerStore?
-    func fetchData()
+protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol {
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String)
 }
 
 final class TrackerStoreFetchController: NSObject {
-    weak var dataProviderDelegate: DataProviderProtocol?
-
+    private weak var dataProviderDelegate: (any TrackerDataProviderProtocol)?
     private var dataStore: DataStoreProtocol?
     private var fetchedController:  NSFetchedResultsController<TrackerCoreData>?
 
@@ -30,9 +22,10 @@ final class TrackerStoreFetchController: NSObject {
     private var deletedSections: IndexSet?
     private var deletedIndexes = [IndexPath]()
 
-    init(dataStore: DataStoreProtocol) {
+    init(dataStore: DataStoreProtocol, dataProviderDelegate: any TrackerDataProviderProtocol) {
         super.init()
         self.dataStore = dataStore
+        self.dataProviderDelegate = dataProviderDelegate
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(TrackerCoreData.category), ascending: true),
@@ -78,10 +71,9 @@ final class TrackerStoreFetchController: NSObject {
                    )
         }
     }
-
 }
 
-extension TrackerStoreFetchController: DataStoreFetchedControllerProtocol {
+extension TrackerStoreFetchController: TrackerStoreFetchControllerProtocol {
     var numberOfObjects: Int? {
         fetchedController?.fetchedObjects?.count
     }

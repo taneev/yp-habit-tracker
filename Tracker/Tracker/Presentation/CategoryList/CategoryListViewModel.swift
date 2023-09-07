@@ -11,9 +11,9 @@ final class CategoryListViewModel {
 
     @Observable
     private var numberOfCategories: Int?
-    var dataProvider: DataProviderProtocol
+    var dataProvider: any CategoryDataProviderProtocol
 
-    init(dataProvider: DataProviderProtocol) {
+    init(dataProvider: any CategoryDataProviderProtocol) {
         self.dataProvider = dataProvider
     }
 }

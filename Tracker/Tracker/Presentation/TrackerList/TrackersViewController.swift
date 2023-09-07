@@ -22,7 +22,7 @@ protocol NewTrackerSaverDelegate: AnyObject {
 
 final class TrackersViewController: UIViewController {
 
-    private lazy var dataProvider: DataProviderProtocol = { createDataProvider() }()
+    private lazy var dataProvider: any TrackerDataProviderProtocol = { createDataProvider() }()
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -58,8 +58,8 @@ final class TrackersViewController: UIViewController {
         searchTextField.resignFirstResponder()
     }
 
-    private func createDataProvider() -> DataProvider {
-        return DataProvider(delegate: self)
+    private func createDataProvider() -> TrackerDataProvider {
+        return TrackerDataProvider(delegate: self)
     }
 
     private func loadData() {
@@ -136,7 +136,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
                                 withReuseIdentifier: TrackerViewCell.cellIdentifier,
                                 for: indexPath) as? TrackerViewCell,
-              let tracker = dataProvider.object(at: indexPath)
+              let tracker = dataProvider.object(at: indexPath) as? Tracker
         else {return UICollectionViewCell()}
 
         cell.delegate = self

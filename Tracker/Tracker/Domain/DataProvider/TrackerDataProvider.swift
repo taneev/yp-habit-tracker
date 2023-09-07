@@ -6,12 +6,20 @@
 //
 import UIKit
 
-protocol DataProviderProtocol: AnyObject {
-    var numberOfObjects: Int {get}
+protocol DataProviderForDataSource {
+    associatedtype T
     var numberOfSections: Int {get}
-    var dataStore: DataStoreProtocol {get}
     func numberOfRows(in section: Int) -> Int
-    func object(at: IndexPath) -> Tracker?
+    func object(at: IndexPath) -> T?
+}
+
+protocol DataProviderForCollectionLayoutDelegate {
+    func didUpdate(_ updatedIndexes: UpdatedIndexes)
+}
+
+protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForCollectionLayoutDelegate {
+    var dataStore: DataStoreProtocol {get}
+    var numberOfObjects: Int {get}
     func loadData()
     func getDefaultCategory() -> TrackerCategory?
     func save(tracker: Tracker, in categoryID: TrackerCategory)
@@ -20,7 +28,6 @@ protocol DataProviderProtocol: AnyObject {
     func setSearchTextFilter(with searchText: String)
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date)
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
-    func didUpdate(_ updatedIndexes: UpdatedIndexes)
 }
 
 struct UpdatedIndexes {
@@ -30,18 +37,20 @@ struct UpdatedIndexes {
     let deletedIndexes: [IndexPath]
 }
 
-final class DataProvider {
+final class TrackerDataProvider {
     private weak var delegate: DataProviderDelegate?
     var dataStore: DataStoreProtocol
-    private var trackerStoreFetchedController: DataStoreFetchedControllerProtocol?
+    private var fetchedController: (any TrackerStoreFetchControllerProtocol)?
     private var currentDate: Date = Date()
     private var searchText: String = ""
 
     init(delegate: DataProviderDelegate) {
         self.delegate = delegate
         self.dataStore = DataStore()
-        self.trackerStoreFetchedController = TrackerStoreFetchController(dataStore: dataStore)
-        self.trackerStoreFetchedController?.dataProviderDelegate = self
+        self.fetchedController = TrackerStoreFetchController(
+                dataStore: dataStore,
+                dataProviderDelegate: self
+        )
     }
 
     private func completeTracker(withID trackerID: UUID, for date: Date) {
@@ -59,9 +68,48 @@ final class DataProvider {
     }
 }
 
-extension DataProvider: DataProviderProtocol {
+extension TrackerDataProvider: DataProviderForDataSource {
+    typealias T = Tracker
+
+    var numberOfSections: Int {
+        fetchedController?.numberOfSections ?? 1
+    }
+
+    func numberOfRows(in section: Int) -> Int {
+        fetchedController?.numberOfRows(in: section) ?? 0
+    }
+
+    func object(at indexPath: IndexPath) -> T? {
+        guard let trackerStore = fetchedController?.object(at: indexPath) as? TrackerStore
+        else {return nil}
+
+        let color = UIColor.YpColors(rawValue: trackerStore.color)
+        let schedule = WeekDay.getWeekDays(from: trackerStore.schedule ?? "")
+        let completedDates = trackerStore.completed
+        let isCompleted = completedDates?.first(where: { currentDate.isEqual(to: $0.completedAt)}) != nil
+        let tracker = T(
+                        trackerID: trackerStore.trackerID,
+                        name: trackerStore.name,
+                        isRegular: trackerStore.isRegular,
+                        emoji: trackerStore.emoji,
+                        color: color,
+                        schedule: schedule,
+                        isCompleted: isCompleted,
+                        completedCounter: completedDates?.count ?? 0
+        )
+        return tracker
+    }
+}
+
+extension TrackerDataProvider: DataProviderForCollectionLayoutDelegate {
     func didUpdate(_ updatedIndexes: UpdatedIndexes) {
         delegate?.didUpdateIndexPath(updatedIndexes)
+    }
+}
+
+extension TrackerDataProvider: TrackerDataProviderProtocol {
+    var numberOfObjects: Int {
+        fetchedController?.numberOfObjects ?? 0
     }
 
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date) {
@@ -74,55 +122,23 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int {
-        guard let tracker = trackerStoreFetchedController?.object(at: indexPath) else {return 0}
+        guard let tracker = fetchedController?.object(at: indexPath) as? TrackerStore
+        else {return 0}
         return tracker.completed?.count ?? 0
     }
 
     func setDateFilter(with date: Date) {
         self.currentDate = date
-        trackerStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
+        fetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
     }
 
     func setSearchTextFilter(with searchText: String) {
         self.searchText = searchText
-        trackerStoreFetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
-    }
-
-    var numberOfObjects: Int {
-        trackerStoreFetchedController?.numberOfObjects ?? 0
-    }
-
-    var numberOfSections: Int {
-        trackerStoreFetchedController?.numberOfSections ?? 1
-    }
-
-    func numberOfRows(in section: Int) -> Int {
-        trackerStoreFetchedController?.numberOfRows(in: section) ?? 0
-    }
-
-    func object(at indexPath: IndexPath) -> Tracker? {
-        guard let trackerStore = trackerStoreFetchedController?.object(at: indexPath)
-        else {return nil}
-
-        let color = UIColor.YpColors(rawValue: trackerStore.color)
-        let schedule = WeekDay.getWeekDays(from: trackerStore.schedule ?? "")
-        let completedDates = trackerStore.completed
-        let isCompleted = completedDates?.first(where: { currentDate.isEqual(to: $0.completedAt)}) != nil
-        let tracker = Tracker(
-                        trackerID: trackerStore.trackerID,
-                        name: trackerStore.name,
-                        isRegular: trackerStore.isRegular,
-                        emoji: trackerStore.emoji,
-                        color: color,
-                        schedule: schedule,
-                        isCompleted: isCompleted,
-                        completedCounter: completedDates?.count ?? 0
-        )
-        return tracker
+        fetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
     }
 
     func loadData() {
-        trackerStoreFetchedController?.fetchData()
+        fetchedController?.fetchData()
     }
 
     func getDefaultCategory() -> TrackerCategory? {
@@ -151,7 +167,8 @@ extension DataProvider: DataProviderProtocol {
     }
 
     func getCategoryNameForTracker(at indexPath: IndexPath) -> String {
-        guard let tracker = trackerStoreFetchedController?.object(at: indexPath) else {return ""}
+        guard let tracker = fetchedController?.object(at: indexPath) as? TrackerStore
+        else {return ""}
         return tracker.category.name
     }
 }

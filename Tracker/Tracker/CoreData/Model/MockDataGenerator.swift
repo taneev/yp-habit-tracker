@@ -11,7 +11,7 @@ final class MockDataGenerator {
 
     private var dataStore: DataStoreProtocol?
 
-    static func setupRecords(with dataProvider: DataProviderProtocol) {
+    static func setupRecords(with dataProvider: any TrackerDataProviderProtocol) {
         guard let context = dataProvider.dataStore.getContext() else {return}
 
         let checkRequest = TrackerCoreData.fetchRequest()
