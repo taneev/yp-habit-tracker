@@ -9,12 +9,23 @@ import UIKit
 
 final class CategoryListViewController: UIViewController {
 
-    var viewModel: CategoryListViewModel?
-    var categoriesCount: Int?
+    var viewModel: CategoryListViewModelProtocol? {
+        didSet {
+            let bindings = CategoryListViewModelBindings(
+                numberOfCategories: { [weak self] in
+                    self?.categoriesCount = $0
+                    self?.tableView.reloadData()
+                },
+                isPlaceHolderHidden: { [weak self] in
+                    self?.placeholderView.isHidden = ($0 == true)
+                }
+            )
+            viewModel?.setBindings(bindings)
+        }
+    }
+    private var categoriesCount: Int?
 
-    private var cellViewModels: [CategoryViewModel]?
-
-    private lazy var placholderView = { createPlaceholderView() }()
+    private lazy var placeholderView = { createPlaceholderView() }()
     private lazy var tableView = { createTableView() }()
     private lazy var addCategoryButton = RoundedButton(title: "Добавить категорию")
 
@@ -22,6 +33,13 @@ final class CategoryListViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+        viewModel?.viewDidLoad()
+    }
+}
+
+extension CategoryListViewController: DataProviderDelegate {
+    func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
+        
     }
 }
 
@@ -33,10 +51,11 @@ extension CategoryListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath) as? CategoryCell
-        else {return UITableViewCell()}
+        guard let dataProvider = viewModel?.dataProvider,
+              let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier,for: indexPath) as? CategoryCell
+        else {return UITableViewCell(style: .default, reuseIdentifier: CategoryCell.reuseIdentifier)}
 
-        cell.viewModel = CategoryViewModel(forCellAt: indexPath)
+        cell.viewModel = CategoryViewModel(forCellAt: indexPath, dataProvider: dataProvider)
         return cell
     }
 }
@@ -44,7 +63,9 @@ extension CategoryListViewController: UITableViewDataSource {
 // MARK: UITableViewDelegate
 
 extension CategoryListViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        CGFloat(75)
+    }
 }
 
 // MARK: Setup & Layout UI
@@ -57,7 +78,7 @@ private extension CategoryListViewController {
         let title = TitleLabel(title: "Категория")
         view.addSubview(title)
         view.addSubview(tableView)
-        view.addSubview(placholderView)
+        view.addSubview(placeholderView)
         view.addSubview(addCategoryButton)
 
         NSLayoutConstraint.activate([
@@ -73,8 +94,8 @@ private extension CategoryListViewController {
         ])
 
         NSLayoutConstraint.activate([
-            placholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
 
         NSLayoutConstraint.activate([
@@ -94,6 +115,8 @@ private extension CategoryListViewController {
 
     func createTableView() -> UITableView {
         let view = UITableView(frame: .zero, style: .insetGrouped)
+        view.backgroundColor = .ypWhiteDay
+        view.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         view.dataSource = self
         view.delegate = self
         view.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)

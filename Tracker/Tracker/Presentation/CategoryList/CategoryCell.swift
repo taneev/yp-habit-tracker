@@ -10,12 +10,36 @@ import UIKit
 class CategoryCell: UITableViewCell {
 
     static let reuseIdentifier = "CategoryCell"
-    var viewModel: CategoryViewModel?
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    var viewModel: CategoryViewModelProtocol? {
+        didSet {
+            guard let viewModel else {return}
 
-        // Configure the view for the selected state
+            let bindings = CategoryViewModelBindings(
+                categoryName: {[weak self] in
+                    self?.setText(with: $0)
+                })
+            viewModel.setBinidings(bindings)
+            viewModel.cellViewDidLoad()
+        }
     }
 
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .ypBackgroundDay
+        textLabel?.textColor = .ypBlackDay
+        textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setText(with categoryName: String?) {
+        textLabel?.text = categoryName
+    }
+
+    override func prepareForReuse() {
+        viewModel = nil
+    }
 }

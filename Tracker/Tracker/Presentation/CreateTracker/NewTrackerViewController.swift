@@ -85,7 +85,9 @@ final class NewTrackerViewController: UIViewController {
 
     @objc private func categoryButtonDidTap() {
         let viewController = CategoryListViewController()
-        let viewModel = CategoryListViewModel(dataProvider: dataProvider as! (any CategoryDataProviderProtocol))
+        let provider = CategoryDataProvider(delegate: viewController)
+        let viewModel = CategoryListViewModel(dataProvider: provider)
+        viewController.viewModel = viewModel
         viewController.modalPresentationStyle = .automatic
         present(viewController, animated: true)
     }
