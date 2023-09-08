@@ -16,8 +16,11 @@ class CategoryCell: UITableViewCell {
             guard let viewModel else {return}
 
             let bindings = CategoryViewModelBindings(
-                categoryName: {[weak self] in
+                categoryName: { [weak self] in
                     self?.setText(with: $0)
+                },
+                isSelected: { [weak self] in
+                    self?.accessoryType = ($0 == true) ? .checkmark : .none
                 })
             viewModel.setBinidings(bindings)
             viewModel.cellViewDidLoad()
@@ -27,6 +30,7 @@ class CategoryCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .ypBackgroundDay
+        selectionStyle = .none
         textLabel?.textColor = .ypBlackDay
         textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
     }

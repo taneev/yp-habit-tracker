@@ -11,6 +11,10 @@ protocol ScheduleSaverDelegate: AnyObject {
     func scheduleDidSetup(with newSchedule: [WeekDay])
 }
 
+protocol CategorySelectionDelegate: AnyObject {
+    func didSelect(_ category: TrackerCategory?)
+}
+
 final class NewTrackerViewController: UIViewController {
 
     weak var saverDelegate: NewTrackerSaverDelegate?
@@ -86,8 +90,9 @@ final class NewTrackerViewController: UIViewController {
     @objc private func categoryButtonDidTap() {
         let viewController = CategoryListViewController()
         let provider = CategoryDataProvider(delegate: viewController)
-        let viewModel = CategoryListViewModel(dataProvider: provider)
+        let viewModel = CategoryListViewModel(dataProvider: provider, selectedCategory: category)
         viewController.viewModel = viewModel
+        viewController.categorySelectionDelegate = self
         viewController.modalPresentationStyle = .automatic
         present(viewController, animated: true)
     }
@@ -189,6 +194,15 @@ extension NewTrackerViewController: ScheduleSaverDelegate {
         self.schedule = newSchedule
         displaySchedule()
         dismiss(animated: true)
+    }
+}
+
+// MARK: Selection category delegate
+
+extension NewTrackerViewController: CategorySelectionDelegate {
+    func didSelect(_ category: TrackerCategory?) {
+        self.category = category
+        self.displayCategory()
     }
 }
 

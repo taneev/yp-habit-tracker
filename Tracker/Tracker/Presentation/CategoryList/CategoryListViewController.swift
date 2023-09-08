@@ -18,11 +18,29 @@ final class CategoryListViewController: UIViewController {
                 },
                 isPlaceHolderHidden: { [weak self] in
                     self?.placeholderView.isHidden = ($0 == true)
+                },
+                selectedRow: { [weak self] indexPath in
+                    guard let self,
+                          let indexPath,
+                          indexPath != self.tableView.indexPathForSelectedRow
+                    else {return}
+
+                    self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+                },
+                selectedCategory: { [weak self] category in
+                    self?.categorySelectionDelegate?.didSelect(category)
+                    // Минимальная задержка для того, чтобы пользователь успел увидеть
+                    // выбор другой категории
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 }
             )
             viewModel?.setBindings(bindings)
         }
     }
+    var categorySelectionDelegate: CategorySelectionDelegate?
+
     private var categoriesCount: Int?
 
     private lazy var placeholderView = { createPlaceholderView() }()
@@ -51,11 +69,10 @@ extension CategoryListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let dataProvider = viewModel?.dataProvider,
-              let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier,for: indexPath) as? CategoryCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier,for: indexPath) as? CategoryCell
         else {return UITableViewCell(style: .default, reuseIdentifier: CategoryCell.reuseIdentifier)}
 
-        cell.viewModel = CategoryViewModel(forCellAt: indexPath, dataProvider: dataProvider)
+        cell.viewModel = viewModel?.cellViewModel(forCellAt: indexPath)
         return cell
     }
 }
@@ -65,6 +82,16 @@ extension CategoryListViewController: UITableViewDataSource {
 extension CategoryListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         CGFloat(75)
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {return}
+        cell.viewModel?.didSelectRow(isInitialSelection: false)
+    }
+
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {return}
+        cell.viewModel?.didDeselectRow()
     }
 }
 
