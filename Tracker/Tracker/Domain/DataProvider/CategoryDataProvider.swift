@@ -12,6 +12,7 @@ protocol CategoryDataProviderProtocol: AnyObject, DataProviderForDataSource, Dat
     func loadData()
     func getDefaultCategory() -> TrackerCategory?
     func save(category: TrackerCategory)
+    func deleteCategory(at indexPath: IndexPath)
 }
 
 final class CategoryDataProvider {
@@ -77,5 +78,14 @@ extension CategoryDataProvider: CategoryDataProviderProtocol {
 
         let categoryStore = TrackerCategoryStore(categoryID: category.categoryID, name: category.name)
         categoryStore.addRecord(context: context)
+    }
+
+    func deleteCategory(at indexPath: IndexPath) {
+        guard let category = object(at: indexPath),
+              let context = dataStore.getContext()
+        else {return}
+
+        let categoryStore = TrackerCategoryStore(categoryID: category.categoryID, name: category.name)
+        categoryStore.deleteRecord(context: context)
     }
 }

@@ -102,6 +102,26 @@ extension CategoryListViewController: UITableViewDelegate {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {return}
         cell.viewModel?.didDeselectRow()
     }
+
+    func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil,
+                                          previewProvider: nil) {[weak self] _ in
+            let editAction =
+            UIAction(title: "Редактировать") { [weak self] _ in
+                self?.viewModel?.editCategory(at: indexPath)
+            }
+            let deleteAction =
+            UIAction(title: "Удалить",
+                     attributes: .destructive) { [weak self] _ in
+                self?.viewModel?.deleteCategory(at: indexPath)
+            }
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        }
+    }
 }
 
 // MARK: Setup & Layout UI
@@ -117,9 +137,9 @@ private extension CategoryListViewController {
         view.addSubview(placeholderView)
 
         addCategoryButton.addTarget(
-                self,
-                action: #selector(addCategoryButtonDidTap),
-                for: .touchUpInside
+            self,
+            action: #selector(addCategoryButtonDidTap),
+            for: .touchUpInside
         )
         view.addSubview(addCategoryButton)
 

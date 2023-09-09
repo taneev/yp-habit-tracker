@@ -29,4 +29,11 @@ struct TrackerCategoryStore {
         categoryCoreData.name = name
         try? context.save()
     }
+
+    func deleteRecord(context: NSManagedObjectContext) {
+        guard let categoryCoreData = TrackerCategoryCoreData.fetchRecord(for: categoryID, context: context)
+        else {return}
+        context.delete(categoryCoreData)
+        try? context.save()
+    }
 }

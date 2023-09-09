@@ -28,6 +28,8 @@ protocol CategoryListViewModelProtocol: AnyObject {
     func removeCellViewModel(at indexPath: IndexPath)
     func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryViewModelProtocol
     func getSelectedCategory() -> TrackerCategory?
+    func editCategory(at indexPath: IndexPath)
+    func deleteCategory(at indexPath: IndexPath)
 }
 
 // MARK: CategoryListViewModel
@@ -97,6 +99,14 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
 
     func getSelectedCategory() -> TrackerCategory? {
         return selectedCategory
+    }
+
+    func editCategory(at indexPath: IndexPath) {
+
+    }
+
+    func deleteCategory(at indexPath: IndexPath) {
+        dataProvider.deleteCategory(at: indexPath)
     }
 }
 
