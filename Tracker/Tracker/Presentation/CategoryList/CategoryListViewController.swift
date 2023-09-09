@@ -12,10 +12,6 @@ final class CategoryListViewController: UIViewController {
     var viewModel: CategoryListViewModelProtocol? {
         didSet {
             let bindings = CategoryListViewModelBindings(
-                numberOfCategories: { [weak self] in
-                    self?.categoriesCount = $0
-                    self?.tableView.reloadData()
-                },
                 isPlaceHolderHidden: { [weak self] in
                     self?.placeholderView.isHidden = ($0 == true)
                 },
@@ -41,8 +37,6 @@ final class CategoryListViewController: UIViewController {
     }
     var categorySelectionDelegate: CategorySelectionDelegate?
 
-    private var categoriesCount: Int?
-
     private lazy var placeholderView = { createPlaceholderView() }()
     private lazy var tableView = { createTableView() }()
     private lazy var addCategoryButton = RoundedButton(title: "Добавить категорию")
@@ -52,12 +46,27 @@ final class CategoryListViewController: UIViewController {
 
         setupUI()
         viewModel?.viewDidLoad()
+        tableView.reloadData()
+    }
+
+    @objc func addCategoryButtonDidTap() {
+        guard let saveDelegate = viewModel as? SaveCategoryDelegate else {return}
+        let controller = CreateCategoryViewController()
+        let createCategoryViewModel = CreateCategoryViewModel(saveCategoryDelegate: saveDelegate)
+        controller.viewModel = createCategoryViewModel
+        controller.modalPresentationStyle = .automatic
+        present(controller, animated: true)
     }
 }
 
+// MARK: DataProviderDelegate
+
 extension CategoryListViewController: DataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
-        
+        tableView.performBatchUpdates{
+            tableView.insertRows(at: updatedIndexes.insertedIndexes, with: .automatic)
+            tableView.deleteRows(at: updatedIndexes.deletedIndexes, with: .automatic)
+        }
     }
 }
 
@@ -65,7 +74,7 @@ extension CategoryListViewController: DataProviderDelegate {
 
 extension CategoryListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        categoriesCount ?? 0
+        viewModel?.categoriesCount ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -106,6 +115,12 @@ private extension CategoryListViewController {
         view.addSubview(title)
         view.addSubview(tableView)
         view.addSubview(placeholderView)
+
+        addCategoryButton.addTarget(
+                self,
+                action: #selector(addCategoryButtonDidTap),
+                for: .touchUpInside
+        )
         view.addSubview(addCategoryButton)
 
         NSLayoutConstraint.activate([
@@ -142,6 +157,10 @@ private extension CategoryListViewController {
 
     func createTableView() -> UITableView {
         let view = UITableView(frame: .zero, style: .insetGrouped)
+        let zeroHeader = UIView(frame: .zero)
+        // Простой .zero не убирает хедер таблицы, нужна минимальная высота
+        zeroHeader.frame.size.height = .leastNormalMagnitude
+        view.tableHeaderView = zeroHeader
         view.backgroundColor = .ypWhiteDay
         view.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         view.dataSource = self

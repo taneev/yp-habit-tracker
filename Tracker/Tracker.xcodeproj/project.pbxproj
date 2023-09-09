@@ -31,6 +31,9 @@
 		227FBB292AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB282AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift */; };
 		227FBB2B2AAA1B08001E05B7 /* DataStoreFetchedControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB2A2AAA1B08001E05B7 /* DataStoreFetchedControllerProtocol.swift */; };
 		227FBB2D2AAA370A001E05B7 /* DataProviderProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB2C2AAA370A001E05B7 /* DataProviderProtocols.swift */; };
+		227FBB322AAC985A001E05B7 /* CreateCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB312AAC985A001E05B7 /* CreateCategoryViewController.swift */; };
+		227FBB342AAC9CBD001E05B7 /* NameInputTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB332AAC9CBD001E05B7 /* NameInputTextField.swift */; };
+		227FBB362AAC9E74001E05B7 /* CreateCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB352AAC9E74001E05B7 /* CreateCategoryViewModel.swift */; };
 		22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E482A83E31400BEAD2F /* TrackersSectionHeaderView.swift */; };
 		22CF5E4D2A84256100BEAD2F /* TextHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E4C2A84256100BEAD2F /* TextHelper.swift */; };
 		22CF5E4F2A87D7E600BEAD2F /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */; };
@@ -90,6 +93,9 @@
 		227FBB282AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStoreFetchController.swift; sourceTree = "<group>"; };
 		227FBB2A2AAA1B08001E05B7 /* DataStoreFetchedControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreFetchedControllerProtocol.swift; sourceTree = "<group>"; };
 		227FBB2C2AAA370A001E05B7 /* DataProviderProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderProtocols.swift; sourceTree = "<group>"; };
+		227FBB312AAC985A001E05B7 /* CreateCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCategoryViewController.swift; sourceTree = "<group>"; };
+		227FBB332AAC9CBD001E05B7 /* NameInputTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameInputTextField.swift; sourceTree = "<group>"; };
+		227FBB352AAC9E74001E05B7 /* CreateCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCategoryViewModel.swift; sourceTree = "<group>"; };
 		22CF5E482A83E31400BEAD2F /* TrackersSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersSectionHeaderView.swift; sourceTree = "<group>"; };
 		22CF5E4C2A84256100BEAD2F /* TextHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextHelper.swift; sourceTree = "<group>"; };
 		22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
@@ -155,9 +161,10 @@
 				227FBB1A2AA8FA21001E05B7 /* Observable.swift */,
 				227FBB082AA756F0001E05B7 /* Onboarding */,
 				220A869D2A81442C0082B271 /* TrackerList */,
-				227FBB0F2AA8AD22001E05B7 /* CategoryList */,
 				22CF5E742A881B4B00BEAD2F /* CreateTracker */,
 				22CF5E8C2A8E38DB00BEAD2F /* Schedule */,
+				227FBB0F2AA8AD22001E05B7 /* CategoryList */,
+				227FBB302AAC9824001E05B7 /* CreateCategory */,
 				22CF5E792A881F5B00BEAD2F /* HelpfulViews */,
 				22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */,
 			);
@@ -196,6 +203,15 @@
 			path = CategoryList;
 			sourceTree = "<group>";
 		};
+		227FBB302AAC9824001E05B7 /* CreateCategory */ = {
+			isa = PBXGroup;
+			children = (
+				227FBB312AAC985A001E05B7 /* CreateCategoryViewController.swift */,
+				227FBB352AAC9E74001E05B7 /* CreateCategoryViewModel.swift */,
+			);
+			path = CreateCategory;
+			sourceTree = "<group>";
+		};
 		22CF5E742A881B4B00BEAD2F /* CreateTracker */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,6 +236,7 @@
 				22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */,
 				22CF5E8D2A8E424800BEAD2F /* RoundedViewsStackView.swift */,
 				227FBB122AA8BF40001E05B7 /* PlaceholderView.swift */,
+				227FBB332AAC9CBD001E05B7 /* NameInputTextField.swift */,
 			);
 			path = HelpfulViews;
 			sourceTree = "<group>";
@@ -391,6 +408,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				227FBB362AAC9E74001E05B7 /* CreateCategoryViewModel.swift in Sources */,
 				22CF5E4D2A84256100BEAD2F /* TextHelper.swift in Sources */,
 				22D566B92A9FAB5200B9EEB5 /* TrackerRecordStore.swift in Sources */,
 				22D566B72A9FA99500B9EEB5 /* TrackerCategoryStore.swift in Sources */,
@@ -404,6 +422,7 @@
 				227FBB112AA8AE03001E05B7 /* CategoryListViewController.swift in Sources */,
 				22CF5E7D2A8931BE00BEAD2F /* StackRoundedView.swift in Sources */,
 				227FBB132AA8BF40001E05B7 /* PlaceholderView.swift in Sources */,
+				227FBB342AAC9CBD001E05B7 /* NameInputTextField.swift in Sources */,
 				22D566802A9BD4A300B9EEB5 /* MockDataGenerator.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
@@ -418,6 +437,7 @@
 				227FBB252AA91AD5001E05B7 /* ModelConstants.swift in Sources */,
 				22CF5EDB2A96635900BEAD2F /* TrackerPropertyCollectionView.swift in Sources */,
 				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */,
+				227FBB322AAC985A001E05B7 /* CreateCategoryViewController.swift in Sources */,
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,
 				227FBB1B2AA8FA21001E05B7 /* Observable.swift in Sources */,
 				220A86952A8136B30082B271 /* WeekDay.swift in Sources */,

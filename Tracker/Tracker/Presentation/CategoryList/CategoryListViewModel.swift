@@ -8,14 +8,18 @@
 import Foundation
 
 struct CategoryListViewModelBindings {
-    let numberOfCategories: (Int?) -> Void
     let isPlaceHolderHidden: (Bool?) -> Void
     let selectedRow: (IndexPath?) -> Void
     let selectedCategory: (TrackerCategory?) -> Void
 }
 
+protocol SaveCategoryDelegate {
+    func saveNewCategory(with name: String)
+}
+
 protocol CategoryListViewModelProtocol: AnyObject {
     var dataProvider: any CategoryDataProviderProtocol {get}
+    var categoriesCount: Int {get}
     func viewDidLoad()
     func setBindings(_ bindings: CategoryListViewModelBindings)
     func didSelect(_ category: TrackerCategory?, at indexPath: IndexPath, isInitialSelection: Bool)
@@ -30,9 +34,9 @@ protocol CategoryListViewModelProtocol: AnyObject {
 
 final class CategoryListViewModel: CategoryListViewModelProtocol {
     var dataProvider: any CategoryDataProviderProtocol
-
-    @Observable
-    private var numberOfCategories: Int?
+    var categoriesCount: Int {
+        dataProvider.numberOfObjects
+    }
 
     @Observable
     private var isPlaceHolderHidden: Bool?
@@ -53,12 +57,10 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
 
     func viewDidLoad() {
         dataProvider.loadData()
-        numberOfCategories = dataProvider.numberOfObjects
-        isPlaceHolderHidden = (numberOfCategories ?? 0) > 0
+        isPlaceHolderHidden = categoriesCount > 0
     }
 
     func setBindings(_ bindings: CategoryListViewModelBindings) {
-        self.$numberOfCategories.bind(action: bindings.numberOfCategories)
         self.$isPlaceHolderHidden.bind(action: bindings.isPlaceHolderHidden)
         self.$selectedRow.bind(action: bindings.selectedRow)
         self.$selectedCategory.bind(action: bindings.selectedCategory)
@@ -95,5 +97,12 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
 
     func getSelectedCategory() -> TrackerCategory? {
         return selectedCategory
+    }
+}
+
+extension CategoryListViewModel: SaveCategoryDelegate {
+    func saveNewCategory(with name: String) {
+        let category = TrackerCategory(id: UUID(), name: name)
+        dataProvider.save(category: category)
     }
 }
