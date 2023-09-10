@@ -30,8 +30,24 @@ struct TrackerCategoryStore {
         try? context.save()
     }
 
+    func save(context: NSManagedObjectContext) {
+        if let categoryCoreData = TrackerCategoryCoreData.fetchRecord(
+            for: categoryID,
+            context: context
+        ) {
+            categoryCoreData.name = name
+            try! context.save()
+        }
+        else {
+            addRecord(context: context)
+        }
+    }
+
     func deleteRecord(context: NSManagedObjectContext) {
-        guard let categoryCoreData = TrackerCategoryCoreData.fetchRecord(for: categoryID, context: context)
+        guard let categoryCoreData = TrackerCategoryCoreData.fetchRecord(
+            for: categoryID,
+            context: context
+        )
         else {return}
         context.delete(categoryCoreData)
         try? context.save()

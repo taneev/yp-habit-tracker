@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CategoryDataProviderDelegate: AnyObject {
+    func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes)
+}
+
 final class CategoryListViewController: UIViewController {
 
     var viewModel: CategoryListViewModelProtocol? {
@@ -36,7 +40,7 @@ final class CategoryListViewController: UIViewController {
                 },
                 editingCategory: { [weak self] category in
                     guard let self, let category else {return}
-
+                    self.presentCategoryScreen(mode: .edit, categoryToEdit: category)
                 }
             )
             viewModel?.setBindings(bindings)
@@ -57,12 +61,7 @@ final class CategoryListViewController: UIViewController {
     }
 
     @objc func addCategoryButtonDidTap() {
-        guard let saveDelegate = viewModel as? SaveCategoryDelegate else {return}
-        let controller = CategoryViewController()
-        let createCategoryViewModel = CategoryViewModel(saveCategoryDelegate: saveDelegate)
-        controller.viewModel = createCategoryViewModel
-        controller.modalPresentationStyle = .automatic
-        present(controller, animated: true)
+        presentCategoryScreen(mode: .new)
     }
 
     private func deleteCategoryDidTap(at indexPath: IndexPath) {
@@ -77,16 +76,40 @@ final class CategoryListViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         present(alertController, animated: true)
     }
+
+    private func presentCategoryScreen(mode: CategoryMode, categoryToEdit: TrackerCategory? = nil) {
+        guard let dataProvider = viewModel?.dataProvider else {return}
+        let controller = CategoryViewController()
+        let categoryViewModel = CategoryViewModel(
+            dataProvider: dataProvider,
+            mode: .new,
+            categoryToEdit: categoryToEdit
+        )
+        controller.viewModel = categoryViewModel
+        controller.modalPresentationStyle = .automatic
+        controller.completion = { [weak self] in
+            guard let self,
+                  let viewModel = self.viewModel else {return}
+            viewModel.categoryEditingDidEnd()
+
+            // после редактирования категории индекс выбранной записи мог измениться
+            // сообщим об этом вьюмодели
+            guard let updatedSelectedIndexPath = self.tableView.indexPathForSelectedRow
+            else {return}
+         //   viewModel.didSelectRow(at: updatedSelectedIndexPath)
+        }
+        present(controller, animated: true)
+    }
 }
 
 // MARK: DataProviderDelegate
 
-extension CategoryListViewController: DataProviderDelegate {
+extension CategoryListViewController: CategoryDataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
-        tableView.performBatchUpdates{
-            tableView.insertRows(at: updatedIndexes.insertedIndexes, with: .automatic)
+        tableView.performBatchUpdates({
             tableView.deleteRows(at: updatedIndexes.deletedIndexes, with: .automatic)
-        }
+            tableView.insertRows(at: updatedIndexes.insertedIndexes, with: .automatic)
+        })
     }
 }
 

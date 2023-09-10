@@ -20,13 +20,13 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
 }
 
 final class TrackerDataProvider {
-    private weak var delegate: DataProviderDelegate?
+    private weak var delegate: TrackerDataProviderDelegate?
     var dataStore: DataStoreProtocol
     private var fetchedController: (any TrackerStoreFetchControllerProtocol)?
     private var currentDate: Date = Date()
     private var searchText: String = ""
 
-    init(delegate: DataProviderDelegate) {
+    init(delegate: TrackerDataProviderDelegate) {
         self.delegate = delegate
         self.dataStore = DataStore.shared
         self.fetchedController = TrackerStoreFetchController(

@@ -28,7 +28,7 @@ final class NewTrackerViewController: UIViewController {
     }
 
     // временная категория для тестирования
-    private lazy var category: TrackerCategory? = { initDefaultCategory() }() {
+    private var category: TrackerCategory? {
         didSet {
             checkIsAllParametersDidSetup()
         }
@@ -159,7 +159,7 @@ final class NewTrackerViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    private func initDefaultCategory() -> TrackerCategory? {
+    private func updatedCategoryName() -> TrackerCategory? {
         // TODO: временный вариант инициализации категории первой попавшейся, пока нет
         // функциональности создания категорий
         return dataProvider?.getDefaultCategory()
@@ -174,7 +174,7 @@ final class NewTrackerViewController: UIViewController {
     }
 
     private func displaySchedule() {
-        scheduleSetupButton.detailedText = schedule == nil ? "" : WeekDay.getDescription(for: schedule!)
+        scheduleSetupButton.detailedText = WeekDay.getDescription(for: schedule ?? [])
     }
 
     private func displayCategory() {

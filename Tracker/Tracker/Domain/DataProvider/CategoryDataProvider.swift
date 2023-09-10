@@ -6,7 +6,7 @@
 //
 import UIKit
 
-protocol CategoryDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForCollectionLayoutDelegate {
+protocol CategoryDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForTableViewDelegate {
     var dataStore: DataStoreProtocol {get}
     var numberOfObjects: Int {get}
     func loadData()
@@ -16,13 +16,13 @@ protocol CategoryDataProviderProtocol: AnyObject, DataProviderForDataSource, Dat
 }
 
 final class CategoryDataProvider {
-    private weak var delegate: DataProviderDelegate?
     var dataStore: DataStoreProtocol
+    private weak var delegate: CategoryDataProviderDelegate?
     private var fetchedController: (any DataStoreFetchedControllerProtocol)?
 
-    init(delegate: DataProviderDelegate) {
-        self.delegate = delegate
+    init(delegate: CategoryDataProviderDelegate) {
         self.dataStore = DataStore.shared
+        self.delegate = delegate
         self.fetchedController = CategoryStoreFetchController(
             dataStore: dataStore,
             dataProviderDelegate: self
@@ -50,7 +50,7 @@ extension CategoryDataProvider: DataProviderForDataSource {
     }
 }
 
-extension CategoryDataProvider: DataProviderForCollectionLayoutDelegate {
+extension CategoryDataProvider: DataProviderForTableViewDelegate {
     func didUpdate(_ updatedIndexes: UpdatedIndexes) {
         delegate?.didUpdateIndexPath(updatedIndexes)
     }
@@ -77,7 +77,7 @@ extension CategoryDataProvider: CategoryDataProviderProtocol {
         guard let context = dataStore.getContext() else {return}
 
         let categoryStore = TrackerCategoryStore(categoryID: category.categoryID, name: category.name)
-        categoryStore.addRecord(context: context)
+        categoryStore.save(context: context)
     }
 
     func deleteCategory(at indexPath: IndexPath) {

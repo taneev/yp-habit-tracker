@@ -14,10 +14,6 @@ struct CategoryListViewModelBindings {
     let editingCategory: (TrackerCategory?) -> Void
 }
 
-protocol SaveCategoryDelegate {
-    func saveNewCategory(with name: String)
-}
-
 protocol CategoryListViewModelProtocol: AnyObject {
     var dataProvider: any CategoryDataProviderProtocol {get}
     var categoriesCount: Int {get}
@@ -30,6 +26,7 @@ protocol CategoryListViewModelProtocol: AnyObject {
     func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryCellViewModelProtocol
     func getSelectedCategory() -> TrackerCategory?
     func editCategoryDidTap(at indexPath: IndexPath)
+    func categoryEditingDidEnd()
     func deleteCategoryDidTap(at indexPath: IndexPath)
 }
 
@@ -113,16 +110,13 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         editingCategory = category
     }
 
+    func categoryEditingDidEnd() {
+        editingCategory = nil
+    }
+
     func deleteCategoryDidTap(at indexPath: IndexPath) {
         cellViewModels[indexPath]?.didDeselectRow()
         dataProvider.deleteCategory(at: indexPath)
         cellViewModels.removeValue(forKey: indexPath)
-    }
-}
-
-extension CategoryListViewModel: SaveCategoryDelegate {
-    func saveNewCategory(with name: String) {
-        let category = TrackerCategory(id: UUID(), name: name)
-        dataProvider.save(category: category)
     }
 }

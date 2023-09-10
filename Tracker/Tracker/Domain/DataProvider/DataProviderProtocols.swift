@@ -18,6 +18,10 @@ protocol DataProviderForCollectionLayoutDelegate: AnyObject {
     func didUpdate(_ updatedIndexes: UpdatedIndexes)
 }
 
+protocol DataProviderForTableViewDelegate: AnyObject {
+    func didUpdate(_ updatedIndexes: UpdatedIndexes)
+}
+
 struct UpdatedIndexes {
     let insertedSections: IndexSet
     let insertedIndexes: [IndexPath]

@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol DataProviderDelegate: AnyObject {
+protocol TrackerDataProviderDelegate: AnyObject {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes)
 }
 
@@ -197,8 +197,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: DataProviderDelegate
-extension TrackersViewController: DataProviderDelegate {
+// MARK: TrackersDataProviderDelegate
+extension TrackersViewController: TrackerDataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
 
         collectionView.performBatchUpdates{

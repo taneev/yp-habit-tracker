@@ -8,7 +8,7 @@
 import CoreData
 
 final class CategoryStoreFetchController: NSObject {
-    private weak var dataProviderDelegate: DataProviderForCollectionLayoutDelegate?
+    private weak var dataProviderDelegate: DataProviderForTableViewDelegate?
 
     private var dataStore: DataStoreProtocol?
     private var fetchedController:  NSFetchedResultsController<TrackerCategoryCoreData>?
@@ -16,7 +16,7 @@ final class CategoryStoreFetchController: NSObject {
     private var insertedIndexes = [IndexPath]()
     private var deletedIndexes = [IndexPath]()
 
-    init(dataStore: DataStoreProtocol, dataProviderDelegate: DataProviderForCollectionLayoutDelegate) {
+    init(dataStore: DataStoreProtocol, dataProviderDelegate: DataProviderForTableViewDelegate) {
         super.init()
         self.dataStore = dataStore
         self.dataProviderDelegate = dataProviderDelegate
@@ -91,14 +91,26 @@ extension CategoryStoreFetchController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .delete:
-            if let indexPath = indexPath {
+            if let indexPath {
                 deletedIndexes.append(indexPath)
             }
         case .insert:
-            if let indexPath = newIndexPath {
-                insertedIndexes.append(indexPath)
+            if let newIndexPath {
+                insertedIndexes.append(newIndexPath)
             }
-        default:
+        case .update:
+            if let indexPath {
+                insertedIndexes.append(indexPath)
+                deletedIndexes.append(indexPath)
+            }
+        case .move:
+            if let indexPath {
+                deletedIndexes.append(indexPath)
+            }
+            if let newIndexPath {
+                insertedIndexes.append(newIndexPath)
+            }
+        @unknown default:
             break
         }
     }

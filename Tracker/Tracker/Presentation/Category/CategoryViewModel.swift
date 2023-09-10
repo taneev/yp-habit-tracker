@@ -12,26 +12,39 @@ struct CategoryViewModelBindings {
     let isCategoryDidCreated: (Bool?) -> Void
 }
 
+enum CategoryMode {
+    case new, edit
+}
+
 protocol CategoryViewModelProtocol {
     func setBindings(_ bindings: CategoryViewModelBindings)
     func viewDidLoad()
     func textFieldDidChange(to text: String?)
     func okButtonDidTap()
+    func getInitialCategoryName() -> String
 }
 
 final class CategoryViewModel: CategoryViewModelProtocol {
-
-    var saveCategoryDelegate: SaveCategoryDelegate
 
     @Observable
     private var isOkButtonEnabled: Bool?
 
     @Observable
     private var isCategoryDidCreated: Bool?
-    private var categoryName: String?
 
-    init(saveCategoryDelegate: SaveCategoryDelegate) {
-        self.saveCategoryDelegate = saveCategoryDelegate
+    private var dataProvider: any CategoryDataProviderProtocol
+    private var categoryName: String?
+    private var mode: CategoryMode
+    private var category: TrackerCategory
+
+    init(
+        dataProvider: any CategoryDataProviderProtocol,
+        mode: CategoryMode,
+        categoryToEdit: TrackerCategory? = nil
+    ) {
+        self.dataProvider = dataProvider
+        self.mode = mode
+        self.category = categoryToEdit ?? TrackerCategory(id: UUID(), name: "")
     }
 
     func setBindings(_ bindings: CategoryViewModelBindings) {
@@ -41,6 +54,7 @@ final class CategoryViewModel: CategoryViewModelProtocol {
 
     func viewDidLoad() {
         isOkButtonEnabled = false
+        textFieldDidChange(to: category.name)
     }
 
     func textFieldDidChange(to text: String?) {
@@ -50,13 +64,17 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     }
 
     func okButtonDidTap() {
-        if let categoryName {
-            saveCategoryDelegate.saveNewCategory(with: categoryName)
-            isCategoryDidCreated = true
-        }
+        guard let categoryName else {return}
+        let updatedCategory = TrackerCategory(id: category.categoryID, name: categoryName)
+        dataProvider.save(category: updatedCategory)
+        isCategoryDidCreated = true
     }
 
     private func normalized(categoryName text: String?) -> String {
         return text?.trimmingCharacters(in: .whitespaces) ?? ""
+    }
+
+    func getInitialCategoryName() -> String {
+        category.name
     }
 }
