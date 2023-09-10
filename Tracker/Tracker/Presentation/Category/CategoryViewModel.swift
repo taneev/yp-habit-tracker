@@ -1,5 +1,5 @@
 //
-//  CreateCategoryViewModel.swift
+//  CategoryViewModel.swift
 //  Tracker
 //
 //  Created by Тимур Танеев on 09.09.2023.
@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct CreateCategoryViewModelBindings {
+struct CategoryViewModelBindings {
     let isOkButtonEnabled: (Bool?) -> Void
     let isCategoryDidCreated: (Bool?) -> Void
 }
 
-protocol CreateCategoryViewModelProtocol {
-    func setBindings(_ bindings: CreateCategoryViewModelBindings)
+protocol CategoryViewModelProtocol {
+    func setBindings(_ bindings: CategoryViewModelBindings)
     func viewDidLoad()
     func textFieldDidChange(to text: String?)
     func okButtonDidTap()
 }
 
-final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
+final class CategoryViewModel: CategoryViewModelProtocol {
 
     var saveCategoryDelegate: SaveCategoryDelegate
 
@@ -34,7 +34,7 @@ final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
         self.saveCategoryDelegate = saveCategoryDelegate
     }
 
-    func setBindings(_ bindings: CreateCategoryViewModelBindings) {
+    func setBindings(_ bindings: CategoryViewModelBindings) {
         self.$isOkButtonEnabled.bind(action: bindings.isOkButtonEnabled)
         self.$isCategoryDidCreated.bind(action: bindings.isCategoryDidCreated)
     }

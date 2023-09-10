@@ -11,11 +11,11 @@ class CategoryCell: UITableViewCell {
 
     static let reuseIdentifier = "CategoryCell"
 
-    var viewModel: CategoryViewModelProtocol? {
+    var viewModel: CategoryCellViewModelProtocol? {
         didSet {
             guard let viewModel else {return}
 
-            let bindings = CategoryViewModelBindings(
+            let bindings = CategoryCellViewModelBindings(
                 categoryName: { [weak self] in
                     self?.setText(with: $0)
                 },

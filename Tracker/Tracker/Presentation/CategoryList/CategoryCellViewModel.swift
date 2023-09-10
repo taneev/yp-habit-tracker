@@ -1,5 +1,5 @@
 //
-//  CategoryViewModel.swift
+//  CategoryCellViewModel.swift
 //  Tracker
 //
 //  Created by Тимур Танеев on 06.09.2023.
@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct CategoryViewModelBindings {
+struct CategoryCellViewModelBindings {
     let categoryName: (String?) -> Void
     let isSelected: (Bool?) -> Void
 }
 
-protocol CategoryViewModelProtocol {
-    func setBinidings(_ bindings: CategoryViewModelBindings)
+protocol CategoryCellViewModelProtocol {
+    func setBinidings(_ bindings: CategoryCellViewModelBindings)
     func cellViewDidLoad()
     func didSelectRow(isInitialSelection: Bool)
     func didDeselectRow()
 }
 
-final class CategoryViewModel: CategoryViewModelProtocol {
+final class CategoryCellViewModel: CategoryCellViewModelProtocol {
 
     @Observable
     private var categoryName: String?
@@ -40,7 +40,7 @@ final class CategoryViewModel: CategoryViewModelProtocol {
         listViewModel?.removeCellViewModel(at: indexPath)
     }
 
-    func setBinidings(_ bindings: CategoryViewModelBindings) {
+    func setBinidings(_ bindings: CategoryCellViewModelBindings) {
         self.$categoryName.bind(action: bindings.categoryName)
         self.$isSelected.bind(action: bindings.isSelected)
     }

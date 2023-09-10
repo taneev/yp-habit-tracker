@@ -1,5 +1,5 @@
 //
-//  CreateCategoryViewController.swift
+//  CategoryViewController.swift
 //  Tracker
 //
 //  Created by Тимур Танеев on 09.09.2023.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class CreateCategoryViewController: UIViewController {
+class CategoryViewController: UIViewController {
 
-    var viewModel: CreateCategoryViewModelProtocol? {
+    var viewModel: CategoryViewModelProtocol? {
         didSet {
-            let bindings = CreateCategoryViewModelBindings(
+            let bindings = CategoryViewModelBindings(
                 isOkButtonEnabled: {[weak self] isEnabled in
                     self?.okButton.roundedButtonStyle = isEnabled == true ? .normal : .disabled
                 },
@@ -45,7 +45,7 @@ class CreateCategoryViewController: UIViewController {
     }
 }
 
-extension CreateCategoryViewController: UITextFieldDelegate {
+extension CategoryViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         viewModel?.textFieldDidChange(to: textField.text)
     }
@@ -53,7 +53,7 @@ extension CreateCategoryViewController: UITextFieldDelegate {
 
 // MARK: Setup and layout UI
 
-private extension CreateCategoryViewController {
+private extension CategoryViewController {
     func setupUI() {
         view.backgroundColor = .ypWhiteDay
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(anyTap))

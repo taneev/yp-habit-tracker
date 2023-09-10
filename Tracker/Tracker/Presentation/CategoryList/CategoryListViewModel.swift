@@ -11,6 +11,7 @@ struct CategoryListViewModelBindings {
     let isPlaceHolderHidden: (Bool?) -> Void
     let selectedRow: (IndexPath?) -> Void
     let selectedCategory: (TrackerCategory?) -> Void
+    let editingCategory: (TrackerCategory?) -> Void
 }
 
 protocol SaveCategoryDelegate {
@@ -24,12 +25,12 @@ protocol CategoryListViewModelProtocol: AnyObject {
     func setBindings(_ bindings: CategoryListViewModelBindings)
     func didSelect(_ category: TrackerCategory?, at indexPath: IndexPath, isInitialSelection: Bool)
     func didDeselectRow(at indexPath: IndexPath)
-    func addCellViewModel(at indexPath: IndexPath, cellViewModel: CategoryViewModelProtocol)
+    func addCellViewModel(at indexPath: IndexPath, cellViewModel: CategoryCellViewModelProtocol)
     func removeCellViewModel(at indexPath: IndexPath)
-    func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryViewModelProtocol
+    func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryCellViewModelProtocol
     func getSelectedCategory() -> TrackerCategory?
-    func editCategory(at indexPath: IndexPath)
-    func deleteCategory(at indexPath: IndexPath)
+    func editCategoryDidTap(at indexPath: IndexPath)
+    func deleteCategoryDidTap(at indexPath: IndexPath)
 }
 
 // MARK: CategoryListViewModel
@@ -49,7 +50,10 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
     @Observable
     private var selectedCategory: TrackerCategory?
 
-    private var cellViewModels: [IndexPath: CategoryViewModelProtocol]
+    @Observable
+    private var editingCategory: TrackerCategory?
+
+    private var cellViewModels: [IndexPath: CategoryCellViewModelProtocol]
 
     init(dataProvider: any CategoryDataProviderProtocol, selectedCategory: TrackerCategory?) {
         self.dataProvider = dataProvider
@@ -66,6 +70,7 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         self.$isPlaceHolderHidden.bind(action: bindings.isPlaceHolderHidden)
         self.$selectedRow.bind(action: bindings.selectedRow)
         self.$selectedCategory.bind(action: bindings.selectedCategory)
+        self.$editingCategory.bind(action: bindings.editingCategory)
     }
 
     func didSelect(_ category: TrackerCategory?, at indexPath: IndexPath, isInitialSelection: Bool) {
@@ -80,7 +85,7 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         selectedCategory = nil
     }
 
-    func addCellViewModel(at indexPath: IndexPath, cellViewModel: CategoryViewModelProtocol) {
+    func addCellViewModel(at indexPath: IndexPath, cellViewModel: CategoryCellViewModelProtocol) {
         cellViewModels[indexPath] = cellViewModel
     }
 
@@ -88,11 +93,11 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         cellViewModels.removeValue(forKey: indexPath)
     }
 
-    func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryViewModelProtocol {
+    func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryCellViewModelProtocol {
         if let cellViewModel = cellViewModels[indexPath] {
             return cellViewModel
         }
-        let newModel = CategoryViewModel(forCellAt: indexPath, listViewModel: self)
+        let newModel = CategoryCellViewModel(forCellAt: indexPath, listViewModel: self)
         addCellViewModel(at: indexPath, cellViewModel: newModel)
         return newModel
     }
@@ -101,11 +106,14 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         return selectedCategory
     }
 
-    func editCategory(at indexPath: IndexPath) {
+    func editCategoryDidTap(at indexPath: IndexPath) {
+        guard let category = dataProvider.object(at: indexPath) as? TrackerCategory
+        else {return}
 
+        editingCategory = category
     }
 
-    func deleteCategory(at indexPath: IndexPath) {
+    func deleteCategoryDidTap(at indexPath: IndexPath) {
         cellViewModels[indexPath]?.didDeselectRow()
         dataProvider.deleteCategory(at: indexPath)
         cellViewModels.removeValue(forKey: indexPath)

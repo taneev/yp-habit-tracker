@@ -33,6 +33,10 @@ final class CategoryListViewController: UIViewController {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                         self?.dismiss(animated: true)
                     }
+                },
+                editingCategory: { [weak self] category in
+                    guard let self, let category else {return}
+
                 }
             )
             viewModel?.setBindings(bindings)
@@ -54,11 +58,24 @@ final class CategoryListViewController: UIViewController {
 
     @objc func addCategoryButtonDidTap() {
         guard let saveDelegate = viewModel as? SaveCategoryDelegate else {return}
-        let controller = CreateCategoryViewController()
-        let createCategoryViewModel = CreateCategoryViewModel(saveCategoryDelegate: saveDelegate)
+        let controller = CategoryViewController()
+        let createCategoryViewModel = CategoryViewModel(saveCategoryDelegate: saveDelegate)
         controller.viewModel = createCategoryViewModel
         controller.modalPresentationStyle = .automatic
         present(controller, animated: true)
+    }
+
+    private func deleteCategoryDidTap(at indexPath: IndexPath) {
+        let alertController = UIAlertController(
+            title: "Эта категория точно не нужна?",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alertController.addAction(UIAlertAction(title: "Удалить", style: .destructive) {[weak self] _ in
+            self?.viewModel?.deleteCategoryDidTap(at: indexPath)
+        })
+        alertController.addAction(UIAlertAction(title: "Отмена", style: .cancel))
+        present(alertController, animated: true)
     }
 }
 
@@ -111,16 +128,16 @@ extension CategoryListViewController: UITableViewDelegate {
         contextMenuConfigurationForRowAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(identifier: nil,
-                                          previewProvider: nil) {[weak self] _ in
-            let editAction =
-            UIAction(title: "Редактировать") { [weak self] _ in
-                self?.viewModel?.editCategory(at: indexPath)
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) {[weak self] _ in
+            let editAction = UIAction(title: "Редактировать") {[weak self] _ in
+                self?.viewModel?.editCategoryDidTap(at: indexPath)
             }
-            let deleteAction =
-            UIAction(title: "Удалить",
-                     attributes: .destructive) { [weak self] _ in
-                self?.viewModel?.deleteCategory(at: indexPath)
+
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                self?.deleteCategoryDidTap(at: indexPath)
             }
             return UIMenu(title: "", children: [editAction, deleteAction])
         }
