@@ -25,6 +25,9 @@ final class CategoryListViewController: UIViewController {
                 },
                 selectedCategory: { [weak self] category in
                     self?.categorySelectionDelegate?.didSelect(category)
+                    if category == nil {
+                        return
+                    }
                     // Минимальная задержка для того, чтобы пользователь успел увидеть
                     // выбор другой категории
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in

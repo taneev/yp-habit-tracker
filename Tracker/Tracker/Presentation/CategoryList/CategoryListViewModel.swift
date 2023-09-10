@@ -106,7 +106,9 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
     }
 
     func deleteCategory(at indexPath: IndexPath) {
+        cellViewModels[indexPath]?.didDeselectRow()
         dataProvider.deleteCategory(at: indexPath)
+        cellViewModels.removeValue(forKey: indexPath)
     }
 }
 

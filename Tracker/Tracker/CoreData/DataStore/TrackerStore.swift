@@ -68,7 +68,7 @@ struct TrackerStore {
     func addRecord(context: NSManagedObjectContext) {
 
         let categoryID = category.categoryID
-        guard let category = TrackerCategoryCoreData.fetchRecord(for: categoryID, context: context)
+        guard let categoryCoreData = TrackerCategoryCoreData.fetchRecord(for: categoryID, context: context)
         else {return}
 
         let trackerCoreData = TrackerCoreData(context: context)
@@ -78,8 +78,9 @@ struct TrackerStore {
         trackerCoreData.emoji = emoji
         trackerCoreData.color = color
         trackerCoreData.schedule = schedule
-        trackerCoreData.category = category
+        trackerCoreData.category = categoryCoreData
         trackerCoreData.categoryID = categoryID
+        trackerCoreData.completed = nil
         try? context.save()
     }
 }
