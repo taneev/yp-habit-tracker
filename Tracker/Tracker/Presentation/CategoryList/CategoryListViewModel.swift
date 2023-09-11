@@ -10,7 +10,6 @@ import Foundation
 struct CategoryListViewModelBindings {
     let isPlaceHolderHidden: (Bool?) -> Void
     let selectedRow: (IndexPath?) -> Void
-    let selectedCategory: (TrackerCategory?) -> Void
     let editingCategory: (TrackerCategory?) -> Void
 }
 
@@ -19,15 +18,15 @@ protocol CategoryListViewModelProtocol: AnyObject {
     var categoriesCount: Int {get}
     func viewDidLoad()
     func setBindings(_ bindings: CategoryListViewModelBindings)
-    func didSelect(_ category: TrackerCategory?, at indexPath: IndexPath, isInitialSelection: Bool)
+    func didSelectRow(at indexPath: IndexPath, isInitialSelection: Bool)
     func didDeselectRow(at indexPath: IndexPath)
-    func addCellViewModel(at indexPath: IndexPath, cellViewModel: CategoryCellViewModelProtocol)
-    func removeCellViewModel(at indexPath: IndexPath)
+    func updateViewModels(deleteAt deletedIndexes: [IndexPath], insertAt insertedIndexes: [IndexPath])
     func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryCellViewModelProtocol
-    func getSelectedCategory() -> TrackerCategory?
+    func configCell(at indexPath: IndexPath)
     func editCategoryDidTap(at indexPath: IndexPath)
     func categoryEditingDidEnd()
     func deleteCategoryDidTap(at indexPath: IndexPath)
+    func updateEditedCategory(_ category: TrackerCategory)
 }
 
 // MARK: CategoryListViewModel
@@ -45,17 +44,21 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
     private var selectedRow: IndexPath?
 
     @Observable
-    private var selectedCategory: TrackerCategory?
-
-    @Observable
     private var editingCategory: TrackerCategory?
 
-    private var cellViewModels: [IndexPath: CategoryCellViewModelProtocol]
+    private var selectionDelegate: CategorySelectionDelegate
+    private var selectedCategory: TrackerCategory?
+    private var cellViewModels: [CategoryCellViewModelProtocol]
 
-    init(dataProvider: any CategoryDataProviderProtocol, selectedCategory: TrackerCategory?) {
+    init(
+        dataProvider: any CategoryDataProviderProtocol,
+        selectedCategory: TrackerCategory?,
+        selectionDelegate: CategorySelectionDelegate
+    ) {
         self.dataProvider = dataProvider
         self.selectedCategory = selectedCategory
-        self.cellViewModels = [:]
+        self.cellViewModels = []
+        self.selectionDelegate = selectionDelegate
     }
 
     func viewDidLoad() {
@@ -63,44 +66,51 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         isPlaceHolderHidden = categoriesCount > 0
     }
 
+    func configCell(at indexPath: IndexPath) {
+        guard let category = dataProvider.object(at: indexPath) as? TrackerCategory
+        else {return}
+
+        let isSelected = selectedCategory?.categoryID == category.categoryID
+        cellViewModels[indexPath.item].setupModelWith(
+            categoryName: category.name,
+            isSelected: isSelected
+        )
+
+        if isSelected {
+            selectedRow = indexPath
+        }
+    }
+
     func setBindings(_ bindings: CategoryListViewModelBindings) {
         self.$isPlaceHolderHidden.bind(action: bindings.isPlaceHolderHidden)
         self.$selectedRow.bind(action: bindings.selectedRow)
-        self.$selectedCategory.bind(action: bindings.selectedCategory)
         self.$editingCategory.bind(action: bindings.editingCategory)
     }
 
-    func didSelect(_ category: TrackerCategory?, at indexPath: IndexPath, isInitialSelection: Bool) {
+    func didSelectRow(at indexPath: IndexPath, isInitialSelection: Bool) {
         selectedRow = indexPath
+        cellViewModels[indexPath.item].didSelectRow()
         if !isInitialSelection {
-            selectedCategory = category
+            guard let category = dataProvider.object(at: indexPath) as? TrackerCategory
+            else {return}
+            selectionDelegate.updateSelected(category)
         }
     }
 
     func didDeselectRow(at indexPath: IndexPath) {
+        cellViewModels[indexPath.item].didDeselectRow()
         selectedRow = nil
         selectedCategory = nil
     }
 
-    func addCellViewModel(at indexPath: IndexPath, cellViewModel: CategoryCellViewModelProtocol) {
-        cellViewModels[indexPath] = cellViewModel
-    }
-
-    func removeCellViewModel(at indexPath: IndexPath) {
-        cellViewModels.removeValue(forKey: indexPath)
+    func updateViewModels(deleteAt deletedIndexes: [IndexPath], insertAt insertedIndexes: [IndexPath]) {
+        deletedIndexes.sorted(by: {$0.item > $1.item}).forEach{
+            removeCellViewModel(at: $0)
+        }
     }
 
     func cellViewModel(forCellAt indexPath: IndexPath) -> CategoryCellViewModelProtocol {
-        if let cellViewModel = cellViewModels[indexPath] {
-            return cellViewModel
-        }
-        let newModel = CategoryCellViewModel(forCellAt: indexPath, listViewModel: self)
-        addCellViewModel(at: indexPath, cellViewModel: newModel)
-        return newModel
-    }
-
-    func getSelectedCategory() -> TrackerCategory? {
-        return selectedCategory
+        return addCellViewModel(at: indexPath)
     }
 
     func editCategoryDidTap(at indexPath: IndexPath) {
@@ -114,9 +124,26 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         editingCategory = nil
     }
 
+    func updateEditedCategory(_ category: TrackerCategory) {
+        dataProvider.save(category: category)
+        if selectedCategory?.categoryID == category.categoryID {
+            selectionDelegate.updateSelected(category)
+        }
+    }
+
     func deleteCategoryDidTap(at indexPath: IndexPath) {
-        cellViewModels[indexPath]?.didDeselectRow()
+        didDeselectRow(at: indexPath)
+        selectionDelegate.updateSelected(nil)
         dataProvider.deleteCategory(at: indexPath)
-        cellViewModels.removeValue(forKey: indexPath)
+    }
+
+    private func addCellViewModel(at indexPath: IndexPath) -> CategoryCellViewModelProtocol {
+        let newModel = CategoryCellViewModel()
+        cellViewModels.insert(newModel, at: indexPath.item)
+        return newModel
+    }
+
+    private func removeCellViewModel(at indexPath: IndexPath) {
+        cellViewModels.remove(at: indexPath.item)
     }
 }

@@ -25,6 +25,7 @@ protocol CategoryViewModelProtocol {
 }
 
 final class CategoryViewModel: CategoryViewModelProtocol {
+    var saveCategory: ((TrackerCategory) -> Void)?
 
     @Observable
     private var isOkButtonEnabled: Bool?
@@ -32,17 +33,14 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     @Observable
     private var isCategoryDidCreated: Bool?
 
-    private var dataProvider: any CategoryDataProviderProtocol
     private var categoryName: String?
     private var mode: CategoryMode
     private var category: TrackerCategory
 
     init(
-        dataProvider: any CategoryDataProviderProtocol,
         mode: CategoryMode,
         categoryToEdit: TrackerCategory? = nil
     ) {
-        self.dataProvider = dataProvider
         self.mode = mode
         self.category = categoryToEdit ?? TrackerCategory(id: UUID(), name: "")
     }
@@ -66,7 +64,7 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     func okButtonDidTap() {
         guard let categoryName else {return}
         let updatedCategory = TrackerCategory(id: category.categoryID, name: categoryName)
-        dataProvider.save(category: updatedCategory)
+        saveCategory?(updatedCategory)
         isCategoryDidCreated = true
     }
 

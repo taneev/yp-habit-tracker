@@ -23,7 +23,6 @@ class CategoryCell: UITableViewCell {
                     self?.accessoryType = ($0 == true) ? .checkmark : .none
                 })
             viewModel.setBinidings(bindings)
-            viewModel.cellViewDidLoad()
         }
     }
 

@@ -21,21 +21,18 @@ final class CategoryListViewController: UIViewController {
                 },
                 selectedRow: { [weak self] indexPath in
                     guard let self,
-                          let indexPath,
-                          indexPath != self.tableView.indexPathForSelectedRow
+                          let indexPath
                     else {return}
 
-                    self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-                },
-                selectedCategory: { [weak self] category in
-                    self?.categorySelectionDelegate?.didSelect(category)
-                    if category == nil {
-                        return
+                    if indexPath != self.tableView.indexPathForSelectedRow {
+                        self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
                     }
-                    // Минимальная задержка для того, чтобы пользователь успел увидеть
-                    // выбор другой категории
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                        self?.dismiss(animated: true)
+                    else {
+                        // Минимальная задержка для того, чтобы пользователь успел увидеть
+                        // выбор другой категории
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                            self?.dismiss(animated: true)
+                        }
                     }
                 },
                 editingCategory: { [weak self] category in
@@ -46,7 +43,6 @@ final class CategoryListViewController: UIViewController {
             viewModel?.setBindings(bindings)
         }
     }
-    var categorySelectionDelegate: CategorySelectionDelegate?
 
     private lazy var placeholderView = { createPlaceholderView() }()
     private lazy var tableView = { createTableView() }()
@@ -78,26 +74,14 @@ final class CategoryListViewController: UIViewController {
     }
 
     private func presentCategoryScreen(mode: CategoryMode, categoryToEdit: TrackerCategory? = nil) {
-        guard let dataProvider = viewModel?.dataProvider else {return}
         let controller = CategoryViewController()
         let categoryViewModel = CategoryViewModel(
-            dataProvider: dataProvider,
             mode: .new,
             categoryToEdit: categoryToEdit
         )
+        categoryViewModel.saveCategory = viewModel?.updateEditedCategory
         controller.viewModel = categoryViewModel
         controller.modalPresentationStyle = .automatic
-        controller.completion = { [weak self] in
-            guard let self,
-                  let viewModel = self.viewModel else {return}
-            viewModel.categoryEditingDidEnd()
-
-            // после редактирования категории индекс выбранной записи мог измениться
-            // сообщим об этом вьюмодели
-            guard let updatedSelectedIndexPath = self.tableView.indexPathForSelectedRow
-            else {return}
-         //   viewModel.didSelectRow(at: updatedSelectedIndexPath)
-        }
         present(controller, animated: true)
     }
 }
@@ -106,6 +90,10 @@ final class CategoryListViewController: UIViewController {
 
 extension CategoryListViewController: CategoryDataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
+        viewModel?.updateViewModels(
+            deleteAt: updatedIndexes.deletedIndexes,
+            insertAt: updatedIndexes.insertedIndexes
+        )
         tableView.performBatchUpdates({
             tableView.deleteRows(at: updatedIndexes.deletedIndexes, with: .automatic)
             tableView.insertRows(at: updatedIndexes.insertedIndexes, with: .automatic)
@@ -125,6 +113,7 @@ extension CategoryListViewController: UITableViewDataSource {
         else {return UITableViewCell(style: .default, reuseIdentifier: CategoryCell.reuseIdentifier)}
 
         cell.viewModel = viewModel?.cellViewModel(forCellAt: indexPath)
+        viewModel?.configCell(at: indexPath)
         return cell
     }
 }
@@ -137,13 +126,11 @@ extension CategoryListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {return}
-        cell.viewModel?.didSelectRow(isInitialSelection: false)
+        viewModel?.didSelectRow(at: indexPath, isInitialSelection: false)
     }
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {return}
-        cell.viewModel?.didDeselectRow()
+        viewModel?.didDeselectRow(at: indexPath)
     }
 
     func tableView(
