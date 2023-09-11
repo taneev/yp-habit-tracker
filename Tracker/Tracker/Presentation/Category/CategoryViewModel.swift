@@ -12,10 +12,6 @@ struct CategoryViewModelBindings {
     let isCategoryDidCreated: (Bool?) -> Void
 }
 
-enum CategoryMode {
-    case new, edit
-}
-
 protocol CategoryViewModelProtocol {
     func setBindings(_ bindings: CategoryViewModelBindings)
     func viewDidLoad()
@@ -34,14 +30,9 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     private var isCategoryDidCreated: Bool?
 
     private var categoryName: String?
-    private var mode: CategoryMode
     private var category: TrackerCategory
 
-    init(
-        mode: CategoryMode,
-        categoryToEdit: TrackerCategory? = nil
-    ) {
-        self.mode = mode
+    init(categoryToEdit: TrackerCategory? = nil) {
         self.category = categoryToEdit ?? TrackerCategory(id: UUID(), name: "")
     }
 
@@ -68,11 +59,11 @@ final class CategoryViewModel: CategoryViewModelProtocol {
         isCategoryDidCreated = true
     }
 
-    private func normalized(categoryName text: String?) -> String {
-        return text?.trimmingCharacters(in: .whitespaces) ?? ""
-    }
-
     func getInitialCategoryName() -> String {
         category.name
+    }
+
+    private func normalized(categoryName text: String?) -> String {
+        return text?.trimmingCharacters(in: .whitespaces) ?? ""
     }
 }

@@ -37,7 +37,7 @@ final class CategoryListViewController: UIViewController {
                 },
                 editingCategory: { [weak self] category in
                     guard let self, let category else {return}
-                    self.presentCategoryScreen(mode: .edit, categoryToEdit: category)
+                    self.presentCategoryScreen(categoryToEdit: category)
                 }
             )
             viewModel?.setBindings(bindings)
@@ -57,7 +57,7 @@ final class CategoryListViewController: UIViewController {
     }
 
     @objc func addCategoryButtonDidTap() {
-        presentCategoryScreen(mode: .new)
+        presentCategoryScreen()
     }
 
     private func deleteCategoryDidTap(at indexPath: IndexPath) {
@@ -73,10 +73,9 @@ final class CategoryListViewController: UIViewController {
         present(alertController, animated: true)
     }
 
-    private func presentCategoryScreen(mode: CategoryMode, categoryToEdit: TrackerCategory? = nil) {
+    private func presentCategoryScreen(categoryToEdit: TrackerCategory? = nil) {
         let controller = CategoryViewController()
         let categoryViewModel = CategoryViewModel(
-            mode: .new,
             categoryToEdit: categoryToEdit
         )
         categoryViewModel.saveCategory = viewModel?.updateEditedCategory

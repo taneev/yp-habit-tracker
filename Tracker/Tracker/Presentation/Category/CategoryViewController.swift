@@ -26,8 +26,6 @@ class CategoryViewController: UIViewController {
         }
     }
 
-    var completion: (() -> Void)?
-
     private lazy var inputNameField = NameInputTextField()
     private lazy var okButton = RoundedButton(title: "Готово")
 
@@ -36,11 +34,6 @@ class CategoryViewController: UIViewController {
 
         setupUI()
         viewModel?.viewDidLoad()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        completion?()
     }
 
     @objc private func okButtonDidTap() {

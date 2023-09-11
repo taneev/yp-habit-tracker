@@ -28,14 +28,14 @@ final class TrackerStoreFetchController: NSObject {
         self.dataProviderDelegate = dataProviderDelegate
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: #keyPath(TrackerCoreData.category.name), ascending: true),
+            NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryID), ascending: true),
             NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: true)
         ]
         if let context = dataStore.getContext() {
             let controller = NSFetchedResultsController(
                 fetchRequest: fetchRequest,
                 managedObjectContext: context,
-                sectionNameKeyPath: #keyPath(TrackerCoreData.category.name),
+                sectionNameKeyPath: #keyPath(TrackerCoreData.category.categoryID),
                 cacheName: nil
             )
             self.fetchedController = controller
