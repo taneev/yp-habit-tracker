@@ -28,14 +28,14 @@ final class TrackerStoreFetchController: NSObject {
         self.dataProviderDelegate = dataProviderDelegate
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: #keyPath(TrackerCoreData.category), ascending: true),
+            NSSortDescriptor(key: #keyPath(TrackerCoreData.category.name), ascending: true),
             NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: true)
         ]
         if let context = dataStore.getContext() {
             let controller = NSFetchedResultsController(
                 fetchRequest: fetchRequest,
                 managedObjectContext: context,
-                sectionNameKeyPath: #keyPath(TrackerCoreData.category),
+                sectionNameKeyPath: #keyPath(TrackerCoreData.category.name),
                 cacheName: nil
             )
             self.fetchedController = controller
@@ -147,7 +147,19 @@ extension TrackerStoreFetchController: NSFetchedResultsControllerDelegate {
             if let indexPath = newIndexPath {
                 insertedIndexes.append(indexPath)
             }
-        default:
+        case .update:
+            if let indexPath {
+                insertedIndexes.append(indexPath)
+                deletedIndexes.append(indexPath)
+            }
+        case .move:
+            if let indexPath {
+                deletedIndexes.append(indexPath)
+            }
+            if let newIndexPath {
+                insertedIndexes.append(newIndexPath)
+            }
+        @unknown default:
             break
         }
     }

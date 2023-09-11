@@ -79,7 +79,7 @@ struct TrackerStore {
         trackerCoreData.color = color
         trackerCoreData.schedule = schedule
         trackerCoreData.category = categoryCoreData
-        trackerCoreData.categoryID = categoryID
+        trackerCoreData.categoryID = categoryCoreData.categoryID
         trackerCoreData.completed = nil
         try? context.save()
     }
