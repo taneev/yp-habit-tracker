@@ -13,7 +13,7 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
 
     var emoji: String? {
         didSet {
-            guard let emoji else {return}
+            guard let emoji else { return }
             emojiLabel.text = emoji
         }
     }

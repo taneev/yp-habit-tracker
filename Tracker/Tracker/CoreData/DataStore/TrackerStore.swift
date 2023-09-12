@@ -17,6 +17,10 @@ struct TrackerStore {
     let category: TrackerCategoryStore
     let completed: [TrackerRecordStore]?
 
+    private enum Constants {
+        static let recordForUUIDPredicate = "%K == %@"
+    }
+
     init(
         trackerID: UUID,
         name: String,
@@ -40,8 +44,9 @@ struct TrackerStore {
     init(trackerCoreData: TrackerCoreData) {
         let trackerID = trackerCoreData.trackerID ?? UUID()
         let completedRecords = trackerCoreData.completed as? Set<TrackerRecordCoreData>
+
         let completedStoreRecords = completedRecords?.compactMap{ record -> TrackerRecordStore? in
-            guard let completedAt = record.completedAt?.truncated() else {return nil}
+            guard let completedAt = record.completedAt?.truncated() else { return nil }
             return TrackerRecordStore(trackerID: trackerID, completedAt: completedAt)
         }
 
@@ -58,5 +63,24 @@ struct TrackerStore {
             ),
             completed: completedStoreRecords
         )
+    }
+
+    func addRecord(context: NSManagedObjectContext) {
+
+        let categoryID = category.categoryID
+        guard let categoryCoreData = TrackerCategoryCoreData.fetchRecord(for: categoryID, context: context)
+        else { return }
+
+        let trackerCoreData = TrackerCoreData(context: context)
+        trackerCoreData.trackerID = trackerID
+        trackerCoreData.name = name
+        trackerCoreData.isRegular = isRegular
+        trackerCoreData.emoji = emoji
+        trackerCoreData.color = color
+        trackerCoreData.schedule = schedule
+        trackerCoreData.category = categoryCoreData
+        trackerCoreData.categoryID = categoryCoreData.categoryID
+        trackerCoreData.completed = nil
+        try? context.save()
     }
 }

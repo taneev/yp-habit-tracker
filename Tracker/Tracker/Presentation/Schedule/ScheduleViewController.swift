@@ -22,10 +22,10 @@ final class ScheduleViewController: UIViewController {
 
     @objc private func okButtonTapped() {
         schedule = scheduleStackView.arrangedSubviews.compactMap { weekdayView in
-            guard let weekdayView = weekdayView as? WeekdaySwitchView else {return nil}
+            guard let weekdayView = weekdayView as? WeekdaySwitchView else { return nil }
             return weekdayView.isOn ? weekdayView.weekday : nil
         }
-        guard let schedule else {return}
+        guard let schedule else { return }
         saveScheduleDelegate?.scheduleDidSetup(with: schedule)
     }
 }

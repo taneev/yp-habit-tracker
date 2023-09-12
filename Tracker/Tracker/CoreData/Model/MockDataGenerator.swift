@@ -11,8 +11,8 @@ final class MockDataGenerator {
 
     private var dataStore: DataStoreProtocol?
 
-    static func setupRecords(with dataProvider: DataProviderProtocol) {
-        guard let context = dataProvider.dataStore.getContext() else {return}
+    static func setupRecords(with dataProvider: any TrackerDataProviderProtocol) {
+        guard let context = dataProvider.dataStore.getContext() else { return }
 
         let checkRequest = TrackerCoreData.fetchRequest()
         let result = try! context.fetch(checkRequest)
@@ -96,7 +96,7 @@ final class MockDataGenerator {
     }
 
     static func getDefaultCategory(for dataStore: DataStoreProtocol) -> TrackerCategoryStore? {
-        guard let context = dataStore.getContext() else {return nil}
+        guard let context = dataStore.getContext() else { return nil }
         let request = TrackerCategoryCoreData.fetchRequest()
         if let result = try? context.fetch(request),
            let categoryCoreData = result.first {
@@ -104,7 +104,7 @@ final class MockDataGenerator {
         }
         else {
             guard let newCategory = NSEntityDescription.insertNewObject(forEntityName: "TrackerCategoryCoreData", into: context) as? TrackerCategoryCoreData
-            else {return nil}
+            else { return nil }
 
             newCategory.name = "Дефолтная категория"
             try? context.save()

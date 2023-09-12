@@ -6,28 +6,15 @@
 //
 
 import CoreData
-import UIKit
 
-protocol DataStoreFetchedControllerProtocol {
-    var delegate: NSFetchedResultsControllerDelegate? {get set}
-    var dataProviderDelegate: DataProviderProtocol? {get set}
-    var fetchedTrackerController: NSFetchedResultsController<TrackerCoreData>? {get set}
-    var numberOfObjects: Int? {get}
-    var numberOfSections: Int? {get}
-    func numberOfRows(in section: Int) -> Int?
-    func object(at: IndexPath) -> TrackerStore?
-    func fetchData()
+protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol where T == TrackerStore {
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String)
 }
 
-final class DataStoreFetchController: NSObject {
-    var delegate: NSFetchedResultsControllerDelegate? {
-        didSet {
-            fetchedTrackerController?.delegate = delegate
-        }
-    }
-    var fetchedTrackerController:  NSFetchedResultsController<TrackerCoreData>?
-    weak var dataProviderDelegate: DataProviderProtocol?
+final class TrackerStoreFetchController: NSObject {
+    private weak var dataProviderDelegate: DataProviderForCollectionLayoutDelegate?
+    private var dataStore: DataStoreProtocol?
+    private var fetchedController:  NSFetchedResultsController<TrackerCoreData>?
 
     private var insertedSections: IndexSet?
     private var insertedIndexes = [IndexPath]()
@@ -35,24 +22,30 @@ final class DataStoreFetchController: NSObject {
     private var deletedSections: IndexSet?
     private var deletedIndexes = [IndexPath]()
 
-    init(context: NSManagedObjectContext) {
+    init(dataStore: DataStoreProtocol, dataProviderDelegate: DataProviderForCollectionLayoutDelegate) {
+        super.init()
+        self.dataStore = dataStore
+        self.dataProviderDelegate = dataProviderDelegate
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: #keyPath(TrackerCoreData.category), ascending: true),
+            NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryID), ascending: true),
             NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: true)
         ]
-        let controller = NSFetchedResultsController(
+        if let context = dataStore.getContext() {
+            let controller = NSFetchedResultsController(
                 fetchRequest: fetchRequest,
                 managedObjectContext: context,
-                sectionNameKeyPath: #keyPath(TrackerCoreData.category),
+                sectionNameKeyPath: #keyPath(TrackerCoreData.category.categoryID),
                 cacheName: nil
-        )
-        self.fetchedTrackerController = controller
+            )
+            self.fetchedController = controller
+            self.fetchedController?.delegate = self
+        }
     }
 
     private func createPredicateWith(selectedDate: Date, searchString: String? = nil) -> NSPredicate? {
         guard let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: selectedDate))
-        else {return nil}
+        else { return nil }
         let weekDayText = WeekDay.shortWeekdayText[currentWeekDay] ?? ""
 
         let searchText = searchString?.trimmingCharacters(in: .whitespaces) ?? ""
@@ -78,43 +71,42 @@ final class DataStoreFetchController: NSObject {
                    )
         }
     }
-
 }
 
-extension DataStoreFetchController: DataStoreFetchedControllerProtocol {
+extension TrackerStoreFetchController: TrackerStoreFetchControllerProtocol {
     var numberOfObjects: Int? {
-        fetchedTrackerController?.fetchedObjects?.count
+        fetchedController?.fetchedObjects?.count
     }
 
     var numberOfSections: Int? {
-        fetchedTrackerController?.sections?.count
+        fetchedController?.sections?.count
     }
 
     func numberOfRows(in section: Int) -> Int? {
-        fetchedTrackerController?.sections?[section].numberOfObjects
+        fetchedController?.sections?[section].numberOfObjects
     }
 
     func object(at indexPath: IndexPath) -> TrackerStore? {
-        guard let trackerCoreData = fetchedTrackerController?.object(at: indexPath)
-        else {return nil}
+        guard let trackerCoreData = fetchedController?.object(at: indexPath)
+        else { return nil }
 
         return TrackerStore(trackerCoreData: trackerCoreData)
     }
 
     func fetchData() {
-        try? fetchedTrackerController?.performFetch()
+        try? fetchedController?.performFetch()
     }
 
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String) {
-        fetchedTrackerController?.fetchRequest.predicate = createPredicateWith(
+        fetchedController?.fetchRequest.predicate = createPredicateWith(
                 selectedDate: currentDate,
                 searchString: searchTextFilter
         )
-        try? fetchedTrackerController?.performFetch()
+        try? fetchedController?.performFetch()
     }
 }
 
-extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
+extension TrackerStoreFetchController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedSections = IndexSet()
         insertedIndexes = []
@@ -155,7 +147,19 @@ extension DataStoreFetchController: NSFetchedResultsControllerDelegate {
             if let indexPath = newIndexPath {
                 insertedIndexes.append(indexPath)
             }
-        default:
+        case .update:
+            if let indexPath {
+                insertedIndexes.append(indexPath)
+                deletedIndexes.append(indexPath)
+            }
+        case .move:
+            if let indexPath {
+                deletedIndexes.append(indexPath)
+            }
+            if let newIndexPath {
+                insertedIndexes.append(newIndexPath)
+            }
+        @unknown default:
             break
         }
     }

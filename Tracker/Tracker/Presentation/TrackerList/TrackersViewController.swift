@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol DataProviderDelegate: AnyObject {
+protocol TrackerDataProviderDelegate: AnyObject {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes)
 }
 
@@ -22,7 +22,7 @@ protocol NewTrackerSaverDelegate: AnyObject {
 
 final class TrackersViewController: UIViewController {
 
-    private lazy var dataProvider: DataProviderProtocol = { createDataProvider() }()
+    private lazy var dataProvider: any TrackerDataProviderProtocol = { createDataProvider() }()
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -58,8 +58,8 @@ final class TrackersViewController: UIViewController {
         searchTextField.resignFirstResponder()
     }
 
-    private func createDataProvider() -> DataProvider {
-        return DataProvider(delegate: self)
+    private func createDataProvider() -> TrackerDataProvider {
+        return TrackerDataProvider(delegate: self)
     }
 
     private func loadData() {
@@ -82,7 +82,7 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell,
-              let trackerID = cell.tracker?.trackerID else {return}
+              let trackerID = cell.tracker?.trackerID else { return }
         dataProvider.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
         cell.isCompleted = isCompleted
         cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)
@@ -136,7 +136,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
                                 withReuseIdentifier: TrackerViewCell.cellIdentifier,
                                 for: indexPath) as? TrackerViewCell,
-              let tracker = dataProvider.object(at: indexPath)
+              let tracker = dataProvider.object(at: indexPath) as? Tracker
         else {return UICollectionViewCell()}
 
         cell.delegate = self
@@ -197,8 +197,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: DataProviderDelegate
-extension TrackersViewController: DataProviderDelegate {
+// MARK: TrackersDataProviderDelegate
+extension TrackersViewController: TrackerDataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
 
         collectionView.performBatchUpdates{

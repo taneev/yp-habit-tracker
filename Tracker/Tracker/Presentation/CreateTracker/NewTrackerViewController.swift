@@ -11,10 +11,14 @@ protocol ScheduleSaverDelegate: AnyObject {
     func scheduleDidSetup(with newSchedule: [WeekDay])
 }
 
+protocol CategorySelectionDelegate: AnyObject {
+    func updateSelected(_ category: TrackerCategory?)
+}
+
 final class NewTrackerViewController: UIViewController {
 
     weak var saverDelegate: NewTrackerSaverDelegate?
-    var dataProvider: DataProviderProtocol?
+    var dataProvider: (any TrackerDataProviderProtocol)?
     var isRegular: Bool!
 
     private var trackerName: String? {
@@ -24,7 +28,7 @@ final class NewTrackerViewController: UIViewController {
     }
 
     // временная категория для тестирования
-    private lazy var category: TrackerCategory? = { initDefaultCategory() }() {
+    private var category: TrackerCategory? {
         didSet {
             checkIsAllParametersDidSetup()
         }
@@ -84,8 +88,15 @@ final class NewTrackerViewController: UIViewController {
     }
 
     @objc private func categoryButtonDidTap() {
-        // TODO: next sprint
-        print("Category did tap")
+        let viewController = CategoryListViewController()
+        let viewModel = CategoryListViewModel(
+            dataProvider: CategoryDataProvider(delegate: viewController),
+            selectedCategory: category,
+            selectionDelegate: self
+        )
+        viewController.viewModel = viewModel
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true)
     }
 
     @objc private func scheduleButtonDidTap() {
@@ -150,7 +161,7 @@ final class NewTrackerViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    private func initDefaultCategory() -> TrackerCategory? {
+    private func updatedCategoryName() -> TrackerCategory? {
         // TODO: временный вариант инициализации категории первой попавшейся, пока нет
         // функциональности создания категорий
         return dataProvider?.getDefaultCategory()
@@ -165,7 +176,7 @@ final class NewTrackerViewController: UIViewController {
     }
 
     private func displaySchedule() {
-        scheduleSetupButton.detailedText = schedule == nil ? "" : WeekDay.getDescription(for: schedule!)
+        scheduleSetupButton.detailedText = WeekDay.getDescription(for: schedule ?? [])
     }
 
     private func displayCategory() {
@@ -178,6 +189,8 @@ final class NewTrackerViewController: UIViewController {
     }
 }
 
+// MARK: Save new tracker delegate
+
 extension NewTrackerViewController: ScheduleSaverDelegate {
     func scheduleDidSetup(with newSchedule: [WeekDay]) {
         self.schedule = newSchedule
@@ -185,6 +198,17 @@ extension NewTrackerViewController: ScheduleSaverDelegate {
         dismiss(animated: true)
     }
 }
+
+// MARK: Selection category delegate
+
+extension NewTrackerViewController: CategorySelectionDelegate {
+    func updateSelected(_ category: TrackerCategory?) {
+        self.category = category
+        self.displayCategory()
+    }
+}
+
+// MARK: TextFieldDelegate
 
 extension NewTrackerViewController: UITextFieldDelegate {
 
@@ -214,6 +238,8 @@ extension NewTrackerViewController: UITextFieldDelegate {
     }
 }
 
+// MARK: CollectionDelegate
+
 extension NewTrackerViewController: PropertyCollectionViewDelegate {
     func didSelectItem(at indexPath: IndexPath, for propertyType: TrackerProperty) {
         switch propertyType {
@@ -224,6 +250,8 @@ extension NewTrackerViewController: PropertyCollectionViewDelegate {
         }
     }
 }
+
+// MARK: CollectionDataSource
 
 extension NewTrackerViewController: PropertyCollectionDataSource {
     func getItem(at indexPath: IndexPath, for propertyType: TrackerProperty) -> String {

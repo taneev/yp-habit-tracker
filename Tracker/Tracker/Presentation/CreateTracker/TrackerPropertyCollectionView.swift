@@ -66,7 +66,7 @@ final class TrackerPropertyCollectionView: UIView {
 
 extension TrackerPropertyCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let propertyType else {return}
+        guard let propertyType else { return }
         collectionView.cellForItem(at: indexPath)?.isSelected = true
         delegate?.didSelectItem(at: indexPath,  for: propertyType)
     }
