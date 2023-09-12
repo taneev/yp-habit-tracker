@@ -31,7 +31,7 @@ class PlaceholderView: UIView {
         let label = UILabel()
         label.text = placeholderText
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.numberOfLines = 0
+        label.numberOfLines = .zero
         label.textAlignment = .center
         label.textColor = .ypBlackDay
         label.translatesAutoresizingMaskIntoConstraints = false

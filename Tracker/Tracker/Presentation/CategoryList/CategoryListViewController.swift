@@ -15,32 +15,8 @@ final class CategoryListViewController: UIViewController {
 
     var viewModel: CategoryListViewModelProtocol? {
         didSet {
-            let bindings = CategoryListViewModelBindings(
-                isPlaceHolderHidden: { [weak self] in
-                    self?.placeholderView.isHidden = ($0 == true)
-                },
-                selectedRow: { [weak self] indexPath in
-                    guard let self,
-                          let indexPath
-                    else {return}
-
-                    if indexPath != self.tableView.indexPathForSelectedRow {
-                        self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-                    }
-                    else {
-                        // Минимальная задержка для того, чтобы пользователь успел увидеть
-                        // выбор другой категории
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                            self?.dismiss(animated: true)
-                        }
-                    }
-                },
-                editingCategory: { [weak self] category in
-                    guard let self, let category else {return}
-                    self.presentCategoryScreen(categoryToEdit: category)
-                }
-            )
-            viewModel?.setBindings(bindings)
+            guard let viewModel else { return }
+            bind(viewModel)
         }
     }
 
@@ -60,13 +36,38 @@ final class CategoryListViewController: UIViewController {
         presentCategoryScreen()
     }
 
+    private func bind(_ viewModel: CategoryListViewModelProtocol) {
+        let bindings = CategoryListViewModelBindings(
+            isPlaceHolderHidden: { [weak self] in
+                self?.placeholderView.isHidden = ($0 == true)
+            },
+            selectedRow: { [weak self] indexPath in
+                guard let self,
+                      let indexPath
+                else { return }
+
+                if indexPath != self.tableView.indexPathForSelectedRow {
+                    self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+                }
+                else {
+                    self.dismiss(animated: true)
+                }
+            },
+            editingCategory: { [weak self] category in
+                guard let self, let category else { return }
+                self.presentCategoryScreen(categoryToEdit: category)
+            }
+        )
+        viewModel.setBindings(bindings)
+    }
+
     private func deleteCategoryDidTap(at indexPath: IndexPath) {
         let alertController = UIAlertController(
             title: "Эта категория точно не нужна?",
             message: nil,
             preferredStyle: .actionSheet
         )
-        alertController.addAction(UIAlertAction(title: "Удалить", style: .destructive) {[weak self] _ in
+        alertController.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
             self?.viewModel?.deleteCategoryDidTap(at: indexPath)
         })
         alertController.addAction(UIAlertAction(title: "Отмена", style: .cancel))
@@ -140,8 +141,8 @@ extension CategoryListViewController: UITableViewDelegate {
         return UIContextMenuConfiguration(
             identifier: nil,
             previewProvider: nil
-        ) {[weak self] _ in
-            let editAction = UIAction(title: "Редактировать") {[weak self] _ in
+        ) { [weak self] _ in
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
                 self?.viewModel?.editCategoryDidTap(at: indexPath)
             }
 

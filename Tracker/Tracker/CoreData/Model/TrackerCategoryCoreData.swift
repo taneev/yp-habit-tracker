@@ -6,11 +6,11 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(TrackerCategoryCoreData)
-public class TrackerCategoryCoreData: NSManagedObject {
+public class TrackerCategoryCoreData: NSManagedObject, Identifiable {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<TrackerCategoryCoreData> {
         return NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
@@ -30,7 +30,6 @@ public class TrackerCategoryCoreData: NSManagedObject {
     @NSManaged public var categoryID: UUID?
     @NSManaged public var name: String?
     @NSManaged public var activeTrackers: NSSet?
-
 }
 
 // MARK: Generated accessors for activeTrackers
@@ -47,9 +46,4 @@ extension TrackerCategoryCoreData {
 
     @objc(removeActiveTrackers:)
     @NSManaged public func removeFromActiveTrackers(_ values: NSSet)
-
-}
-
-extension TrackerCategoryCoreData : Identifiable {
-
 }

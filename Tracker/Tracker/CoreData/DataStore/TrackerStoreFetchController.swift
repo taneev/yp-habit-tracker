@@ -45,7 +45,7 @@ final class TrackerStoreFetchController: NSObject {
 
     private func createPredicateWith(selectedDate: Date, searchString: String? = nil) -> NSPredicate? {
         guard let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: selectedDate))
-        else {return nil}
+        else { return nil }
         let weekDayText = WeekDay.shortWeekdayText[currentWeekDay] ?? ""
 
         let searchText = searchString?.trimmingCharacters(in: .whitespaces) ?? ""
@@ -88,7 +88,7 @@ extension TrackerStoreFetchController: TrackerStoreFetchControllerProtocol {
 
     func object(at indexPath: IndexPath) -> TrackerStore? {
         guard let trackerCoreData = fetchedController?.object(at: indexPath)
-        else {return nil}
+        else { return nil }
 
         return TrackerStore(trackerCoreData: trackerCoreData)
     }

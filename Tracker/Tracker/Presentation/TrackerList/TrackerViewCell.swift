@@ -18,7 +18,7 @@ final class TrackerViewCell: UICollectionViewCell {
     weak var delegate: TrackerViewCellProtocol?
     var tracker: Tracker? {
         didSet {
-            guard let tracker else {return}
+            guard let tracker else { return }
             cellName = tracker.name
             cellColor = tracker.color?.color() ?? .clear
             emoji = tracker.emoji
@@ -106,7 +106,7 @@ final class TrackerViewCell: UICollectionViewCell {
             return
         }
 
-        if !(isDoneButtonEnabled == true) {return}
+        if !(isDoneButtonEnabled == true) { return }
 
         let isButtonChecked = !(isCompleted ?? false)
         delegate?.trackerDoneButtonDidSwitched(to: isButtonChecked, at: indexPath)

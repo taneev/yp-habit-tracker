@@ -48,7 +48,7 @@ struct TrackerCategoryStore {
             for: categoryID,
             context: context
         )
-        else {return}
+        else { return }
         context.delete(categoryCoreData)
         try? context.save()
     }

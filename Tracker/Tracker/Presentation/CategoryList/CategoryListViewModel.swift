@@ -14,8 +14,8 @@ struct CategoryListViewModelBindings {
 }
 
 protocol CategoryListViewModelProtocol: AnyObject {
-    var dataProvider: any CategoryDataProviderProtocol {get}
-    var categoriesCount: Int {get}
+    var dataProvider: any CategoryDataProviderProtocol { get }
+    var categoriesCount: Int { get }
     func viewDidLoad()
     func setBindings(_ bindings: CategoryListViewModelBindings)
     func didSelectRow(at indexPath: IndexPath, isInitialSelection: Bool)
@@ -68,7 +68,7 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
 
     func configCell(at indexPath: IndexPath) {
         guard let category = dataProvider.object(at: indexPath) as? TrackerCategory
-        else {return}
+        else { return }
 
         let isSelected = selectedCategory?.categoryID == category.categoryID
         cellViewModels[indexPath.item].setupModelWith(
@@ -92,7 +92,7 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
         cellViewModels[indexPath.item].didSelectRow()
         if !isInitialSelection {
             guard let category = dataProvider.object(at: indexPath) as? TrackerCategory
-            else {return}
+            else { return }
             selectionDelegate.updateSelected(category)
         }
     }
@@ -115,7 +115,7 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
 
     func editCategoryDidTap(at indexPath: IndexPath) {
         guard let category = dataProvider.object(at: indexPath) as? TrackerCategory
-        else {return}
+        else { return }
 
         editingCategory = category
     }

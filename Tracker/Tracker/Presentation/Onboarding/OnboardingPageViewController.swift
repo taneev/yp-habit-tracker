@@ -11,7 +11,7 @@ final class OnboardingPageViewController: UIViewController {
 
     var backgroundImageName: String? {
         didSet {
-            guard let backgroundImageName else {return}
+            guard let backgroundImageName else { return }
             pageBackgroundImageView.image = UIImage(named: backgroundImageName)
         }
     }
@@ -26,7 +26,6 @@ final class OnboardingPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         addSubviews()
     }
 }
@@ -40,7 +39,7 @@ private extension OnboardingPageViewController {
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.textColor = UIColor.ypBlackDay
         label.textAlignment = .center
-        label.numberOfLines = 0
+        label.numberOfLines = .zero
         label.text = pageMainMessage
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -70,7 +69,6 @@ private extension OnboardingPageViewController {
             pageBackgroundImageView.topAnchor.constraint(equalTo: view.topAnchor),
             pageBackgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             pageBackgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-
         ])
     }
 }

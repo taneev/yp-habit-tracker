@@ -13,16 +13,8 @@ class CategoryCell: UITableViewCell {
 
     var viewModel: CategoryCellViewModelProtocol? {
         didSet {
-            guard let viewModel else {return}
-
-            let bindings = CategoryCellViewModelBindings(
-                categoryName: { [weak self] in
-                    self?.setText(with: $0)
-                },
-                isSelected: { [weak self] in
-                    self?.accessoryType = ($0 == true) ? .checkmark : .none
-                })
-            viewModel.setBinidings(bindings)
+            guard let viewModel else { return }
+            bind(viewModel: viewModel)
         }
     }
 
@@ -34,6 +26,10 @@ class CategoryCell: UITableViewCell {
         textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
     }
 
+    override func prepareForReuse() {
+        viewModel = nil
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -42,7 +38,14 @@ class CategoryCell: UITableViewCell {
         textLabel?.text = categoryName
     }
 
-    override func prepareForReuse() {
-        viewModel = nil
+    private func bind(viewModel: CategoryCellViewModelProtocol) {
+        let bindings = CategoryCellViewModelBindings(
+            categoryName: { [weak self] in
+                self?.setText(with: $0)
+            },
+            isSelected: { [weak self] in
+                self?.accessoryType = ($0 == true) ? .checkmark : .none
+            })
+        viewModel.setBinidings(bindings)
     }
 }

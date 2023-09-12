@@ -7,8 +7,8 @@
 import UIKit
 
 protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForCollectionLayoutDelegate {
-    var dataStore: DataStoreProtocol {get}
-    var numberOfObjects: Int {get}
+    var dataStore: DataStoreProtocol { get }
+    var numberOfObjects: Int { get }
     func loadData()
     func getDefaultCategory() -> TrackerCategory?
     func save(tracker: Tracker, in categoryID: TrackerCategory)
@@ -36,14 +36,14 @@ final class TrackerDataProvider {
     }
 
     private func completeTracker(withID trackerID: UUID, for date: Date) {
-        guard let context = dataStore.getContext() else {return}
+        guard let context = dataStore.getContext() else { return }
 
         let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
         recordStore.addRecord(context: context)
     }
 
     private func uncompleteTracker(withID trackerID: UUID, for date: Date) {
-        guard let context = dataStore.getContext() else {return}
+        guard let context = dataStore.getContext() else { return }
 
         let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
         recordStore.deleteRecord(context: context)
@@ -63,7 +63,7 @@ extension TrackerDataProvider: DataProviderForDataSource {
 
     func object(at indexPath: IndexPath) -> T? {
         guard let trackerStore = fetchedController?.object(at: indexPath) as? TrackerStore
-        else {return nil}
+        else { return nil }
 
         let color = UIColor.YpColors(rawValue: trackerStore.color)
         let schedule = WeekDay.getWeekDays(from: trackerStore.schedule ?? "")
@@ -105,7 +105,7 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
 
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int {
         guard let tracker = fetchedController?.object(at: indexPath) as? TrackerStore
-        else {return 0}
+        else { return .zero }
         return tracker.completed?.count ?? 0
     }
 
@@ -125,14 +125,14 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
 
     func getDefaultCategory() -> TrackerCategory? {
         guard let categoryStore = MockDataGenerator.getDefaultCategory(for: dataStore)
-        else {return nil}
+        else { return nil }
 
         return TrackerCategory(id: categoryStore.categoryID, name: categoryStore.name)
     }
 
     func save(tracker: Tracker, in category: TrackerCategory) {
 
-        guard let context = dataStore.getContext() else {return}
+        guard let context = dataStore.getContext() else { return }
 
         let trackerStore = TrackerStore(
             trackerID: tracker.trackerID,
@@ -150,7 +150,7 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
 
     func getCategoryNameForTracker(at indexPath: IndexPath) -> String {
         guard let tracker = fetchedController?.object(at: indexPath) as? TrackerStore
-        else {return ""}
+        else { return "" }
         return tracker.category.name
     }
 }

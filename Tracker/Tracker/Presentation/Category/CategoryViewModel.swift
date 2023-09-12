@@ -53,7 +53,7 @@ final class CategoryViewModel: CategoryViewModelProtocol {
     }
 
     func okButtonDidTap() {
-        guard let categoryName else {return}
+        guard let categoryName else { return }
         let updatedCategory = TrackerCategory(id: category.categoryID, name: categoryName)
         saveCategory?(updatedCategory)
         isCategoryDidCreated = true

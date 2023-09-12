@@ -12,11 +12,11 @@ class CategoryViewController: UIViewController {
     var viewModel: CategoryViewModelProtocol? {
         didSet {
             let bindings = CategoryViewModelBindings(
-                isOkButtonEnabled: {[weak self] isEnabled in
+                isOkButtonEnabled: { [weak self] isEnabled in
                     self?.okButton.roundedButtonStyle = isEnabled == true ? .normal : .disabled
                 },
-                isCategoryDidCreated: {[weak self] isDone in
-                    guard let isDone, let self else {return}
+                isCategoryDidCreated: { [weak self] isDone in
+                    guard let isDone, let self else { return }
                     if isDone {
                         self.dismiss(animated: true)
                     }

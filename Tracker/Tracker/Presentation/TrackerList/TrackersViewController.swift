@@ -82,7 +82,7 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell,
-              let trackerID = cell.tracker?.trackerID else {return}
+              let trackerID = cell.tracker?.trackerID else { return }
         dataProvider.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
         cell.isCompleted = isCompleted
         cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)

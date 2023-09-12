@@ -35,7 +35,7 @@ struct TrackerRecordStore {
     func deleteRecord(context: NSManagedObjectContext) {
         guard let completedAt = completedAt.truncated(),
               let tracker = TrackerCoreData.fetchRecord(for: trackerID, context: context)
-        else {return}
+        else { return }
 
         let recordsRequest = TrackerRecordCoreData.fetchRequest()
         recordsRequest.predicate = NSPredicate(

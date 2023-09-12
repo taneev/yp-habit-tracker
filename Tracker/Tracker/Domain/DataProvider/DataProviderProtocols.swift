@@ -9,7 +9,7 @@ import Foundation
 
 protocol DataProviderForDataSource {
     associatedtype T
-    var numberOfSections: Int {get}
+    var numberOfSections: Int { get }
     func numberOfRows(in section: Int) -> Int
     func object(at: IndexPath) -> T?
 }

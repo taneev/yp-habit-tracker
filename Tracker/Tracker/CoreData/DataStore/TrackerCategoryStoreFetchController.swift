@@ -52,7 +52,7 @@ extension CategoryStoreFetchController: DataStoreFetchedControllerProtocol {
 
     func object(at indexPath: IndexPath) -> TrackerCategoryStore? {
         guard let trackerCoreData = fetchedController?.object(at: indexPath)
-        else {return nil}
+        else { return nil }
 
         return TrackerCategoryStore(categoryCoreData: trackerCoreData)
     }

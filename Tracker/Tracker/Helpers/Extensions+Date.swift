@@ -20,7 +20,7 @@ extension Date {
 
     func truncated() -> Date? {
         var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: self)
-        guard let utcTimeZone = TimeZone(abbreviation: "UTC") else {return nil}
+        guard let utcTimeZone = TimeZone(abbreviation: "UTC") else { return nil }
         dateComponents.timeZone = utcTimeZone
         return Calendar.current.date(from: dateComponents)
     }

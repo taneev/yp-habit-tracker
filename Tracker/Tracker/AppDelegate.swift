@@ -10,6 +10,9 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    // переменная startViewController нужна для обращения к ней в одном из двух случаев:
+    // - сразу при старте приложения, если запускается не в первый раз
+    // - из экранов онбординга при первом запуске приложения
     lazy var startViewController = { createStartViewController() }()
 
     private lazy var onboardingViewController = OnboardingViewController(

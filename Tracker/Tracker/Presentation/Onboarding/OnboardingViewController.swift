@@ -33,7 +33,7 @@ class OnboardingViewController: UIPageViewController {
     @objc private func startButtonDidTap() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
               let window = appDelegate.window
-        else {return}
+        else { return }
         let startViewController = appDelegate.startViewController
         window.rootViewController = startViewController
     }
@@ -57,7 +57,7 @@ private extension OnboardingViewController {
     func createPageControl() -> UIPageControl {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = pages.count
-        pageControl.currentPage = 0
+        pageControl.currentPage = .zero
 
         pageControl.currentPageIndicatorTintColor = .ypBlackDay
         pageControl.pageIndicatorTintColor = .ypBlackDay.withAlphaComponent(0.3)
@@ -93,7 +93,6 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
         else {
             return nil
         }
-
         return pages[viewControllerIndex - 1]
     }
 
@@ -107,7 +106,6 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
         else {
             return nil
         }
-
         return pages[viewControllerIndex + 1]
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(TrackerCoreData)
-public class TrackerCoreData: NSManagedObject {
+public class TrackerCoreData: NSManagedObject, Identifiable {
 
     @NSManaged public var categoryID: UUID?
     @NSManaged public var color: String?
@@ -52,9 +52,4 @@ extension TrackerCoreData {
 
     @objc(removeCompleted:)
     @NSManaged public func removeFromCompleted(_ values: NSSet)
-
-}
-
-extension TrackerCoreData : Identifiable {
-
 }

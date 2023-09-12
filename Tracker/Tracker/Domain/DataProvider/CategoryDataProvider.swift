@@ -7,8 +7,8 @@
 import UIKit
 
 protocol CategoryDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForTableViewDelegate {
-    var dataStore: DataStoreProtocol {get}
-    var numberOfObjects: Int {get}
+    var dataStore: DataStoreProtocol { get }
+    var numberOfObjects: Int { get }
     func loadData()
     func getDefaultCategory() -> TrackerCategory?
     func save(category: TrackerCategory)
@@ -43,7 +43,7 @@ extension CategoryDataProvider: DataProviderForDataSource {
 
     func object(at indexPath: IndexPath) -> T? {
         guard let categoryStore = fetchedController?.object(at: indexPath) as? TrackerCategoryStore
-        else {return nil}
+        else { return nil }
 
         let category = T(id: categoryStore.categoryID, name: categoryStore.name)
         return category
@@ -67,14 +67,14 @@ extension CategoryDataProvider: CategoryDataProviderProtocol {
 
     func getDefaultCategory() -> TrackerCategory? {
         guard let categoryStore = MockDataGenerator.getDefaultCategory(for: dataStore)
-        else {return nil}
+        else { return nil }
 
         return TrackerCategory(id: categoryStore.categoryID, name: categoryStore.name)
     }
 
     func save(category: TrackerCategory) {
 
-        guard let context = dataStore.getContext() else {return}
+        guard let context = dataStore.getContext() else { return }
 
         let categoryStore = TrackerCategoryStore(categoryID: category.categoryID, name: category.name)
         categoryStore.save(context: context)
@@ -83,7 +83,7 @@ extension CategoryDataProvider: CategoryDataProviderProtocol {
     func deleteCategory(at indexPath: IndexPath) {
         guard let category = object(at: indexPath),
               let context = dataStore.getContext()
-        else {return}
+        else { return }
 
         let categoryStore = TrackerCategoryStore(categoryID: category.categoryID, name: category.name)
         categoryStore.deleteRecord(context: context)
