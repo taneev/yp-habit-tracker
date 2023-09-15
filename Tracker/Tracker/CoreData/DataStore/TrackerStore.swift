@@ -22,6 +22,23 @@ struct TrackerStore {
         static let recordForUUIDPredicate = "%K == %@"
     }
 
+    static func deleteRecord(with trackerID: UUID, context: NSManagedObjectContext) {
+        guard let trackerCoreData = TrackerCoreData.fetchRecord(
+            for: trackerID,
+            context: context
+        )
+        else { return }
+        context.delete(trackerCoreData)
+        try? context.save()
+    }
+
+    static func getRecord(for trackerID: UUID, context: NSManagedObjectContext) -> TrackerStore? {
+        guard let trackerCoreData = TrackerCoreData.fetchRecord(for: trackerID, context: context)
+        else { return nil }
+
+        return TrackerStore(trackerCoreData: trackerCoreData)
+    }
+
     init(
         trackerID: UUID,
         name: String,
@@ -102,17 +119,9 @@ struct TrackerStore {
         trackerCoreData.emoji = emoji
         trackerCoreData.color = color
         trackerCoreData.schedule = schedule
+        trackerCoreData.category = categoryCoreData
+        trackerCoreData.categoryID = categoryID
         trackerCoreData.isPinned = isPinned
-        try? context.save()
-    }
-
-    static func deleteRecord(with trackerID: UUID, context: NSManagedObjectContext) {
-        guard let trackerCoreData = TrackerCoreData.fetchRecord(
-            for: trackerID,
-            context: context
-        )
-        else { return }
-        context.delete(trackerCoreData)
         try? context.save()
     }
 }

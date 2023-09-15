@@ -32,12 +32,13 @@ enum TrackerProperty: String {
 
 final class TrackerPropertyCollectionView: UIView {
 
+    lazy var collectionView = { createCollectionView() }()
+
     private var propertyType: TrackerProperty?
     private weak var delegate: PropertyCollectionViewDelegate?
     private weak var dataSource: PropertyCollectionDataSource?
     private var title: String?
     private lazy var titleView = { createTitleView() }()
-    private lazy var collectionView = { createCollectionView() }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -61,6 +62,13 @@ final class TrackerPropertyCollectionView: UIView {
         self.dataSource = dataSource
 
         setupSubviews()
+    }
+
+    func selectItem(at indexPath: IndexPath) {
+        guard let propertyType else { return }
+
+        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .bottom)
+        delegate?.didSelectItem(at: indexPath, for: propertyType)
     }
 }
 
@@ -151,7 +159,7 @@ private extension TrackerPropertyCollectionView {
         return title
     }
 
-    func createCollectionView() -> UIView {
+    func createCollectionView() -> UICollectionView {
 
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)

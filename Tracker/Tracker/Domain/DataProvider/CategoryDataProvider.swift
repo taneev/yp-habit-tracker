@@ -10,7 +10,6 @@ protocol CategoryDataProviderProtocol: AnyObject, DataProviderForDataSource, Dat
     var dataStore: DataStoreProtocol { get }
     var numberOfObjects: Int { get }
     func loadData()
-    func getDefaultCategory() -> TrackerCategory?
     func save(category: TrackerCategory)
     func deleteCategory(at indexPath: IndexPath)
 }
@@ -63,13 +62,6 @@ extension CategoryDataProvider: CategoryDataProviderProtocol {
 
     func loadData() {
         fetchedController?.fetchData()
-    }
-
-    func getDefaultCategory() -> TrackerCategory? {
-        guard let categoryStore = MockDataGenerator.getDefaultCategory(for: dataStore)
-        else { return nil }
-
-        return TrackerCategory(id: categoryStore.categoryID, name: categoryStore.name)
     }
 
     func save(category: TrackerCategory) {

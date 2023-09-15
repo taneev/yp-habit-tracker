@@ -10,9 +10,8 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
     var dataStore: DataStoreProtocol { get }
     var numberOfObjects: Int { get }
     func loadData()
-    func getDefaultCategory() -> TrackerCategory?
     func save(tracker: Tracker, in categoryID: TrackerCategory)
-    func getCategoryNameForTracker(at indexPath: IndexPath) -> String
+    func getCategoryForTracker(at indexPath: IndexPath) -> TrackerCategory?
     func setDateFilter(with date: Date)
     func setSearchTextFilter(with searchText: String)
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date)
@@ -126,36 +125,43 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
         fetchedController?.fetchData()
     }
 
-    func getDefaultCategory() -> TrackerCategory? {
-        guard let categoryStore = MockDataGenerator.getDefaultCategory(for: dataStore)
-        else { return nil }
-
-        return TrackerCategory(id: categoryStore.categoryID, name: categoryStore.name)
-    }
-
     func save(tracker: Tracker, in category: TrackerCategory) {
-
         guard let context = dataStore.getContext() else { return }
 
-        let trackerStore = TrackerStore(
-            trackerID: tracker.trackerID,
-            name: tracker.name,
-            isRegular: tracker.isRegular,
-            emoji: tracker.emoji,
-            color: tracker.color?.rawValue ?? "",
-            schedule: WeekDay.getDescription(for: tracker.schedule ?? []),
-            category: TrackerCategoryStore(categoryID: category.categoryID, name: category.name),
-            completed: nil,
-            isPinned: tracker.isPinned
-        )
-
-        trackerStore.addRecord(context: context)
+        if let trackerStoreForUpdate = TrackerStore.getRecord(for: tracker.trackerID, context: context) {
+            let updatedTrackerStore = TrackerStore(
+                trackerID: trackerStoreForUpdate.trackerID,
+                name: tracker.name,
+                isRegular: trackerStoreForUpdate.isRegular,
+                emoji: tracker.emoji,
+                color: tracker.color?.rawValue ?? "",
+                schedule: WeekDay.getDescription(for: tracker.schedule ?? []),
+                category: TrackerCategoryStore(categoryID: category.categoryID, name: category.name),
+                completed: trackerStoreForUpdate.completed,
+                isPinned: trackerStoreForUpdate.isPinned
+            )
+            updatedTrackerStore.updateRecord(context: context)
+        }
+        else {
+            let trackerStore = TrackerStore(
+                trackerID: tracker.trackerID,
+                name: tracker.name,
+                isRegular: tracker.isRegular,
+                emoji: tracker.emoji,
+                color: tracker.color?.rawValue ?? "",
+                schedule: WeekDay.getDescription(for: tracker.schedule ?? []),
+                category: TrackerCategoryStore(categoryID: category.categoryID, name: category.name),
+                completed: nil,
+                isPinned: tracker.isPinned
+            )
+            trackerStore.addRecord(context: context)
+        }
     }
 
-    func getCategoryNameForTracker(at indexPath: IndexPath) -> String {
+    func getCategoryForTracker(at indexPath: IndexPath) -> TrackerCategory? {
         guard let tracker = fetchedController?.object(at: indexPath) as? TrackerStore
-        else { return "" }
-        return tracker.category.name
+        else { return nil }
+        return TrackerCategory(id: tracker.category.categoryID, name: tracker.category.name)
     }
 
     func pinTracker(to isPinned: Bool, at indexPath: IndexPath) {

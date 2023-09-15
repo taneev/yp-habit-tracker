@@ -16,7 +16,12 @@ final class TrackerNameInputView: UIStackView {
     }
 
     var text: String {
-        inputTextField.text ?? ""
+        get {
+            inputTextField.text ?? ""
+        }
+        set {
+            inputTextField.text = newValue
+        }
     }
 
     weak var delegate: UITextFieldDelegate? {

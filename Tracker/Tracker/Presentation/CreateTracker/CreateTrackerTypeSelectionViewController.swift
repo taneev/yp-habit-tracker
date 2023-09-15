@@ -26,19 +26,33 @@ final class CreateTrackerTypeSelectionViewController: UIViewController {
     }
 
     @objc private func habitButtonDidTap() {
-        createTracker(isRegular: true)
+        let viewController = Self.createTrackerViewController(
+            isRegular: true,
+            saverDelegate: saverDelegate,
+            dataProvider: dataProvider
+        )
+        present(viewController, animated: true)
     }
 
     @objc private func irregularEventButtonDidTap() {
-        createTracker(isRegular: false)
+        let viewController = Self.createTrackerViewController(
+            isRegular: true,
+            saverDelegate: saverDelegate,
+            dataProvider: dataProvider
+        )
+        present(viewController, animated: true)
     }
 
-    private func createTracker(isRegular: Bool) {
+    static func createTrackerViewController(
+        isRegular: Bool,
+        saverDelegate: NewTrackerSaverDelegate?,
+        dataProvider: (any TrackerDataProviderProtocol)?
+    ) -> NewTrackerViewController {
         let viewController = NewTrackerViewController()
         viewController.isRegular = isRegular
         viewController.saverDelegate = saverDelegate
         viewController.dataProvider = dataProvider
-        present(viewController, animated: true)
+        return viewController
     }
 
     private func addButtonTargets(){

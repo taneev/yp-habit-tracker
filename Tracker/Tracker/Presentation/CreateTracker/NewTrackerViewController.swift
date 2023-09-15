@@ -19,6 +19,8 @@ final class NewTrackerViewController: UIViewController {
 
     weak var saverDelegate: NewTrackerSaverDelegate?
     var dataProvider: (any TrackerDataProviderProtocol)?
+
+    var tracker: Tracker?
     var isRegular: Bool!
 
     private var trackerName: String? {
@@ -27,8 +29,7 @@ final class NewTrackerViewController: UIViewController {
         }
     }
 
-    // временная категория для тестирования
-    private var category: TrackerCategory? {
+    var category: TrackerCategory? {
         didSet {
             checkIsAllParametersDidSetup()
         }
@@ -145,7 +146,7 @@ final class NewTrackerViewController: UIViewController {
         }
 
         let newTracker = Tracker(
-                trackerID: UUID(),
+                trackerID: tracker?.trackerID ?? UUID(),
                 name: trackerName,
                 isRegular: isRegular,
                 emoji: selectedEmoji,
@@ -162,18 +163,17 @@ final class NewTrackerViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    private func updatedCategoryName() -> TrackerCategory? {
-        // TODO: временный вариант инициализации категории первой попавшейся, пока нет
-        // функциональности создания категорий
-        return dataProvider?.getDefaultCategory()
-    }
-
     private func checkIsAllParametersDidSetup() {
         isAllParametersDidSetup = trackerName?.isEmpty == false
             && (!isRegular || schedule?.isEmpty == false)
             && (category?.name.isEmpty == false)
             && (selectedEmoji?.isEmpty == false)
             && (UIColor.YpColors(rawValue: selectedColor ?? "") != nil)
+    }
+
+    private func displayTrackerName(){
+        guard let trackerName else { return }
+        inputTrackerNameTxtField.text = trackerName
     }
 
     private func displaySchedule() {
@@ -185,8 +185,35 @@ final class NewTrackerViewController: UIViewController {
     }
 
     private func displayData() {
+        initData(with: tracker)
+        displayTrackerName()
         displaySchedule()
         displayCategory()
+    }
+
+    private func initData(with tracker: Tracker?) {
+        guard let tracker else { return }
+
+        trackerName = tracker.name
+        schedule = tracker.schedule
+        selectColor(tracker.color)
+        selectEmoji(tracker.emoji)
+    }
+
+    private func selectColor(_ color: UIColor.YpColors?) {
+        guard let color,
+              let colorIndex = colors.firstIndex(of: color.rawValue)
+        else { return }
+
+        colorCollectionView.selectItem(at: IndexPath(row: colorIndex, section: 0))
+    }
+
+    private func selectEmoji(_ emoji: String?) {
+        guard let emoji,
+              let emojiIndex = emojies.firstIndex(of: emoji)
+        else { return }
+
+        emojiCollectionView.selectItem(at: IndexPath(row: emojiIndex, section: 0))
     }
 }
 
@@ -316,7 +343,7 @@ private extension NewTrackerViewController {
         return stack
     }
 
-    func createEmojiCollectionView() -> UIView {
+    func createEmojiCollectionView() -> TrackerPropertyCollectionView {
 
         let view = TrackerPropertyCollectionView(
                         title: "Emoji",
@@ -329,7 +356,7 @@ private extension NewTrackerViewController {
         return view
     }
 
-    func createColorCollectionView() -> UIView {
+    func createColorCollectionView() -> TrackerPropertyCollectionView {
 
         let view = TrackerPropertyCollectionView(
                         title: "Цвет",

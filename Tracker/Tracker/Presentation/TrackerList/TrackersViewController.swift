@@ -93,7 +93,17 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func editTrackerDidTap(at indexPath: IndexPath) {
-        print("редактирование \(indexPath)")
+        guard let tracker = dataProvider.object(at: indexPath) as? Tracker
+        else { return }
+
+        let viewController = CreateTrackerTypeSelectionViewController.createTrackerViewController(
+            isRegular: tracker.isRegular,
+            saverDelegate: self,
+            dataProvider: dataProvider
+        )
+        viewController.tracker = tracker
+        viewController.category = dataProvider.getCategoryForTracker(at: indexPath)
+        present(viewController, animated: true)
     }
 
     func deleteTrackerDidTap(at indexPath: IndexPath) {
@@ -193,7 +203,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                             withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
                             for: indexPath
                 ) as? TrackersSectionHeaderView {
-            view.headerLabel.text = dataProvider.getCategoryNameForTracker(at: indexPath)
+            view.headerLabel.text = dataProvider.getCategoryForTracker(at: indexPath)?.name ?? ""
             return view
         }
         else {
