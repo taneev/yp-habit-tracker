@@ -9,6 +9,9 @@ import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath)
+    func pinTrackerDidTap(at indexPath: IndexPath)
+    func editTrackerDidTap(at indexPath: IndexPath)
+    func deleteTrackerDidTap(at indexPath: IndexPath)
 }
 
 final class TrackerViewCell: UICollectionViewCell {
@@ -114,6 +117,33 @@ final class TrackerViewCell: UICollectionViewCell {
     }
 }
 
+extension TrackerViewCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { [weak self] _ in
+            guard let self else { return UIMenu() }
+            let pinActionTitle = isPinned ? "Открепить" : "Закрепить"
+            let pinAction = UIAction(title: pinActionTitle) { [weak self] _ in
+                guard let self, let indexPath else { return }
+                self.delegate?.pinTrackerDidTap(at: indexPath)
+            }
+
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                guard let self, let indexPath else { return }
+                self.delegate?.editTrackerDidTap(at: indexPath)
+            }
+
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                guard let self, let indexPath else { return }
+                self.delegate?.deleteTrackerDidTap(at: indexPath)
+            }
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
+    }
+}
+
 // MARK: Layout
 private extension TrackerViewCell {
     func createTrackerView() -> UIView {
@@ -125,6 +155,7 @@ private extension TrackerViewCell {
         trackerView.addSubview(cellNameLabel)
         trackerView.addSubview(emojiLabel)
         trackerView.addSubview(pinnedImageView)
+        trackerView.addInteraction(UIContextMenuInteraction(delegate: self))
         return trackerView
     }
 
