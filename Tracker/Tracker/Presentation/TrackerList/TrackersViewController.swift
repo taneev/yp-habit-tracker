@@ -195,6 +195,45 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
         return CGSize(width: collectionView.frame.width, height: 18)
     }
+
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { [weak self] _ in
+            guard let self else { return UIMenu() }
+            let pinAction = UIAction(title: "*крепить") { [weak self] _ in
+                self?.pinTrackerDidTap(at: indexPath)
+            }
+
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                self?.editTrackerDidTap(at: indexPath)
+            }
+
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                self?.deleteTrackerDidTap(at: indexPath)
+            }
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
+    }
+}
+
+// MARK: Методы для работы с контекстным меню трекера
+
+private extension TrackersViewController {
+
+    func pinTrackerDidTap(at indexPath: IndexPath) {
+
+    }
+
+    func editTrackerDidTap(at indexPath: IndexPath) {
+
+    }
+
+    func deleteTrackerDidTap(at indexPath: IndexPath) {
+
+    }
+
 }
 
 // MARK: TrackersDataProviderDelegate

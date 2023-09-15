@@ -24,6 +24,7 @@ final class TrackerViewCell: UICollectionViewCell {
             emoji = tracker.emoji
             quantity = tracker.completedCounter
             isCompleted = tracker.isCompleted
+            isPinned = tracker.isPinned
         }
     }
 
@@ -72,13 +73,13 @@ final class TrackerViewCell: UICollectionViewCell {
             emojiLabel.text = emoji
         }
     }
-    private var pinned: Bool = false {
+    private var isPinned: Bool = false {
         didSet {
-            pinnedImageView.image = pinned ? pinImage : UIImage()
+            pinnedImageView.image = isPinned ? pinImage : UIImage()
         }
     }
 
-    private let pinImage = UIImage(systemName: "pin.fill") ?? UIImage()
+    private let pinImage = UIImage(systemName: "pin.fill")?.withAlignmentRectInsets(UIEdgeInsets(top: -5, left: -5, bottom: -5, right: -5)) ?? UIImage()
     private let fontSize = CGFloat(12)
     private let buttonRadius = CGFloat(17)
     private var buttonLabelText: String { (isCompleted == true) ? "✓" : "＋" }

@@ -16,6 +16,7 @@ struct TrackerStore {
     let schedule: String?
     let category: TrackerCategoryStore
     let completed: [TrackerRecordStore]?
+    let isPinned: Bool
 
     private enum Constants {
         static let recordForUUIDPredicate = "%K == %@"
@@ -29,7 +30,8 @@ struct TrackerStore {
         color: String,
         schedule: String?,
         category: TrackerCategoryStore,
-        completed: [TrackerRecordStore]?
+        completed: [TrackerRecordStore]?,
+        isPinned: Bool
     ) {
         self.trackerID = trackerID
         self.name = name
@@ -39,6 +41,7 @@ struct TrackerStore {
         self.schedule = schedule
         self.category = category
         self.completed = completed
+        self.isPinned = isPinned
     }
 
     init(trackerCoreData: TrackerCoreData) {
@@ -61,7 +64,8 @@ struct TrackerStore {
                 categoryID: trackerCoreData.categoryID ?? UUID(),
                 name: trackerCoreData.category?.name ?? ""
             ),
-            completed: completedStoreRecords
+            completed: completedStoreRecords,
+            isPinned: trackerCoreData.isPinned
         )
     }
 
@@ -81,6 +85,7 @@ struct TrackerStore {
         trackerCoreData.category = categoryCoreData
         trackerCoreData.categoryID = categoryCoreData.categoryID
         trackerCoreData.completed = nil
+        trackerCoreData.isPinned = isPinned
         try? context.save()
     }
 }

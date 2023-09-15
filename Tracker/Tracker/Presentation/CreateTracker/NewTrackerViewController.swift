@@ -152,7 +152,8 @@ final class NewTrackerViewController: UIViewController {
                 color: color,
                 schedule: schedule,
                 isCompleted: false,
-                completedCounter: 0
+                completedCounter: 0,
+                isPinned: false
         )
         saverDelegate?.save(tracker: newTracker, in: category)
     }

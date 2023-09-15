@@ -9,6 +9,7 @@
         <attribute name="categoryID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="color" attributeType="String"/>
         <attribute name="emoji" attributeType="String"/>
+        <attribute name="isPinned" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isRegular" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" minValueString="1" maxValueString="38"/>
         <attribute name="schedule" optional="YES" attributeType="String"/>

@@ -77,7 +77,8 @@ extension TrackerDataProvider: DataProviderForDataSource {
                         color: color,
                         schedule: schedule,
                         isCompleted: isCompleted,
-                        completedCounter: completedDates?.count ?? 0
+                        completedCounter: completedDates?.count ?? 0,
+                        isPinned: trackerStore.isPinned
         )
         return tracker
     }
@@ -142,7 +143,8 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
             color: tracker.color?.rawValue ?? "",
             schedule: WeekDay.getDescription(for: tracker.schedule ?? []),
             category: TrackerCategoryStore(categoryID: category.categoryID, name: category.name),
-            completed: nil
+            completed: nil,
+            isPinned: tracker.isPinned
         )
 
         trackerStore.addRecord(context: context)

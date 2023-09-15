@@ -21,6 +21,7 @@ public class TrackerCoreData: NSManagedObject, Identifiable {
     @NSManaged public var trackerID: UUID?
     @NSManaged public var category: TrackerCategoryCoreData?
     @NSManaged public var completed: NSSet?
+    @NSManaged public var isPinned: Bool
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<TrackerCoreData> {
         return NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
