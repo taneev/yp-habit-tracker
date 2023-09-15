@@ -9,7 +9,7 @@ import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath)
-    func pinTrackerDidTap(at indexPath: IndexPath)
+    func pinTrackerDidTap(to isPinned: Bool, at indexPath: IndexPath)
     func editTrackerDidTap(at indexPath: IndexPath)
     func deleteTrackerDidTap(at indexPath: IndexPath)
 }
@@ -127,7 +127,7 @@ extension TrackerViewCell: UIContextMenuInteractionDelegate {
             let pinActionTitle = isPinned ? "Открепить" : "Закрепить"
             let pinAction = UIAction(title: pinActionTitle) { [weak self] _ in
                 guard let self, let indexPath else { return }
-                self.delegate?.pinTrackerDidTap(at: indexPath)
+                self.delegate?.pinTrackerDidTap(to: !isPinned, at: indexPath)
             }
 
             let editAction = UIAction(title: "Редактировать") { [weak self] _ in

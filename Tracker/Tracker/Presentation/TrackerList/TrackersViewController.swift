@@ -88,8 +88,8 @@ extension TrackersViewController: TrackerViewCellProtocol {
         cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)
     }
 
-    func pinTrackerDidTap(at indexPath: IndexPath) {
-        print("крепление \(indexPath)")
+    func pinTrackerDidTap(to isPinned: Bool, at indexPath: IndexPath) {
+        dataProvider.pinTracker(to: isPinned, at: indexPath)
     }
 
     func editTrackerDidTap(at indexPath: IndexPath) {

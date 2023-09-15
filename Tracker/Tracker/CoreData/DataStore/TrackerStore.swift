@@ -88,4 +88,21 @@ struct TrackerStore {
         trackerCoreData.isPinned = isPinned
         try? context.save()
     }
+
+    func updateRecord(context: NSManagedObjectContext) {
+        let categoryID = category.categoryID
+        guard let categoryCoreData = TrackerCategoryCoreData.fetchRecord(for: categoryID, context: context)
+        else { return }
+
+        guard let trackerCoreData = TrackerCoreData.fetchRecord(for: trackerID, context: context)
+        else { return }
+
+        trackerCoreData.name = name
+        trackerCoreData.isRegular = isRegular
+        trackerCoreData.emoji = emoji
+        trackerCoreData.color = color
+        trackerCoreData.schedule = schedule
+        trackerCoreData.isPinned = isPinned
+        try? context.save()
+    }
 }

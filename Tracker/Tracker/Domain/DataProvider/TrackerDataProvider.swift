@@ -17,6 +17,7 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
     func setSearchTextFilter(with searchText: String)
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date)
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
+    func pinTracker(to isPinned: Bool, at indexPath: IndexPath)
 }
 
 final class TrackerDataProvider {
@@ -154,5 +155,22 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
         guard let tracker = fetchedController?.object(at: indexPath) as? TrackerStore
         else { return "" }
         return tracker.category.name
+    }
+
+    func pinTracker(to isPinned: Bool, at indexPath: IndexPath) {
+        guard let context = dataStore.getContext() else { return }
+        guard let trackerStore = fetchedController?.object(at: indexPath) as? TrackerStore
+        else { return }
+        let trackerUpdated = TrackerStore(
+            trackerID: trackerStore.trackerID,
+            name: trackerStore.name,
+            isRegular: trackerStore.isRegular,
+            emoji: trackerStore.emoji,
+            color: trackerStore.color,
+            schedule: trackerStore.schedule,
+            category: trackerStore.category,
+            completed: trackerStore.completed,
+            isPinned: isPinned)
+        trackerUpdated.updateRecord(context: context)
     }
 }
