@@ -18,6 +18,7 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date)
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
     func pinTracker(to isPinned: Bool, at indexPath: IndexPath)
+    func deleteTracker(at indexPath: IndexPath)
 }
 
 final class TrackerDataProvider {
@@ -172,5 +173,13 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
             completed: trackerStore.completed,
             isPinned: isPinned)
         trackerUpdated.updateRecord(context: context)
+    }
+
+    func deleteTracker(at indexPath: IndexPath) {
+        guard let tracker = object(at: indexPath),
+              let context = dataStore.getContext()
+        else { return }
+
+        TrackerStore.deleteRecord(with: tracker.trackerID, context: context)
     }
 }

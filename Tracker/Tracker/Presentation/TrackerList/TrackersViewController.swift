@@ -97,7 +97,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func deleteTrackerDidTap(at indexPath: IndexPath) {
-        print("удаление \(indexPath)")
+        dataProvider.deleteTracker(at: indexPath)
     }
 }
 

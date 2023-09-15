@@ -105,4 +105,14 @@ struct TrackerStore {
         trackerCoreData.isPinned = isPinned
         try? context.save()
     }
+
+    static func deleteRecord(with trackerID: UUID, context: NSManagedObjectContext) {
+        guard let trackerCoreData = TrackerCoreData.fetchRecord(
+            for: trackerID,
+            context: context
+        )
+        else { return }
+        context.delete(trackerCoreData)
+        try? context.save()
+    }
 }
