@@ -203,7 +203,12 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                             withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
                             for: indexPath
                 ) as? TrackersSectionHeaderView {
-            view.headerLabel.text = dataProvider.getCategoryForTracker(at: indexPath)?.name ?? ""
+            if indexPath.section == 0 {
+                view.headerLabel.text = "Закрепленные"
+            }
+            else {
+                view.headerLabel.text = dataProvider.getCategoryForTracker(at: indexPath)?.name ?? ""
+            }
             return view
         }
         else {

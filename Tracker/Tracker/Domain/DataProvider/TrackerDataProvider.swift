@@ -30,7 +30,7 @@ final class TrackerDataProvider {
     init(delegate: TrackerDataProviderDelegate) {
         self.delegate = delegate
         self.dataStore = DataStore.shared
-        self.fetchedController = TrackerStoreFetchController(
+        self.fetchedController = TrackerFetchedController(
                 dataStore: dataStore,
                 dataProviderDelegate: self
         )
