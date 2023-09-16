@@ -20,7 +20,9 @@ final class NewTrackerViewController: UIViewController {
     weak var saverDelegate: NewTrackerSaverDelegate?
     var dataProvider: (any TrackerDataProviderProtocol)?
 
-    var tracker: Tracker?
+    var tracker: Tracker? {
+        didSet { isEditingMode = true }
+    }
     var isRegular: Bool!
 
     private var trackerName: String? {
@@ -65,6 +67,9 @@ final class NewTrackerViewController: UIViewController {
         }
     }
 
+    private var isEditingMode: Bool = false
+
+    private lazy var counterLabel = { createCounterLabel() }()
     private lazy var inputTrackerNameTxtField = { createInputTextField() }()
     private lazy var categorySetupButton = { createCategorySetupButton() }()
     private lazy var scheduleSetupButton = { createScheduleSetupButton() }()
@@ -171,6 +176,13 @@ final class NewTrackerViewController: UIViewController {
             && (UIColor.YpColors(rawValue: selectedColor ?? "") != nil)
     }
 
+    private func displayCounter() {
+        guard let counter = tracker?.completedCounter else { return }
+
+        let counterText = TextHelper.getDaysText(for: counter)
+        counterLabel.text = "\(counter) \(counterText)"
+    }
+
     private func displayTrackerName(){
         guard let trackerName else { return }
         inputTrackerNameTxtField.text = trackerName
@@ -186,6 +198,7 @@ final class NewTrackerViewController: UIViewController {
 
     private func displayData() {
         initData(with: tracker)
+        displayCounter()
         displayTrackerName()
         displaySchedule()
         displayCategory()
@@ -305,9 +318,24 @@ extension NewTrackerViewController: PropertyCollectionDataSource {
 private extension NewTrackerViewController {
 
     func createTitleLabel() -> TitleLabel {
-        let titleText = isRegular ? "Новая привычка" : "Новое нерегулярное событие"
+        var titleText = ""
+        if isEditingMode {
+            titleText = isRegular ? "Редактирование привычки" : "Редактирование нерегулярного события"
+        }
+        else {
+            titleText = isRegular ? "Новая привычка" : "Новое нерегулярное событие"
+        }
         let title = TitleLabel(title: titleText)
         return title
+    }
+
+    func createCounterLabel() -> UILabel {
+        let label = UILabel()
+        label.textColor = .ypBlackDay
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }
 
     func createInputTextField() -> TrackerNameInputView {
@@ -370,7 +398,8 @@ private extension NewTrackerViewController {
     }
 
     func createDoneButton() -> RoundedButton {
-        let button = RoundedButton(title: "Создать")
+        let title = isEditingMode ? "Сохранить" : "Создать"
+        let button = RoundedButton(title: title)
         button.roundedButtonStyle = isAllParametersDidSetup ? .normal : .disabled
         button.addTarget(self, action: #selector(doneButtonDidTap), for: .touchUpInside)
         return button
@@ -386,6 +415,9 @@ private extension NewTrackerViewController {
         let scrollView = UIScrollView()
         scrollView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 16, right: 0)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+        scrollView.addSubview(counterLabel)
+        counterLabel.isHidden = !isEditingMode
 
         scrollView.addSubview(inputTrackerNameTxtField)
 
@@ -403,9 +435,24 @@ private extension NewTrackerViewController {
         scrollView.addSubview(buttons)
 
         NSLayoutConstraint.activate([
+            counterLabel.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
+            counterLabel.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            counterLabel.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor)
+        ])
 
+        if isEditingMode {
+            NSLayoutConstraint.activate([
+                inputTrackerNameTxtField.topAnchor.constraint(equalTo: counterLabel.bottomAnchor, constant: 40)
+            ])
+        }
+        else {
+            NSLayoutConstraint.activate([
+                inputTrackerNameTxtField.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor)
+            ])
+        }
+
+        NSLayoutConstraint.activate([
             inputTrackerNameTxtField.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
-            inputTrackerNameTxtField.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             inputTrackerNameTxtField.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
 
             actionButtonsView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
