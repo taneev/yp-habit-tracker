@@ -82,7 +82,7 @@ final class TrackerViewCell: UICollectionViewCell {
         }
     }
 
-    private let pinImage = UIImage(systemName: "pin.fill")?.withAlignmentRectInsets(UIEdgeInsets(top: -5, left: -5, bottom: -5, right: -5)) ?? UIImage()
+    private let pinImage = UIImage(systemName: "pin.fill") ?? UIImage()
     private let fontSize = CGFloat(12)
     private let buttonRadius = CGFloat(17)
     private var buttonLabelText: String { (isCompleted == true) ? "✓" : "＋" }
@@ -248,13 +248,13 @@ private extension TrackerViewCell {
             emojiLabel.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
             emojiLabel.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
             emojiLabel.widthAnchor.constraint(equalToConstant: 24),
+            emojiLabel.heightAnchor.constraint(equalTo: emojiLabel.widthAnchor),
 
-            pinnedImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinnedImageView.heightAnchor.constraint(equalToConstant: 14),
             pinnedImageView.widthAnchor.constraint(equalTo: pinnedImageView.heightAnchor),
-            emojiLabel.heightAnchor.constraint(equalTo: pinnedImageView.heightAnchor),
 
             pinnedImageView.centerYAnchor.constraint(equalTo: emojiLabel.centerYAnchor),
-            pinnedImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12),
+            pinnedImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -22),
 
             cellNameLabel.topAnchor.constraint(greaterThanOrEqualTo: emojiLabel.bottomAnchor, constant: 8),
             cellNameLabel.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
