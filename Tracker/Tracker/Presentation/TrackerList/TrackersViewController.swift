@@ -71,6 +71,7 @@ final class TrackersViewController: UIViewController {
 }
 
 // MARK: NewTrackerSaverDelegate
+
 extension TrackersViewController: NewTrackerSaverDelegate {
     func save(tracker: Tracker, in category: TrackerCategory) {
         dataProvider.save(tracker: tracker, in: category)
@@ -79,6 +80,7 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 }
 
 // MARK: TrackerViewCellDelegate
+
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell,
@@ -107,11 +109,21 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func deleteTrackerDidTap(at indexPath: IndexPath) {
-        dataProvider.deleteTracker(at: indexPath)
+        let alertController = UIAlertController(
+            title: "Уверены, что хотите удалить трекер?",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alertController.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+            self?.dataProvider.deleteTracker(at: indexPath)
+        })
+        alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel))
+        present(alertController, animated: true)
     }
 }
 
 // MARK: Navigation bar delegate
+
 extension TrackersViewController: TrackersBarControllerProtocol {
     func currentDateDidChange(for selectedDate: Date) {
         currentDate = selectedDate
@@ -131,6 +143,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
 }
 
 // MARK: Search text delegate
+
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces).lowercased() ?? ""
@@ -145,6 +158,7 @@ extension TrackersViewController: UITextFieldDelegate {
 }
 
 // MARK: UICollectionViewDataSource
+
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         dataProvider.numberOfSections
@@ -170,6 +184,7 @@ extension TrackersViewController: UICollectionViewDataSource {
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
+
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -225,6 +240,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: TrackersDataProviderDelegate
+
 extension TrackersViewController: TrackerDataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
 
@@ -243,6 +259,7 @@ extension TrackersViewController: TrackerDataProviderDelegate {
 }
 
 // MARK: Layout
+
 private extension TrackersViewController {
 
     func createSearchTextField() -> UISearchTextField {
