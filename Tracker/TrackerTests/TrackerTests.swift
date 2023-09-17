@@ -13,10 +13,12 @@ final class TrackerTests: XCTestCase {
 
     func testStartViewController() throws {
         let startVC = StartViewController()
-        assertSnapshots(of: startVC, as: [.image(on: .iPhone13ProMax)])
-        assertSnapshots(of: startVC, as: [.recursiveDescription(on: .iPhone13ProMax)])
+        // .light mode
+        assertSnapshots(of: startVC, as: [.image(on: .iPhone13ProMax, traits: .init(userInterfaceStyle: .light))])
+        assertSnapshots(of: startVC, as: [.image(on: .iPhone13, traits: .init(userInterfaceStyle: .light))])
 
-        assertSnapshots(of: startVC, as: [.image(on: .iPhoneSe)])
-        assertSnapshots(of: startVC, as: [.recursiveDescription(on: .iPhoneSe)])
+        // .dark mode
+        assertSnapshots(of: startVC, as: [.image(on: .iPhone13ProMax, traits: .init(userInterfaceStyle: .dark))])
+        assertSnapshots(of: startVC, as: [.image(on: .iPhone13, traits: .init(userInterfaceStyle: .dark))])
     }
 }
