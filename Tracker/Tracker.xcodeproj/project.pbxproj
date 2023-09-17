@@ -18,6 +18,7 @@
 		225CBA602AB61D9E00D337F7 /* TrackerFetchedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA5F2AB61D9E00D337F7 /* TrackerFetchedController.swift */; };
 		225CBA742AB77F6E00D337F7 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA732AB77F6E00D337F7 /* StartViewController.swift */; };
 		225CBA7D2AB7842200D337F7 /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA7C2AB7842200D337F7 /* TrackerTests.swift */; };
+		225CBA852AB784C600D337F7 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 225CBA842AB784C600D337F7 /* SnapshotTesting */; };
 		227FBB0A2AA75738001E05B7 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */; };
 		227FBB0C2AA761BD001E05B7 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */; };
 		227FBB0E2AA77DC7001E05B7 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0D2AA77DC7001E05B7 /* AppData.swift */; };
@@ -154,6 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				225CBA852AB784C600D337F7 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +401,9 @@
 				225CBA7F2AB7842200D337F7 /* PBXTargetDependency */,
 			);
 			name = TrackerTests;
+			packageProductDependencies = (
+				225CBA842AB784C600D337F7 /* SnapshotTesting */,
+			);
 			productName = TrackerTests;
 			productReference = 225CBA7A2AB7842200D337F7 /* TrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -449,6 +454,7 @@
 			);
 			mainGroup = 22D371E72A79781500FA5888;
 			packageReferences = (
+				225CBA832AB784C600D337F7 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			productRefGroup = 22D371F12A79781500FA5888 /* Products */;
 			projectDirPath = "";
@@ -819,6 +825,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		225CBA832AB784C600D337F7 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.12.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		225CBA842AB784C600D337F7 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 225CBA832AB784C600D337F7 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		22CF5EE52A98EE4100BEAD2F /* HabitTracker.xcdatamodeld */ = {
