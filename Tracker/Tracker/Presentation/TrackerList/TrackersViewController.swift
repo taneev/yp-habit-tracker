@@ -82,9 +82,12 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 // MARK: TrackerViewCellDelegate
 
 extension TrackersViewController: TrackerViewCellProtocol {
-    func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell,
-              let trackerID = cell.tracker?.trackerID else { return }
+    func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID) {
+        guard let indexPath = dataProvider.indexPath(for: trackerID),
+              let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell,
+              let trackerID = cell.tracker?.trackerID
+        else { return }
+        
         dataProvider.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
         cell.isCompleted = isCompleted
         cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)
@@ -176,7 +179,6 @@ extension TrackersViewController: UICollectionViewDataSource {
         else {return UICollectionViewCell()}
 
         cell.delegate = self
-        cell.indexPath = indexPath
         cell.isDoneButtonEnabled = !currentDate.isGreater(than: Date())
         cell.tracker = tracker
         return cell
@@ -236,6 +238,44 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
 
         return CGSize(width: collectionView.frame.width, height: 18)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard let indexPath = indexPaths.first,
+              let tracker = dataProvider.object(at: indexPath) as? Tracker
+        else { return nil }
+
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { [weak self] _ in
+            guard let self else { return UIMenu() }
+            let pinActionTitle = tracker.isPinned ? "Открепить" : "Закрепить"
+            let pinAction = UIAction(title: pinActionTitle) { [weak self] _ in
+                guard let self else { return }
+                self.pinTrackerDidTap(to: !tracker.isPinned, at: indexPath)
+            }
+
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                guard let self else { return }
+                self.editTrackerDidTap(at: indexPath)
+            }
+
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                guard let self else { return }
+                self.deleteTrackerDidTap(at: indexPath)
+            }
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell
+        else { return nil }
+
+        let preview = UITargetedPreview(view: cell.getTrackerView())
+
+        return preview
     }
 }
 

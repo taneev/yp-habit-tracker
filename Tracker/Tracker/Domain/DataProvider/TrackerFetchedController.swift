@@ -37,7 +37,6 @@ final class TrackerFetchedController {
 // MARK: TrackerStoreFetchControllerProtocol
 
 extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
-
     typealias T = TrackerStore
 
     var numberOfObjects: Int? {
@@ -77,6 +76,17 @@ extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String) {
         fetchedPinnedController?.updateFilterWith(selectedDate: currentDate, searchString: searchTextFilter)
         fetchedUnpinnedController?.updateFilterWith(selectedDate: currentDate, searchString: searchTextFilter)
+    }
+
+    func indexPath(for trackerID: UUID) -> IndexPath? {
+        if let pinnedIndexPath = fetchedPinnedController?.indexPath(for: trackerID) {
+            return pinnedIndexPath
+        }
+        else if let unpinnedIndexPath = fetchedUnpinnedController?.indexPath(for: trackerID) {
+            let indexPath = IndexPath(row: unpinnedIndexPath.row, section: unpinnedIndexPath.section + 1)
+            return indexPath
+        }
+        return nil
     }
 }
 

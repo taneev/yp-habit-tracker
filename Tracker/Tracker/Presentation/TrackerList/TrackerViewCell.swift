@@ -8,10 +8,7 @@
 import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
-    func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath)
-    func pinTrackerDidTap(to isPinned: Bool, at indexPath: IndexPath)
-    func editTrackerDidTap(at indexPath: IndexPath)
-    func deleteTrackerDidTap(at indexPath: IndexPath)
+    func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID)
 }
 
 final class TrackerViewCell: UICollectionViewCell {
@@ -30,8 +27,6 @@ final class TrackerViewCell: UICollectionViewCell {
             isPinned = tracker.isPinned
         }
     }
-
-    var indexPath: IndexPath?
 
     var quantity: Int? {
         didSet {
@@ -104,8 +99,12 @@ final class TrackerViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func getTrackerView() -> UIView {
+        return trackerView
+    }
+
     @objc private func doneButtonDidTap() {
-        guard let indexPath else {
+        guard let trackerID = tracker?.trackerID else {
             assertionFailure("Не удалось определить ID трекера")
             return
         }
@@ -113,34 +112,7 @@ final class TrackerViewCell: UICollectionViewCell {
         if !(isDoneButtonEnabled == true) { return }
 
         let isButtonChecked = !(isCompleted ?? false)
-        delegate?.trackerDoneButtonDidSwitched(to: isButtonChecked, at: indexPath)
-    }
-}
-
-extension TrackerViewCell: UIContextMenuInteractionDelegate {
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        return UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: nil
-        ) { [weak self] _ in
-            guard let self else { return UIMenu() }
-            let pinActionTitle = isPinned ? "Открепить" : "Закрепить"
-            let pinAction = UIAction(title: pinActionTitle) { [weak self] _ in
-                guard let self, let indexPath else { return }
-                self.delegate?.pinTrackerDidTap(to: !isPinned, at: indexPath)
-            }
-
-            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
-                guard let self, let indexPath else { return }
-                self.delegate?.editTrackerDidTap(at: indexPath)
-            }
-
-            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
-                guard let self, let indexPath else { return }
-                self.delegate?.deleteTrackerDidTap(at: indexPath)
-            }
-            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
-        }
+        delegate?.trackerDoneButtonDidSwitched(to: isButtonChecked, for: trackerID)
     }
 }
 
@@ -155,7 +127,6 @@ private extension TrackerViewCell {
         trackerView.addSubview(cellNameLabel)
         trackerView.addSubview(emojiLabel)
         trackerView.addSubview(pinnedImageView)
-        trackerView.addInteraction(UIContextMenuInteraction(delegate: self))
         return trackerView
     }
 

@@ -9,6 +9,7 @@ import UIKit
 protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForCollectionLayoutDelegate {
     var dataStore: DataStoreProtocol { get }
     var numberOfObjects: Int { get }
+    func indexPath(for trackerID: UUID) -> IndexPath?
     func loadData()
     func save(tracker: Tracker, in categoryID: TrackerCategory)
     func getCategoryForTracker(at indexPath: IndexPath) -> TrackerCategory?
@@ -92,6 +93,10 @@ extension TrackerDataProvider: DataProviderForCollectionLayoutDelegate {
 }
 
 extension TrackerDataProvider: TrackerDataProviderProtocol {
+    func indexPath(for trackerID: UUID) -> IndexPath? {
+        fetchedController?.indexPath(for: trackerID)
+    }
+
     var numberOfObjects: Int {
         fetchedController?.numberOfObjects ?? 0
     }

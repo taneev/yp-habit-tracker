@@ -9,6 +9,7 @@ import CoreData
 
 protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol where T == TrackerStore {
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String)
+    func indexPath(for trackerID: UUID) -> IndexPath?
 }
 
 final class TrackerStoreFetchController: NSObject {
@@ -100,6 +101,13 @@ final class TrackerStoreFetchController: NSObject {
 }
 
 extension TrackerStoreFetchController: TrackerStoreFetchControllerProtocol {
+    func indexPath(for trackerID: UUID) -> IndexPath? {
+        guard let context = dataStore?.getContext(),
+              let trackerCoreData = TrackerCoreData.fetchRecord(for: trackerID, context: context)
+        else { return nil }
+        return fetchedController?.indexPath(forObject: trackerCoreData)
+    }
+
     var numberOfObjects: Int? {
         fetchedController?.fetchedObjects?.count
     }
