@@ -11,6 +11,10 @@ protocol TrackerFetchedControllerDelegate: AnyObject {
     func didUpdate(_ updatedIndexes: UpdatedIndexes, isPinned: Bool)
 }
 
+protocol PinnedTrackerFetchedController: TrackerStoreFetchControllerProtocol {
+    var numberOfPinned: Int { get }
+}
+
 final class TrackerFetchedController {
     private var dataProviderDelegate: DataProviderForCollectionLayoutDelegate
     private var fetchedUnpinnedController: (any TrackerStoreFetchControllerProtocol)?
@@ -87,6 +91,12 @@ extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
             return indexPath
         }
         return nil
+    }
+}
+
+extension TrackerFetchedController: PinnedTrackerFetchedController {
+    var numberOfPinned: Int {
+        fetchedPinnedController?.numberOfObjects ?? 0
     }
 }
 

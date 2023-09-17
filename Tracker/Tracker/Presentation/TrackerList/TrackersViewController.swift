@@ -68,6 +68,10 @@ final class TrackersViewController: UIViewController {
         collectionView.reloadData()
         updatePlaceholderType()
     }
+
+    private func isPinnedSection(_ section: Int) -> Bool {
+        section == 0
+    }
 }
 
 // MARK: NewTrackerSaverDelegate
@@ -220,7 +224,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                             withReuseIdentifier: TrackersSectionHeaderView.viewIdentifier,
                             for: indexPath
                 ) as? TrackersSectionHeaderView {
-            if indexPath.section == 0 {
+            if isPinnedSection(indexPath.section) {
                 view.headerLabel.text = "Закрепленные"
             }
             else {
@@ -236,7 +240,9 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
-
+        if isPinnedSection(section) && dataProvider.numberOfPinned == 0 {
+            return CGSizeZero
+        }
         return CGSize(width: collectionView.frame.width, height: 18)
     }
 

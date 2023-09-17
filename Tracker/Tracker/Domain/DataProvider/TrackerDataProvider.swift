@@ -9,6 +9,7 @@ import UIKit
 protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, DataProviderForCollectionLayoutDelegate {
     var dataStore: DataStoreProtocol { get }
     var numberOfObjects: Int { get }
+    var numberOfPinned: Int { get }
     func indexPath(for trackerID: UUID) -> IndexPath?
     func loadData()
     func save(tracker: Tracker, in categoryID: TrackerCategory)
@@ -24,7 +25,7 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
 final class TrackerDataProvider {
     private weak var delegate: TrackerDataProviderDelegate?
     var dataStore: DataStoreProtocol
-    private var fetchedController: (any TrackerStoreFetchControllerProtocol)?
+    private var fetchedController: (any PinnedTrackerFetchedController)?
     private var currentDate: Date = Date()
     private var searchText: String = ""
 
@@ -95,6 +96,10 @@ extension TrackerDataProvider: DataProviderForCollectionLayoutDelegate {
 extension TrackerDataProvider: TrackerDataProviderProtocol {
     func indexPath(for trackerID: UUID) -> IndexPath? {
         fetchedController?.indexPath(for: trackerID)
+    }
+
+    var numberOfPinned: Int {
+        fetchedController?.numberOfPinned ?? 0
     }
 
     var numberOfObjects: Int {
