@@ -15,8 +15,8 @@ final class StartViewController: UITabBarController {
         tabBar.barStyle = .default
         tabBar.isTranslucent = false
         tabBar.backgroundColor = .ypWhiteDay
-        tabBar.layer.borderColor = UIColor.ypGray.cgColor
         tabBar.layer.borderWidth = 1
+        updateTabBarBorderColor()
 
         let trackersListViewController = TrackersViewController()
         let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
@@ -34,5 +34,18 @@ final class StartViewController: UITabBarController {
                 selectedImage: nil
         )
         setViewControllers([trackersListViewController, statisticsViewController], animated: true)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateTabBarBorderColor()
+    }
+
+    private func updateTabBarBorderColor() {
+        if #available(iOS 13.0, *) {
+            tabBar.layer.borderColor = traitCollection.userInterfaceStyle == .light
+            ? UIColor.ypGray.cgColor
+            : UIColor.ypWhiteDay.cgColor
+        }
     }
 }
