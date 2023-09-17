@@ -10,16 +10,6 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    // переменная startViewController нужна для обращения к ней в одном из двух случаев:
-    // - сразу при старте приложения, если запускается не в первый раз
-    // - из экранов онбординга при первом запуске приложения
-    lazy var startViewController = { createStartViewController() }()
-
-    private lazy var onboardingViewController = OnboardingViewController(
-            transitionStyle: .scroll,
-            navigationOrientation: .horizontal,
-            options: nil
-    )
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -28,40 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if AppData.isFirstAppStart {
             AppData.isFirstAppStart = false
+            let onboardingViewController = OnboardingViewController(
+                transitionStyle: .scroll,
+                navigationOrientation: .horizontal,
+                options: nil
+            )
             window?.rootViewController = onboardingViewController
         }
         else {
-            window?.rootViewController = startViewController
+            window?.rootViewController = StartViewController()
         }
         return true
-    }
-
-    private func createStartViewController() -> UITabBarController {
-        let tabBarController = UITabBarController()
-        tabBarController.tabBar.barStyle = .default
-        tabBarController.tabBar.isTranslucent = false
-        tabBarController.tabBar.backgroundColor = .ypWhiteDay
-        tabBarController.tabBar.layer.borderColor = UIColor.ypGray.cgColor
-        tabBarController.tabBar.layer.borderWidth = 1
-
-        let trackersListViewController = TrackersViewController()
-        let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
-        trackersListViewController.tabBarItem = UITabBarItem(
-                title: "Трекеры",
-                image: trackersTabBarImage,
-                selectedImage: nil
-        )
-
-        let statisticsViewController = StatisticsViewController()
-        let statisticsTabBarImage = UIImage(systemName: "hare.fill") ?? UIImage()
-        statisticsViewController.tabBarItem = UITabBarItem(
-                title: "Статистика",
-                image: statisticsTabBarImage,
-                selectedImage: nil
-        )
-
-        tabBarController.setViewControllers([trackersListViewController, statisticsViewController], animated: true)
-        return tabBarController
     }
 }
 

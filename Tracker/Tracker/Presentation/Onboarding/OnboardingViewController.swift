@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OnboardingViewController: UIPageViewController {
+final class OnboardingViewController: UIPageViewController {
 
     private enum Constants {
         static let onboardingImageNamePage1 = "onboarding1"
@@ -34,8 +34,7 @@ class OnboardingViewController: UIPageViewController {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
               let window = appDelegate.window
         else { return }
-        let startViewController = appDelegate.startViewController
-        window.rootViewController = startViewController
+        window.rootViewController = StartViewController()
     }
 
     private func createPageViewControllers() -> [UIViewController] {
