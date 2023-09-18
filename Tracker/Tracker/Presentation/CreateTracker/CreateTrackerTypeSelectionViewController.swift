@@ -36,7 +36,7 @@ final class CreateTrackerTypeSelectionViewController: UIViewController {
 
     @objc private func irregularEventButtonDidTap() {
         let viewController = Self.createTrackerViewController(
-            isRegular: true,
+            isRegular: false,
             saverDelegate: saverDelegate,
             dataProvider: dataProvider
         )
