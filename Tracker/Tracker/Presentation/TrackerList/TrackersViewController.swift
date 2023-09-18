@@ -26,11 +26,17 @@ final class TrackersViewController: UIViewController {
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
+    private var isFilterButtonHidden: Bool = true {
+        didSet {
+            filterButton.isHidden = isFilterButtonHidden
+        }
+    }
 
     private lazy var navigationBar = { createNavigationBar() }()
     private lazy var searchTextField = { createSearchTextField() }()
     private lazy var collectionView = { createCollectionView() }()
     private lazy var emptyCollectionPlaceholder = { EmptyCollectionPlaceholderView() }()
+    private lazy var filterButton = { createFilterButton() }()
 
     private let params = GeometricParams(cellCount: 2,
                                          leftInset: 16,
@@ -58,8 +64,16 @@ final class TrackersViewController: UIViewController {
         searchTextField.resignFirstResponder()
     }
 
+    @objc private func filterButtonDidTap() {
+
+    }
+
     private func createDataProvider() -> TrackerDataProvider {
         return TrackerDataProvider(delegate: self)
+    }
+
+    private func updateFilterButtonState() {
+        isFilterButtonHidden = dataProvider.numberOfObjects == 0
     }
 
     private func loadData() {
@@ -67,6 +81,7 @@ final class TrackersViewController: UIViewController {
         dataProvider.loadData()
         collectionView.reloadData()
         updatePlaceholderType()
+        updateFilterButtonState()
     }
 
     private func isPinnedSection(_ section: Int) -> Bool {
@@ -137,6 +152,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
         dataProvider.setDateFilter(with: selectedDate)
         collectionView.reloadData()
         updatePlaceholderType()
+        updateFilterButtonState()
     }
 
     func addTrackerButtonDidTapped() {
@@ -290,7 +306,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: TrackerDataProviderDelegate {
     func didUpdateIndexPath(_ updatedIndexes: UpdatedIndexes) {
 
-        collectionView.performBatchUpdates{
+        collectionView.performBatchUpdates({
             collectionView.deleteItems(at: updatedIndexes.deletedIndexes)
             collectionView.insertItems(at: updatedIndexes.insertedIndexes)
 
@@ -300,7 +316,13 @@ extension TrackersViewController: TrackerDataProviderDelegate {
             if !updatedIndexes.insertedSections.isEmpty {
                 collectionView.insertSections(updatedIndexes.insertedSections)
             }
-        }
+        },
+        completion: { [weak self] finished in
+            guard finished,
+                  let self else { return }
+            self.updatePlaceholderType()
+            self.updateFilterButtonState()
+        })
     }
 }
 
@@ -336,10 +358,19 @@ private extension TrackersViewController {
         return collectionView
     }
 
+    func createFilterButton() -> RoundedButton {
+        let button = RoundedButton(title: "Фильтр")
+        button.backgroundColor = .ypBlue
+        button.titleLabel?.textColor = .ypWhiteDay
+        button.addTarget(self, action: #selector(filterButtonDidTap), for: .touchUpInside)
+        return button
+    }
+
     func addSubviews() {
         view.addSubview(navigationBar)
         view.addSubview(searchTextField)
         view.addSubview(collectionView)
+        view.addSubview(filterButton)
         addPlaceholder()
     }
 
@@ -379,7 +410,11 @@ private extension TrackersViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
             emptyCollectionPlaceholder.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
-            emptyCollectionPlaceholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor)
+            emptyCollectionPlaceholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
+
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
 }
