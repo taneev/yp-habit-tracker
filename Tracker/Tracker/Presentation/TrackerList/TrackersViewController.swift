@@ -20,12 +20,18 @@ protocol NewTrackerSaverDelegate: AnyObject {
     func save(tracker: Tracker, in category: TrackerCategory)
 }
 
+protocol FilterSelectionDelegate: AnyObject {
+    func filterDidSelect(_ filterKind: FilterItemKind)
+}
+
 final class TrackersViewController: UIViewController {
 
     private lazy var dataProvider: any TrackerDataProviderProtocol = { createDataProvider() }()
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
+    private var filterSelected: FilterItemKind?
+
     private var isFilterButtonHidden: Bool = true {
         didSet {
             filterButton.isHidden = isFilterButtonHidden
@@ -65,7 +71,11 @@ final class TrackersViewController: UIViewController {
     }
 
     @objc private func filterButtonDidTap() {
-
+        let controller = TrackersFilterViewController()
+        controller.modalPresentationStyle = .automatic
+        controller.filterSelectionDelegate = self
+        controller.selectedItem = filterSelected
+        present(controller, animated: true)
     }
 
     private func createDataProvider() -> TrackerDataProvider {
@@ -95,6 +105,14 @@ extension TrackersViewController: NewTrackerSaverDelegate {
     func save(tracker: Tracker, in category: TrackerCategory) {
         dataProvider.save(tracker: tracker, in: category)
         dismiss(animated: true)
+    }
+}
+
+// MARK: FilterSelectionDelegate
+
+extension  TrackersViewController: FilterSelectionDelegate {
+    func filterDidSelect(_ filterKind: FilterItemKind) {
+        filterSelected = filterKind
     }
 }
 

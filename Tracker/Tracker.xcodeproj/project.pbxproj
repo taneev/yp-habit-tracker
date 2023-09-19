@@ -19,6 +19,11 @@
 		225CBA742AB77F6E00D337F7 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA732AB77F6E00D337F7 /* StartViewController.swift */; };
 		225CBA7D2AB7842200D337F7 /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA7C2AB7842200D337F7 /* TrackerTests.swift */; };
 		225CBA852AB784C600D337F7 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 225CBA842AB784C600D337F7 /* SnapshotTesting */; };
+		225CBA872AB8DEE400D337F7 /* TrackersFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA862AB8DEE400D337F7 /* TrackersFilterViewController.swift */; };
+		225CBA8A2AB8E32C00D337F7 /* RoundedCheckButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA892AB8E32C00D337F7 /* RoundedCheckButton.swift */; };
+		225CBA8C2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA8B2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift */; };
+		225CBA8E2AB9BD9700D337F7 /* FilterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA8D2AB9BD9700D337F7 /* FilterItem.swift */; };
+		225CBA902AB9BFCF00D337F7 /* FilterItemStackSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA8F2AB9BFCF00D337F7 /* FilterItemStackSelector.swift */; };
 		227FBB0A2AA75738001E05B7 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */; };
 		227FBB0C2AA761BD001E05B7 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */; };
 		227FBB0E2AA77DC7001E05B7 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0D2AA77DC7001E05B7 /* AppData.swift */; };
@@ -95,6 +100,11 @@
 		225CBA732AB77F6E00D337F7 /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		225CBA7A2AB7842200D337F7 /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		225CBA7C2AB7842200D337F7 /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
+		225CBA862AB8DEE400D337F7 /* TrackersFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersFilterViewController.swift; sourceTree = "<group>"; };
+		225CBA892AB8E32C00D337F7 /* RoundedCheckButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedCheckButton.swift; sourceTree = "<group>"; };
+		225CBA8B2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedStackButtonSelector.swift; sourceTree = "<group>"; };
+		225CBA8D2AB9BD9700D337F7 /* FilterItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItem.swift; sourceTree = "<group>"; };
+		225CBA8F2AB9BFCF00D337F7 /* FilterItemStackSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemStackSelector.swift; sourceTree = "<group>"; };
 		227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		227FBB0D2AA77DC7001E05B7 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
@@ -206,6 +216,7 @@
 				220A86A02A8185140082B271 /* EmptyCollectionPlaceholderView.swift */,
 				220A86A22A826B7F0082B271 /* TrackerNavigationBar.swift */,
 				220A86A42A8292380082B271 /* TrackerViewCell.swift */,
+				225CBA882AB8E0E900D337F7 /* Filter */,
 			);
 			path = TrackerList;
 			sourceTree = "<group>";
@@ -224,6 +235,18 @@
 				225CBA7C2AB7842200D337F7 /* TrackerTests.swift */,
 			);
 			path = TrackerTests;
+			sourceTree = "<group>";
+		};
+		225CBA882AB8E0E900D337F7 /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				225CBA862AB8DEE400D337F7 /* TrackersFilterViewController.swift */,
+				225CBA8B2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift */,
+				225CBA892AB8E32C00D337F7 /* RoundedCheckButton.swift */,
+				225CBA8D2AB9BD9700D337F7 /* FilterItem.swift */,
+				225CBA8F2AB9BFCF00D337F7 /* FilterItemStackSelector.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 		227FBB082AA756F0001E05B7 /* Onboarding */ = {
@@ -275,8 +298,8 @@
 			children = (
 				22CF5E772A881BF800BEAD2F /* TitleLabel.swift */,
 				22CF5E722A88106900BEAD2F /* RoundedButton.swift */,
-				22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */,
 				22CF5E882A8D5A5100BEAD2F /* StackRoundedButton.swift */,
+				22CF5E7C2A8931BE00BEAD2F /* StackRoundedView.swift */,
 				22CF5E8D2A8E424800BEAD2F /* RoundedViewsStackView.swift */,
 				227FBB122AA8BF40001E05B7 /* PlaceholderView.swift */,
 				227FBB332AAC9CBD001E05B7 /* NameInputTextField.swift */,
@@ -499,6 +522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				227FBB362AAC9E74001E05B7 /* CategoryViewModel.swift in Sources */,
+				225CBA872AB8DEE400D337F7 /* TrackersFilterViewController.swift in Sources */,
 				22CF5E4D2A84256100BEAD2F /* TextHelper.swift in Sources */,
 				22D566B92A9FAB5200B9EEB5 /* TrackerRecordStore.swift in Sources */,
 				22D566B72A9FA99500B9EEB5 /* TrackerCategoryStore.swift in Sources */,
@@ -525,6 +549,7 @@
 				227FBB1F2AA90E1B001E05B7 /* TrackerCoreData.swift in Sources */,
 				22D566B32A9F9B5600B9EEB5 /* TrackerStoreFetchController.swift in Sources */,
 				227FBB252AA91AD5001E05B7 /* ModelConstants.swift in Sources */,
+				225CBA8A2AB8E32C00D337F7 /* RoundedCheckButton.swift in Sources */,
 				22CF5EDB2A96635900BEAD2F /* TrackerPropertyCollectionView.swift in Sources */,
 				22CF5E872A8A46D300BEAD2F /* TrackerNameInputFooterView.swift in Sources */,
 				227FBB322AAC985A001E05B7 /* CategoryViewController.swift in Sources */,
@@ -532,6 +557,7 @@
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,
 				227FBB1B2AA8FA21001E05B7 /* Observable.swift in Sources */,
 				225CBA602AB61D9E00D337F7 /* TrackerFetchedController.swift in Sources */,
+				225CBA902AB9BFCF00D337F7 /* FilterItemStackSelector.swift in Sources */,
 				220A86952A8136B30082B271 /* WeekDay.swift in Sources */,
 				22CF5E922A8E5C9500BEAD2F /* WeekdaySwitchView.swift in Sources */,
 				22CF5E8E2A8E424800BEAD2F /* RoundedViewsStackView.swift in Sources */,
@@ -544,8 +570,10 @@
 				22CF5E8B2A8E38CE00BEAD2F /* ScheduleViewController.swift in Sources */,
 				220A86A12A8185140082B271 /* EmptyCollectionPlaceholderView.swift in Sources */,
 				227FBB0C2AA761BD001E05B7 /* OnboardingViewController.swift in Sources */,
+				225CBA8C2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift in Sources */,
 				220A86992A8141360082B271 /* TrackerRecord.swift in Sources */,
 				22CF5EE12A97C39500BEAD2F /* PropertyCellProtocol.swift in Sources */,
+				225CBA8E2AB9BD9700D337F7 /* FilterItem.swift in Sources */,
 				220A869B2A81419B0082B271 /* TrackerCategory.swift in Sources */,
 				22CF5E762A881B8600BEAD2F /* NewTrackerViewController.swift in Sources */,
 				22CF5EDF2A967A6E00BEAD2F /* ColorCollectionViewCell.swift in Sources */,
