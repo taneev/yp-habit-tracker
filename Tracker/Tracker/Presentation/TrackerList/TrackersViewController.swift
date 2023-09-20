@@ -120,12 +120,12 @@ extension  TrackersViewController: FilterSelectionDelegate {
 
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID) {
-        guard let indexPath = dataProvider.indexPath(for: trackerID),
-              let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell,
-              let trackerID = cell.tracker?.trackerID
-        else { return }
-        
         dataProvider.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
+        // важно искать indexPath после switchTracker, т.к. switchTracker может изменить его
+        // например, если наложен фильтр "Только незавершенные"
+        guard let indexPath = dataProvider.indexPath(for: trackerID),
+              let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell
+        else { return }
         cell.isCompleted = isCompleted
         cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)
     }
