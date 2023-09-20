@@ -24,6 +24,7 @@
 		225CBA8C2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA8B2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift */; };
 		225CBA8E2AB9BD9700D337F7 /* FilterItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA8D2AB9BD9700D337F7 /* FilterItem.swift */; };
 		225CBA902AB9BFCF00D337F7 /* FilterItemStackSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA8F2AB9BFCF00D337F7 /* FilterItemStackSelector.swift */; };
+		225CBA922ABB45DC00D337F7 /* TrackerQueryBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA912ABB45DC00D337F7 /* TrackerQueryBuilder.swift */; };
 		227FBB0A2AA75738001E05B7 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */; };
 		227FBB0C2AA761BD001E05B7 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */; };
 		227FBB0E2AA77DC7001E05B7 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 227FBB0D2AA77DC7001E05B7 /* AppData.swift */; };
@@ -105,6 +106,7 @@
 		225CBA8B2AB8EA8400D337F7 /* RoundedStackButtonSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedStackButtonSelector.swift; sourceTree = "<group>"; };
 		225CBA8D2AB9BD9700D337F7 /* FilterItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItem.swift; sourceTree = "<group>"; };
 		225CBA8F2AB9BFCF00D337F7 /* FilterItemStackSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterItemStackSelector.swift; sourceTree = "<group>"; };
+		225CBA912ABB45DC00D337F7 /* TrackerQueryBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerQueryBuilder.swift; sourceTree = "<group>"; };
 		227FBB092AA75738001E05B7 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		227FBB0B2AA761BD001E05B7 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		227FBB0D2AA77DC7001E05B7 /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				22D566B62A9FA99500B9EEB5 /* TrackerCategoryStore.swift */,
 				227FBB282AAA186F001E05B7 /* TrackerCategoryStoreFetchController.swift */,
 				22D566B82A9FAB5200B9EEB5 /* TrackerRecordStore.swift */,
+				225CBA912ABB45DC00D337F7 /* TrackerQueryBuilder.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -538,6 +541,7 @@
 				227FBB132AA8BF40001E05B7 /* PlaceholderView.swift in Sources */,
 				227FBB342AAC9CBD001E05B7 /* NameInputTextField.swift in Sources */,
 				22D566802A9BD4A300B9EEB5 /* MockDataGenerator.swift in Sources */,
+				225CBA922ABB45DC00D337F7 /* TrackerQueryBuilder.swift in Sources */,
 				22CF5E492A83E31400BEAD2F /* TrackersSectionHeaderView.swift in Sources */,
 				22D371F82A79781500FA5888 /* TrackersViewController.swift in Sources */,
 				227FBB2D2AAA370A001E05B7 /* DataProviderProtocols.swift in Sources */,

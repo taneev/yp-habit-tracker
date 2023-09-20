@@ -50,6 +50,10 @@ final class TrackerNavigationBar: UINavigationBar {
         translatesAutoresizingMaskIntoConstraints = false
     }
 
+    func setDatePickerDate(to date: Date) {
+        datePicker.date = date
+    }
+
     @objc private func createTrackerTapped() {
         trackerBarDelegate?.addTrackerButtonDidTapped()
     }

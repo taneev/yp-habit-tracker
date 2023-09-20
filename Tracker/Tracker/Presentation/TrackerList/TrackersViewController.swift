@@ -83,7 +83,7 @@ final class TrackersViewController: UIViewController {
     }
 
     private func updateFilterButtonState() {
-        isFilterButtonHidden = dataProvider.numberOfObjects == 0
+        isFilterButtonHidden = dataProvider.getNumberOfTrackers(for: currentDate) == 0
     }
 
     private func loadData() {
@@ -112,7 +112,23 @@ extension TrackersViewController: NewTrackerSaverDelegate {
 
 extension  TrackersViewController: FilterSelectionDelegate {
     func filterDidSelect(_ filterKind: FilterItemKind) {
-        filterSelected = filterKind
+        // Фильтр "Трекеры на сегодня" не сохраняет состояние фильтра по "завершенности",
+        // а только меняет текущую дату и переключает на нее фильтр
+        filterSelected = filterKind == .today ? filterSelected : filterKind
+        switch filterKind {
+        case .today:
+            let today = Date()
+            navigationBar.setDatePickerDate(to: today)
+            currentDateDidChange(for: today)
+        case .completed:
+            dataProvider.setCompletedFilter(with: true)
+        case .todo:
+            dataProvider.setCompletedFilter(with: false)
+        case .all:
+            dataProvider.setCompletedFilter(with: nil)
+        }
+        collectionView.reloadData()
+        updatePlaceholderType()
     }
 }
 

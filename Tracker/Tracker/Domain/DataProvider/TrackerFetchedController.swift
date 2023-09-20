@@ -77,9 +77,21 @@ extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
         fetchedUnpinnedController?.fetchData()
     }
 
-    func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String) {
-        fetchedPinnedController?.updateFilterWith(selectedDate: currentDate, searchString: searchTextFilter)
-        fetchedUnpinnedController?.updateFilterWith(selectedDate: currentDate, searchString: searchTextFilter)
+    func updateFilterWith(
+        selectedDate currentDate: Date,
+        searchString searchTextFilter: String,
+        isCompleted: Bool? = nil
+    ) {
+        fetchedPinnedController?.updateFilterWith(
+            selectedDate: currentDate,
+            searchString: searchTextFilter,
+            isCompleted: isCompleted
+        )
+        fetchedUnpinnedController?.updateFilterWith(
+            selectedDate: currentDate,
+            searchString: searchTextFilter,
+            isCompleted: isCompleted
+        )
     }
 
     func indexPath(for trackerID: UUID) -> IndexPath? {

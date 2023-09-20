@@ -39,6 +39,15 @@ struct TrackerStore {
         return TrackerStore(trackerCoreData: trackerCoreData)
     }
 
+    static func getRecordCount(for date: Date, context: NSManagedObjectContext) -> Int {
+        let request = TrackerCoreData.fetchRequest()
+        if let query = TrackerQueryBuilder.queryForDate(date) {
+            request.predicate = NSPredicate(format: query.queryFormat, argumentArray: query.args)
+        }
+        let recordCount = try? context.fetch(request).count
+        return recordCount ?? 0
+    }
+
     init(
         trackerID: UUID,
         name: String,

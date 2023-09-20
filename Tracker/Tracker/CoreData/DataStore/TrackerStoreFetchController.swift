@@ -8,16 +8,11 @@
 import CoreData
 
 protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol where T == TrackerStore {
-    func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String)
+    func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String, isCompleted: Bool?)
     func indexPath(for trackerID: UUID) -> IndexPath?
 }
 
 final class TrackerStoreFetchController: NSObject {
-
-    private enum TrackerListPredicates {
-        static let textAndDate = "(%K == %@ OR %K CONTAINS[c] %@) AND %K CONTAINS[c] %@ AND %K == %@"
-        static let dateOnly = "(%K == %@ OR %K CONTAINS[c] %@) AND %K == %@"
-    }
 
     private weak var delegate: TrackerFetchedControllerDelegate?
     private var dataStore: DataStoreProtocol?
@@ -66,37 +61,20 @@ final class TrackerStoreFetchController: NSObject {
         }
     }
 
-    private func createPredicateWith(selectedDate: Date, searchString: String? = nil) -> NSPredicate? {
-        guard let currentWeekDay = WeekDay(rawValue: Calendar.current.component(.weekday, from: selectedDate))
-        else { return nil }
-        let weekDayText = WeekDay.shortWeekdayText[currentWeekDay] ?? ""
+    private func createPredicateWith(
+        selectedDate: Date,
+        searchString: String? = nil,
+        isCompleted: Bool? = nil
+    ) -> NSPredicate? {
 
-        let searchText = searchString?.trimmingCharacters(in: .whitespaces) ?? ""
+        let query = TrackerQueryBuilder(
+            isPinned: isPinned,
+            selectedDate: selectedDate,
+            searchString: searchString,
+            isCompleted: isCompleted
+        ).createQuery()
 
-        if searchText.isEmpty {
-            return NSPredicate(
-                        format: TrackerListPredicates.dateOnly,
-                        #keyPath(TrackerCoreData.isRegular),
-                        NSNumber(booleanLiteral: false),
-                        #keyPath(TrackerCoreData.schedule),
-                        weekDayText,
-                        #keyPath(TrackerCoreData.isPinned),
-                        NSNumber(booleanLiteral: isPinned)
-                   )
-        }
-        else {
-            return NSPredicate(
-                        format: TrackerListPredicates.textAndDate,
-                        #keyPath(TrackerCoreData.isRegular),
-                        NSNumber(booleanLiteral: false),
-                        #keyPath(TrackerCoreData.schedule),
-                        weekDayText,
-                        #keyPath(TrackerCoreData.name),
-                        searchText,
-                        #keyPath(TrackerCoreData.isPinned),
-                        NSNumber(booleanLiteral: isPinned)
-                   )
-        }
+        return NSPredicate(format: query.queryFormat, argumentArray: query.args)
     }
 }
 
@@ -131,10 +109,15 @@ extension TrackerStoreFetchController: TrackerStoreFetchControllerProtocol {
         try? fetchedController?.performFetch()
     }
 
-    func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String) {
+    func updateFilterWith(
+        selectedDate currentDate: Date,
+        searchString searchTextFilter: String,
+        isCompleted: Bool? = nil
+    ) {
         fetchedController?.fetchRequest.predicate = createPredicateWith(
                 selectedDate: currentDate,
-                searchString: searchTextFilter
+                searchString: searchTextFilter,
+                isCompleted: isCompleted
         )
         try? fetchedController?.performFetch()
     }

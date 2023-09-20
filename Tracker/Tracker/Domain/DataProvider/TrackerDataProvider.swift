@@ -16,10 +16,12 @@ protocol TrackerDataProviderProtocol: AnyObject, DataProviderForDataSource, Data
     func getCategoryForTracker(at indexPath: IndexPath) -> TrackerCategory?
     func setDateFilter(with date: Date)
     func setSearchTextFilter(with searchText: String)
+    func setCompletedFilter(with isCompleted: Bool?)
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date)
     func getCompletedRecordsForTracker(at indexPath: IndexPath) -> Int
     func pinTracker(to isPinned: Bool, at indexPath: IndexPath)
     func deleteTracker(at indexPath: IndexPath)
+    func getNumberOfTrackers(for date: Date) -> Int
 }
 
 final class TrackerDataProvider {
@@ -28,6 +30,7 @@ final class TrackerDataProvider {
     private var fetchedController: (any PinnedTrackerFetchedController)?
     private var currentDate: Date = Date()
     private var searchText: String = ""
+    private var isCompleted: Bool?
 
     init(delegate: TrackerDataProviderDelegate) {
         self.delegate = delegate
@@ -94,6 +97,13 @@ extension TrackerDataProvider: DataProviderForCollectionLayoutDelegate {
 }
 
 extension TrackerDataProvider: TrackerDataProviderProtocol {
+    func getNumberOfTrackers(for date: Date) -> Int {
+        guard let context = dataStore.getContext() else { return 0}
+
+        let recordNumber = TrackerStore.getRecordCount(for: date, context: context)
+        return recordNumber
+    }
+
     func indexPath(for trackerID: UUID) -> IndexPath? {
         fetchedController?.indexPath(for: trackerID)
     }
@@ -123,12 +133,29 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
 
     func setDateFilter(with date: Date) {
         self.currentDate = date
-        fetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
+        fetchedController?.updateFilterWith(
+            selectedDate: currentDate,
+            searchString: searchText,
+            isCompleted: isCompleted
+        )
     }
 
     func setSearchTextFilter(with searchText: String) {
         self.searchText = searchText
-        fetchedController?.updateFilterWith(selectedDate: currentDate, searchString: searchText)
+        fetchedController?.updateFilterWith(
+            selectedDate: currentDate,
+            searchString: searchText,
+            isCompleted: isCompleted
+        )
+    }
+
+    func setCompletedFilter(with isCompleted: Bool?) {
+        self.isCompleted = isCompleted
+        fetchedController?.updateFilterWith(
+            selectedDate: currentDate,
+            searchString: searchText,
+            isCompleted: isCompleted
+        )
     }
 
     func loadData() {
