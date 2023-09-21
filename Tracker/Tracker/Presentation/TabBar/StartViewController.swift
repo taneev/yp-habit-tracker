@@ -19,6 +19,7 @@ final class StartViewController: UITabBarController {
         updateTabBarBorderColor()
 
         let trackersListViewController = TrackersViewController()
+        trackersListViewController.analytics = ServiceAnalytics.shared
         let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
         trackersListViewController.tabBarItem = UITabBarItem(
                 title: "Трекеры",

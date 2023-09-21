@@ -26,6 +26,7 @@ protocol FilterSelectionDelegate: AnyObject {
 
 final class TrackersViewController: UIViewController {
 
+    var analytics: ServiceAnalyticsProtocol?
     private lazy var dataProvider: any TrackerDataProviderProtocol = { createDataProvider() }()
 
     private var currentDate: Date = Date()
@@ -66,11 +67,22 @@ final class TrackersViewController: UIViewController {
         view.addGestureRecognizer(anyTapGesture)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        analytics?.report(event: .open, screen: .Main, item: nil)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        analytics?.report(event: .close, screen: .Main, item: nil)
+    }
+
     @objc private func handleAnyTap(_ sender: UITapGestureRecognizer) {
         searchTextField.resignFirstResponder()
     }
 
     @objc private func filterButtonDidTap() {
+        analytics?.report(event: .click, screen: .Main, item: .filter)
         let controller = TrackersFilterViewController()
         controller.modalPresentationStyle = .automatic
         controller.filterSelectionDelegate = self
@@ -80,6 +92,10 @@ final class TrackersViewController: UIViewController {
 
     private func createDataProvider() -> TrackerDataProvider {
         return TrackerDataProvider(delegate: self)
+    }
+
+    private func createServiceAnalytics() -> ServiceAnalyticsProtocol {
+        ServiceAnalytics.shared
     }
 
     private func updateFilterButtonState() {
@@ -136,6 +152,7 @@ extension  TrackersViewController: FilterSelectionDelegate {
 
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID) {
+        analytics?.report(event: .click, screen: .Main, item: .track)
         dataProvider.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
         // важно искать indexPath после switchTracker, т.к. switchTracker может изменить его
         // например, если наложен фильтр "Только незавершенные"
@@ -151,6 +168,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func editTrackerDidTap(at indexPath: IndexPath) {
+        analytics?.report(event: .click, screen: .Main, item: .edit)
         guard let tracker = dataProvider.object(at: indexPath) as? Tracker
         else { return }
 
@@ -165,6 +183,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func deleteTrackerDidTap(at indexPath: IndexPath) {
+        analytics?.report(event: .click, screen: .Main, item: .delete)
         let alertController = UIAlertController(
             title: "Уверены, что хотите удалить трекер?",
             message: nil,
@@ -190,6 +209,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
     }
 
     func addTrackerButtonDidTapped() {
+        analytics?.report(event: .click, screen: .Main, item: .addTrack)
         searchTextField.resignFirstResponder()
         let selectTrackerTypeViewController = CreateTrackerTypeSelectionViewController()
         selectTrackerTypeViewController.saverDelegate = self
