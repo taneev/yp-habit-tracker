@@ -7,6 +7,7 @@ xcuserdata/
 
 ## Snapshot test images
 Tracker/TrackerTests/__Snapshots__/
+Tracker/Pods/
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
