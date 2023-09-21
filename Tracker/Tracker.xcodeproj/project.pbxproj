@@ -18,6 +18,7 @@
 		2221A0AA2ABC940C00107856 /* ServiceAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0A92ABC940C00107856 /* ServiceAnalytics.swift */; };
 		2221A0AD2ABC98E100107856 /* ServiceAnalyticsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0AC2ABC98E100107856 /* ServiceAnalyticsProtocol.swift */; };
 		2221A0B02ABCA2DD00107856 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0AF2ABCA2DD00107856 /* AnalyticsLogger.swift */; };
+		2221A0B32ABCD2EE00107856 /* StatisticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0B22ABCD2EE00107856 /* StatisticView.swift */; };
 		225CBA602AB61D9E00D337F7 /* TrackerFetchedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA5F2AB61D9E00D337F7 /* TrackerFetchedController.swift */; };
 		225CBA742AB77F6E00D337F7 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA732AB77F6E00D337F7 /* StartViewController.swift */; };
 		225CBA7D2AB7842200D337F7 /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225CBA7C2AB7842200D337F7 /* TrackerTests.swift */; };
@@ -105,6 +106,7 @@
 		2221A0A92ABC940C00107856 /* ServiceAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAnalytics.swift; sourceTree = "<group>"; };
 		2221A0AC2ABC98E100107856 /* ServiceAnalyticsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAnalyticsProtocol.swift; sourceTree = "<group>"; };
 		2221A0AF2ABCA2DD00107856 /* AnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsLogger.swift; sourceTree = "<group>"; };
+		2221A0B22ABCD2EE00107856 /* StatisticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticView.swift; sourceTree = "<group>"; };
 		225CBA5F2AB61D9E00D337F7 /* TrackerFetchedController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerFetchedController.swift; sourceTree = "<group>"; };
 		225CBA732AB77F6E00D337F7 /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		225CBA7A2AB7842200D337F7 /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,7 +234,7 @@
 				227FBB0F2AA8AD22001E05B7 /* CategoryList */,
 				227FBB302AAC9824001E05B7 /* Category */,
 				22CF5E792A881F5B00BEAD2F /* HelpfulViews */,
-				22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */,
+				2221A0B12ABCCFA400107856 /* Statistics */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -266,6 +268,15 @@
 				2221A0AF2ABCA2DD00107856 /* AnalyticsLogger.swift */,
 			);
 			path = Analytics;
+			sourceTree = "<group>";
+		};
+		2221A0B12ABCCFA400107856 /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				22CF5E4E2A87D7E600BEAD2F /* StatisticsViewController.swift */,
+				2221A0B22ABCD2EE00107856 /* StatisticView.swift */,
+			);
+			path = Statistics;
 			sourceTree = "<group>";
 		};
 		225CBA752AB77F7700D337F7 /* TabBar */ = {
@@ -685,6 +696,7 @@
 				225CBA742AB77F6E00D337F7 /* StartViewController.swift in Sources */,
 				220A86A32A826B7F0082B271 /* TrackerNavigationBar.swift in Sources */,
 				227FBB1B2AA8FA21001E05B7 /* Observable.swift in Sources */,
+				2221A0B32ABCD2EE00107856 /* StatisticView.swift in Sources */,
 				225CBA602AB61D9E00D337F7 /* TrackerFetchedController.swift in Sources */,
 				225CBA902AB9BFCF00D337F7 /* FilterItemStackSelector.swift in Sources */,
 				2221A0AA2ABC940C00107856 /* ServiceAnalytics.swift in Sources */,
