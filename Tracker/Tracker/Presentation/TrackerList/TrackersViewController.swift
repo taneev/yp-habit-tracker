@@ -94,10 +94,6 @@ final class TrackersViewController: UIViewController {
         return TrackerDataProvider(delegate: self)
     }
 
-    private func createServiceAnalytics() -> ServiceAnalyticsProtocol {
-        ServiceAnalytics.shared
-    }
-
     private func updateFilterButtonState() {
         isFilterButtonHidden = dataProvider.getNumberOfTrackers(for: currentDate) == 0
     }

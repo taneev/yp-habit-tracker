@@ -40,7 +40,7 @@ final class ServiceAnalytics: ServiceAnalyticsProtocol {
         }
 
         let event = itemType?.rawValue ?? eventType.rawValue
-        logger.info("report call for event: \(event), screen: \(screenType), item: \(itemType?.rawValue ?? "nil")")
+        logger.info("report call for event: \(event), params: \(params)")
         YMMYandexMetrica.reportEvent(event, parameters: params, onFailure: { [weak self] error in
             self?.logger.error("report failed with error: \(error.localizedDescription)")
         })
