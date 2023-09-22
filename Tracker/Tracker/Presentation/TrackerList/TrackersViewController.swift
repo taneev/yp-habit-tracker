@@ -27,7 +27,8 @@ protocol FilterSelectionDelegate: AnyObject {
 final class TrackersViewController: UIViewController {
 
     var analytics: ServiceAnalyticsProtocol?
-    private lazy var dataProvider: any TrackerDataProviderProtocol = { createDataProvider() }()
+    var dataProvider: (any TrackerDataProviderProtocol)?
+    var statisticsStorage: StatisticsStorageProtocol?
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -55,8 +56,10 @@ final class TrackersViewController: UIViewController {
 
         view.backgroundColor = .ypWhiteDay
 
-        // Загрузим мок-данные в БД для тестирования пока нет функциональности добавления категорий
-        MockDataGenerator.setupRecords(with: dataProvider)
+        // Загрузим мок-данные в БД для тестирования
+        if let dataProvider {
+            MockDataGenerator.setupRecords(with: dataProvider)
+        }
 
         addSubviews()
         addConstraints()
@@ -90,17 +93,13 @@ final class TrackersViewController: UIViewController {
         present(controller, animated: true)
     }
 
-    private func createDataProvider() -> TrackerDataProvider {
-        return TrackerDataProvider(delegate: self)
-    }
-
     private func updateFilterButtonState() {
-        isFilterButtonHidden = dataProvider.getNumberOfTrackers(for: currentDate) == 0
+        isFilterButtonHidden = dataProvider?.getNumberOfTrackers(for: currentDate) == 0
     }
 
     private func loadData() {
-        dataProvider.setDateFilter(with: currentDate)
-        dataProvider.loadData()
+        dataProvider?.setDateFilter(with: currentDate)
+        dataProvider?.loadData()
         collectionView.reloadData()
         updatePlaceholderType()
         updateFilterButtonState()
@@ -115,7 +114,7 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: NewTrackerSaverDelegate {
     func save(tracker: Tracker, in category: TrackerCategory) {
-        dataProvider.save(tracker: tracker, in: category)
+        dataProvider?.save(tracker: tracker, in: category)
         dismiss(animated: true)
     }
 }
@@ -133,11 +132,11 @@ extension  TrackersViewController: FilterSelectionDelegate {
             navigationBar.setDatePickerDate(to: today)
             currentDateDidChange(for: today)
         case .completed:
-            dataProvider.setCompletedFilter(with: true)
+            dataProvider?.setCompletedFilter(with: true)
         case .todo:
-            dataProvider.setCompletedFilter(with: false)
+            dataProvider?.setCompletedFilter(with: false)
         case .all:
-            dataProvider.setCompletedFilter(with: nil)
+            dataProvider?.setCompletedFilter(with: nil)
         }
         collectionView.reloadData()
         updatePlaceholderType()
@@ -149,23 +148,23 @@ extension  TrackersViewController: FilterSelectionDelegate {
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID) {
         analytics?.report(event: .click, screen: .Main, item: .track)
-        dataProvider.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
+        dataProvider?.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
         // важно искать indexPath после switchTracker, т.к. switchTracker может изменить его
         // например, если наложен фильтр "Только незавершенные"
-        guard let indexPath = dataProvider.indexPath(for: trackerID),
+        guard let indexPath = dataProvider?.indexPath(for: trackerID),
               let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell
         else { return }
         cell.isCompleted = isCompleted
-        cell.quantity = dataProvider.getCompletedRecordsForTracker(at: indexPath)
+        cell.quantity = dataProvider?.getCompletedRecordsForTracker(at: indexPath)
     }
 
     func pinTrackerDidTap(to isPinned: Bool, at indexPath: IndexPath) {
-        dataProvider.pinTracker(to: isPinned, at: indexPath)
+        dataProvider?.pinTracker(to: isPinned, at: indexPath)
     }
 
     func editTrackerDidTap(at indexPath: IndexPath) {
         analytics?.report(event: .click, screen: .Main, item: .edit)
-        guard let tracker = dataProvider.object(at: indexPath) as? Tracker
+        guard let tracker = dataProvider?.object(at: indexPath) as? Tracker
         else { return }
 
         let viewController = CreateTrackerTypeSelectionViewController.createTrackerViewController(
@@ -174,7 +173,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
             dataProvider: dataProvider
         )
         viewController.tracker = tracker
-        viewController.category = dataProvider.getCategoryForTracker(at: indexPath)
+        viewController.category = dataProvider?.getCategoryForTracker(at: indexPath)
         present(viewController, animated: true)
     }
 
@@ -186,7 +185,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
             preferredStyle: .actionSheet
         )
         alertController.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
-            self?.dataProvider.deleteTracker(at: indexPath)
+            self?.dataProvider?.deleteTracker(at: indexPath)
         })
         alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel))
         present(alertController, animated: true)
@@ -198,7 +197,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
 extension TrackersViewController: TrackersBarControllerProtocol {
     func currentDateDidChange(for selectedDate: Date) {
         currentDate = selectedDate
-        dataProvider.setDateFilter(with: selectedDate)
+        dataProvider?.setDateFilter(with: selectedDate)
         collectionView.reloadData()
         updatePlaceholderType()
         updateFilterButtonState()
@@ -220,7 +219,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
 extension TrackersViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         searchTextFilter = textField.text?.trimmingCharacters(in: .whitespaces).lowercased() ?? ""
-        dataProvider.setSearchTextFilter(with: searchTextFilter)
+        dataProvider?.setSearchTextFilter(with: searchTextFilter)
         collectionView.reloadData()
         updatePlaceholderType()
     }
@@ -234,18 +233,18 @@ extension TrackersViewController: UITextFieldDelegate {
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        dataProvider.numberOfSections
+        dataProvider?.numberOfSections ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        dataProvider.numberOfRows(in: section)
+        dataProvider?.numberOfRows(in: section) ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
                                 withReuseIdentifier: TrackerViewCell.cellIdentifier,
                                 for: indexPath) as? TrackerViewCell,
-              let tracker = dataProvider.object(at: indexPath) as? Tracker
+              let tracker = dataProvider?.object(at: indexPath) as? Tracker
         else {return UICollectionViewCell()}
 
         cell.delegate = self
@@ -294,7 +293,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                 view.headerLabel.text = "Закрепленные"
             }
             else {
-                view.headerLabel.text = dataProvider.getCategoryForTracker(at: indexPath)?.name ?? ""
+                view.headerLabel.text = dataProvider?.getCategoryForTracker(at: indexPath)?.name ?? ""
             }
             return view
         }
@@ -306,7 +305,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if isPinnedSection(section) && dataProvider.numberOfPinned == 0 {
+        if isPinnedSection(section) && dataProvider?.numberOfPinned == 0 {
             return CGSizeZero
         }
         return CGSize(width: collectionView.frame.width, height: 18)
@@ -314,7 +313,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first,
-              let tracker = dataProvider.object(at: indexPath) as? Tracker
+              let tracker = dataProvider?.object(at: indexPath) as? Tracker
         else { return nil }
 
         return UIContextMenuConfiguration(
@@ -425,7 +424,8 @@ private extension TrackersViewController {
     }
 
     func updatePlaceholderType() {
-        if dataProvider.numberOfObjects != 0 {
+        if let dataProvider,
+           dataProvider.numberOfObjects != 0 {
             emptyCollectionPlaceholder.isHidden = true
         }
         else if searchTextFilter.isEmpty {

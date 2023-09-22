@@ -9,16 +9,33 @@ import UIKit
 
 final class StatisticsViewController: UIViewController {
 
+    var statisticsStorage: StatisticsStorageProtocol?
+    private var isStatisticsAvailable: Bool {
+           !(statisticsStorage?.getAverageCompleted() == 0 && statisticsStorage?.getBestPeriod() == 0
+             && statisticsStorage?.getPerfectDays() == 0 && statisticsStorage?.getTrackersCompleted() == 0)
+    }
     private lazy var placeholderView = { createPlaceholderView() }()
     private lazy var bestPeriodView = { createBestPeriodView() }()
     private lazy var perfectDaysView = { createPerfectDaysView() }()
     private lazy var trackersCompletedView = { createTrackersCompletedView() }()
     private lazy var averageCompletedView = { createAverageCompletedView() }()
+    private lazy var statisticsView = { createStatisticsStack() }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupUI()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if isStatisticsAvailable {
+            placeholderView.isHidden = true
+            statisticsView.isHidden = false
+        }
+        else {
+            placeholderView.isHidden = false
+            statisticsView.isHidden = true
+        }
     }
 }
 

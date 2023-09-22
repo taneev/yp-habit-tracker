@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         window?.makeKeyAndVisible()
 
-        if AppData.isFirstAppStart {
-            AppData.isFirstAppStart = false
+        if AppData.shared.isFirstAppStart {
+            AppData.shared.isFirstAppStart = false
             let onboardingViewController = OnboardingViewController(
                 transitionStyle: .scroll,
                 navigationOrientation: .horizontal,

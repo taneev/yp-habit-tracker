@@ -20,6 +20,8 @@ final class StartViewController: UITabBarController {
 
         let trackersListViewController = TrackersViewController()
         trackersListViewController.analytics = ServiceAnalytics.shared
+        trackersListViewController.dataProvider = TrackerDataProvider(delegate: trackersListViewController)
+        trackersListViewController.statisticsStorage = StatisticsStorage()
         let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
         trackersListViewController.tabBarItem = UITabBarItem(
                 title: "Трекеры",
@@ -28,6 +30,7 @@ final class StartViewController: UITabBarController {
         )
 
         let statisticsViewController = StatisticsViewController()
+        statisticsViewController.statisticsStorage = StatisticsStorage()
         let statisticsTabBarImage = UIImage(systemName: "hare.fill") ?? UIImage()
         statisticsViewController.tabBarItem = UITabBarItem(
                 title: "Статистика",
