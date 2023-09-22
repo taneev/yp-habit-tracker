@@ -10,7 +10,10 @@ import UIKit
 final class StatisticsViewController: UIViewController {
 
     private lazy var placeholderView = { createPlaceholderView() }()
+    private lazy var bestPeriodView = { createBestPeriodView() }()
+    private lazy var perfectDaysView = { createPerfectDaysView() }()
     private lazy var trackersCompletedView = { createTrackersCompletedView() }()
+    private lazy var averageCompletedView = { createAverageCompletedView() }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,10 +33,43 @@ private extension StatisticsViewController {
         return view
     }
 
+    func createBestPeriodView() -> StatisticView {
+        let view = StatisticView()
+        view.statisticValue = 0
+        view.statisticName = "Лучший период"
+        return view
+    }
+
+    func createPerfectDaysView() -> StatisticView {
+        let view = StatisticView()
+        view.statisticValue = 0
+        view.statisticName = "Идеальные дни"
+        return view
+    }
+
     func createTrackersCompletedView() -> StatisticView {
         let view = StatisticView()
         view.statisticValue = 0
         view.statisticName = "Трекеров завершено"
+        return view
+    }
+
+    func createAverageCompletedView() -> StatisticView {
+        let view = StatisticView()
+        view.statisticValue = 0
+        view.statisticName = "Среднее значение"
+        return view
+    }
+
+    func createStatisticsStack() -> UIStackView {
+        let view = UIStackView(
+            arrangedSubviews: [bestPeriodView, perfectDaysView, trackersCompletedView, averageCompletedView]
+        )
+        view.axis = .vertical
+        view.spacing = 12
+        view.distribution = .fillEqually
+        view.alignment = .fill
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }
 
@@ -57,11 +93,13 @@ private extension StatisticsViewController {
             placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
 
-        view.addSubview(trackersCompletedView)
+        let statisticViews = createStatisticsStack()
+
+        view.addSubview(statisticViews)
         NSLayoutConstraint.activate([
-            trackersCompletedView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            trackersCompletedView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 77),
-            trackersCompletedView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            statisticViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            statisticViews.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 77),
+            statisticViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
 }
