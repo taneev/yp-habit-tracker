@@ -7,15 +7,11 @@
 
 import UIKit
 
-class StatisticView: UIView {
+final class StatisticView: UIView {
+    private let gradientLayerName = "statisticViewGradientBorder"
+    private let cornerRadius = CGFloat(16)
+    private let borderWith = CGFloat(1)
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
     private lazy var statisticValueLabel = { createStatisticValueLabel() }()
     var statisticValue: Int? {
         didSet {
@@ -30,13 +26,18 @@ class StatisticView: UIView {
         }
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Добавляем градиентный слой тут, т.к. градиенту нужно, чтобы frame вьюшки
+        // уже был рассчитан автолейаутом
+        addGradientSublayer()
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .ypWhiteDay
         layer.cornerRadius = 16
         layer.masksToBounds = true
-        layer.borderColor = UIColor.red.cgColor
-        layer.borderWidth = 1
         translatesAutoresizingMaskIntoConstraints = false
         setupSubviews()
     }
@@ -45,10 +46,43 @@ class StatisticView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    convenience init(value: Int, name: String) {
-        self.init(frame: .zero)
-        self.statisticValue = value
-        self.statisticName = name
+    private func removeGradientLayer() {
+        layer.sublayers?.forEach{
+            if $0.name == gradientLayerName {
+                $0.removeFromSuperlayer()
+            }
+        }
+    }
+
+    private func addGradientSublayer() {
+        removeGradientLayer()
+        let gradientLayer = createGradientSublayer()
+        layer.addSublayer(gradientLayer)
+        gradientLayer.zPosition = 0
+    }
+
+    private func createGradientSublayer() -> CAGradientLayer {
+        let gradient = CAGradientLayer()
+        gradient.name = gradientLayerName
+        gradient.frame = bounds
+        gradient.colors = [
+            UIColor.ypGradientColor3.cgColor,
+            UIColor.ypGradientColor2.cgColor,
+            UIColor.ypGradientColor1.cgColor
+        ]
+        gradient.cornerRadius = cornerRadius
+        gradient.masksToBounds = true
+        gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+
+        let mask = CAShapeLayer()
+        mask.path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius).cgPath
+        mask.fillColor = UIColor.clear.cgColor
+        mask.strokeColor = UIColor.white.cgColor
+        mask.lineWidth = borderWith
+        gradient.mask = mask
+
+        return gradient
     }
 
     private func setupSubviews() {
@@ -70,7 +104,6 @@ class StatisticView: UIView {
 private extension StatisticView {
     func createStatisticValueLabel() -> UILabel {
         let label = UILabel()
-        label.text = String(format: "%d", self.statisticValue ?? 0)
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.textColor = .ypBlackDay
         label.textAlignment = .left
@@ -80,7 +113,6 @@ private extension StatisticView {
 
     func createStatisticNameLabel() -> UILabel {
         let label = UILabel()
-        label.text = self.statisticName
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .ypBlackDay
         label.textAlignment = .left

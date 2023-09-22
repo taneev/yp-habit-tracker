@@ -19,6 +19,8 @@ final class StatisticsViewController: UIViewController {
     }
 }
 
+// MARK: Setup & Layout UI
+
 private extension StatisticsViewController {
 
     func createPlaceholderView() -> PlaceholderView {
@@ -38,15 +40,15 @@ private extension StatisticsViewController {
     func setupUI() {
         view.backgroundColor = .ypWhiteDay
 
-        let label = UILabel()
-        label.text = "Статистика"
-        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = .ypBlackDay
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
+        let title = UILabel()
+        title.text = "Статистика"
+        title.font = UIFont.systemFont(ofSize: 34, weight: .bold)
+        title.textColor = .ypBlackDay
+        title.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(title)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44)
+            title.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            title.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44)
         ])
 
         view.addSubview(placeholderView)
@@ -58,7 +60,7 @@ private extension StatisticsViewController {
         view.addSubview(trackersCompletedView)
         NSLayoutConstraint.activate([
             trackersCompletedView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            trackersCompletedView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 77),
+            trackersCompletedView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 77),
             trackersCompletedView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
