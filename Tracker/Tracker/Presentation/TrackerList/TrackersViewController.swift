@@ -28,7 +28,6 @@ final class TrackersViewController: UIViewController {
 
     var analytics: ServiceAnalyticsProtocol?
     var dataProvider: (any TrackerDataProviderProtocol)?
-    var statisticsStorage: StatisticsStorageProtocol?
 
     private var currentDate: Date = Date()
     private var searchTextFilter: String = ""
@@ -55,11 +54,6 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .ypWhiteDay
-
-        // Загрузим мок-данные в БД для тестирования
-        if let dataProvider {
-            MockDataGenerator.setupRecords(with: dataProvider)
-        }
 
         addSubviews()
         addConstraints()

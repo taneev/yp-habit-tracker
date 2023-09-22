@@ -31,11 +31,19 @@ final class StatisticsViewController: UIViewController {
         if isStatisticsAvailable {
             placeholderView.isHidden = true
             statisticsView.isHidden = false
+            displayStatistics()
         }
         else {
             placeholderView.isHidden = false
             statisticsView.isHidden = true
         }
+    }
+
+        private func displayStatistics() {
+        bestPeriodView.statisticValue = statisticsStorage?.getBestPeriod()
+        perfectDaysView.statisticValue = statisticsStorage?.getPerfectDays()
+        trackersCompletedView.statisticValue = statisticsStorage?.getTrackersCompleted()
+        averageCompletedView.statisticValue = statisticsStorage?.getAverageCompleted()
     }
 }
 
@@ -110,13 +118,11 @@ private extension StatisticsViewController {
             placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
 
-        let statisticViews = createStatisticsStack()
-
-        view.addSubview(statisticViews)
+        view.addSubview(statisticsView)
         NSLayoutConstraint.activate([
-            statisticViews.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            statisticViews.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 77),
-            statisticViews.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            statisticsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            statisticsView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 77),
+            statisticsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
 }

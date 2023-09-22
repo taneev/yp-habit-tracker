@@ -25,4 +25,12 @@ final class StatisticsStorage: StatisticsStorageProtocol {
     func getAverageCompleted() -> Int {
         storage.statisticsAverageCompleted
     }
+
+    func increaseTrackersCompleted() {
+        storage.statisticsTrackersCount += 1
+    }
+
+    func decreaseTrackersCompleted() {
+        storage.statisticsTrackersCount -= 1
+    }
 }

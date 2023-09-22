@@ -18,10 +18,17 @@ final class StartViewController: UITabBarController {
         tabBar.layer.borderWidth = 1
         updateTabBarBorderColor()
 
+        let statisticsStorage = StatisticsStorage()
         let trackersListViewController = TrackersViewController()
         trackersListViewController.analytics = ServiceAnalytics.shared
-        trackersListViewController.dataProvider = TrackerDataProvider(delegate: trackersListViewController)
-        trackersListViewController.statisticsStorage = StatisticsStorage()
+        let dataProvider = TrackerDataProvider(
+            delegate: trackersListViewController,
+            statisticsStorage: statisticsStorage
+        )
+        trackersListViewController.dataProvider = dataProvider
+        // Загрузка мок-данных в БД для проверки функциональности на ревью
+        MockDataGenerator.setupRecords(with: dataProvider)
+
         let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
         trackersListViewController.tabBarItem = UITabBarItem(
                 title: "Трекеры",
@@ -30,7 +37,7 @@ final class StartViewController: UITabBarController {
         )
 
         let statisticsViewController = StatisticsViewController()
-        statisticsViewController.statisticsStorage = StatisticsStorage()
+        statisticsViewController.statisticsStorage = statisticsStorage
         let statisticsTabBarImage = UIImage(systemName: "hare.fill") ?? UIImage()
         statisticsViewController.tabBarItem = UITabBarItem(
                 title: "Статистика",

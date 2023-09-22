@@ -42,10 +42,7 @@ final class MockDataGenerator {
         tracker.categoryID = category1.categoryID
         tracker.isPinned = false
 
-        let completed = TrackerRecordCoreData(context: context)
-        completed.trackerID = tracker.trackerID
-        completed.completedAt = Date().truncated()
-        completed.tracker = tracker
+        dataProvider.switchTracker(withID: tracker.trackerID!, to: true, for: Date().truncated()!)
 
         // а трекеры добавляем сначала для первой категории -
         // для проверки сортировки по категориям и трекерам

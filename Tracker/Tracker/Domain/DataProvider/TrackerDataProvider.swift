@@ -28,13 +28,15 @@ final class TrackerDataProvider {
     private weak var delegate: TrackerDataProviderDelegate?
     var dataStore: DataStoreProtocol
     private var fetchedController: (any PinnedTrackerFetchedController)?
+    private var statisticsStorage: StatisticsStorageProtocol
     private var currentDate: Date = Date()
     private var searchText: String = ""
     private var isCompleted: Bool?
 
-    init(delegate: TrackerDataProviderDelegate) {
+    init(delegate: TrackerDataProviderDelegate, statisticsStorage: StatisticsStorageProtocol) {
         self.delegate = delegate
         self.dataStore = DataStore.shared
+        self.statisticsStorage = statisticsStorage
         self.fetchedController = TrackerFetchedController(
                 dataStore: dataStore,
                 dataProviderDelegate: self
@@ -45,14 +47,26 @@ final class TrackerDataProvider {
         guard let context = dataStore.getContext() else { return }
 
         let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
-        recordStore.addRecord(context: context)
+        do {
+            try recordStore.addRecord(context: context)
+            statisticsStorage.increaseTrackersCompleted()
+        }
+        catch (let error) {
+            assertionFailure("Ошибка при завершении трекера: \(error)")
+        }
     }
 
     private func uncompleteTracker(withID trackerID: UUID, for date: Date) {
         guard let context = dataStore.getContext() else { return }
 
         let recordStore = TrackerRecordStore(trackerID: trackerID, completedAt: date)
-        recordStore.deleteRecord(context: context)
+        do {
+            try recordStore.deleteRecord(context: context)
+            statisticsStorage.decreaseTrackersCompleted()
+        }
+        catch (let error) {
+            assertionFailure("Ошибка при снятии признака завершенности трекера: \(error)")
+        }
     }
 }
 

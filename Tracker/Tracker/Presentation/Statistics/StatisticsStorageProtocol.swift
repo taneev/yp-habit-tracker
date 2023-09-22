@@ -10,6 +10,8 @@ import Foundation
 protocol StatisticsStorageProtocol{
     func getBestPeriod() -> Int
     func getPerfectDays() -> Int
-    func getTrackersCompleted() -> Int
     func getAverageCompleted() -> Int
+    func getTrackersCompleted() -> Int
+    func increaseTrackersCompleted()
+    func decreaseTrackersCompleted()
 }
