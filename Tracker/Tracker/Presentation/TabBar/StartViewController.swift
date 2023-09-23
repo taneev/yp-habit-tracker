@@ -37,7 +37,8 @@ final class StartViewController: UITabBarController {
         )
 
         let statisticsViewController = StatisticsViewController()
-        statisticsViewController.statisticsStorage = statisticsStorage
+        let viewModel = StatisticsViewModel(statisticsStorage: statisticsStorage)
+        statisticsViewController.viewModel = viewModel
         let statisticsTabBarImage = UIImage(systemName: "hare.fill") ?? UIImage()
         statisticsViewController.tabBarItem = UITabBarItem(
             title: "tabBar.statistics".localized(),

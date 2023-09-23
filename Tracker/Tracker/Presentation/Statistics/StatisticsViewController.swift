@@ -9,11 +9,13 @@ import UIKit
 
 final class StatisticsViewController: UIViewController {
 
-    var statisticsStorage: StatisticsStorageProtocol?
-    private var isStatisticsAvailable: Bool {
-           !(statisticsStorage?.getAverageCompleted() == 0 && statisticsStorage?.getBestPeriod() == 0
-             && statisticsStorage?.getPerfectDays() == 0 && statisticsStorage?.getTrackersCompleted() == 0)
+    var viewModel: StatisticsViewModelProtocol? {
+        didSet {
+            if viewModel == nil { return }
+            bind()
+        }
     }
+
     private lazy var placeholderView = { createPlaceholderView() }()
     private lazy var bestPeriodView = { createBestPeriodView() }()
     private lazy var perfectDaysView = { createPerfectDaysView() }()
@@ -28,22 +30,35 @@ final class StatisticsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if isStatisticsAvailable {
-            placeholderView.isHidden = true
-            statisticsView.isHidden = false
-            displayStatistics()
-        }
-        else {
-            placeholderView.isHidden = false
-            statisticsView.isHidden = true
-        }
+        viewModel?.viewWillAppear()
     }
 
-        private func displayStatistics() {
-        bestPeriodView.statisticValue = statisticsStorage?.getBestPeriod()
-        perfectDaysView.statisticValue = statisticsStorage?.getPerfectDays()
-        trackersCompletedView.statisticValue = statisticsStorage?.getTrackersCompleted()
-        averageCompletedView.statisticValue = statisticsStorage?.getAverageCompleted()
+    private func bind() {
+        let bindings = StatisticsViewModelBindings(
+            bestPeriod: { [weak self] in
+                self?.bestPeriodView.statisticValue = $0
+            },
+            perfectDays: { [weak self] in
+                self?.perfectDaysView.statisticValue = $0
+            },
+            trackersCompleted: { [weak self] in
+                self?.trackersCompletedView.statisticValue = $0
+            },
+            averageCompleted: { [weak self] in
+                self?.averageCompletedView.statisticValue = $0
+            },
+            isStatisticsPresenting: { [weak self] in
+                guard let self else { return }
+                if $0 {
+                    self.placeholderView.isHidden = true
+                    self.statisticsView.isHidden = false
+                }
+                else {
+                    self.placeholderView.isHidden = false
+                    self.statisticsView.isHidden = true
+                }
+            })
+        viewModel?.setBindings(bindings)
     }
 }
 
@@ -60,28 +75,24 @@ private extension StatisticsViewController {
 
     func createBestPeriodView() -> StatisticView {
         let view = StatisticView()
-        view.statisticValue = 0
         view.statisticName = "statistics.bestPeriod".localized()
         return view
     }
 
     func createPerfectDaysView() -> StatisticView {
         let view = StatisticView()
-        view.statisticValue = 0
         view.statisticName = "statistics.perfectDays".localized()
         return view
     }
 
     func createTrackersCompletedView() -> StatisticView {
         let view = StatisticView()
-        view.statisticValue = 0
         view.statisticName = "statistics.trackersCompleted".localized()
         return view
     }
 
     func createAverageCompletedView() -> StatisticView {
         let view = StatisticView()
-        view.statisticValue = 0
         view.statisticName = "statistics.averageCompleted".localized()
         return view
     }
