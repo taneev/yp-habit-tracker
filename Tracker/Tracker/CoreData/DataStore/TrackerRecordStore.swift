@@ -15,11 +15,6 @@ struct TrackerRecordStore {
     let trackerID: UUID
     let completedAt: Date
 
-    init(trackerID: UUID, completedAt: Date) {
-        self.trackerID = trackerID
-        self.completedAt = completedAt
-    }
-
     private enum Constants {
         static let recordForTrackerPredicate = "%K == %@ and %K == %@"
     }
@@ -50,7 +45,7 @@ struct TrackerRecordStore {
             tracker
         )
         let records = try context.fetch(recordsRequest)
-        records.forEach{context.delete($0)}
+        records.forEach { context.delete($0) }
         try context.save()
     }
 }

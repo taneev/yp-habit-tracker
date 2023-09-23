@@ -13,7 +13,7 @@ enum FilterItemKind: String, CaseIterable {
     case completed = "filters.completed"
     case todo = "filters.uncompleted"
 
-    var localizedRawValue: String  {
+    var localizedRawValue: String {
         return self.rawValue.localized()
     }
 }
@@ -23,7 +23,7 @@ protocol SelectItemDelegate: AnyObject {
 }
 
 final class FilterItem: RoundedCheckButton {
-    var filterKind : FilterItemKind {
+    var filterKind: FilterItemKind {
         didSet {
             text = filterKind.localizedRawValue
         }

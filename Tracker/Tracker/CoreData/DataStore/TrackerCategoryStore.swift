@@ -36,9 +36,8 @@ struct TrackerCategoryStore {
             context: context
         ) {
             categoryCoreData.name = name
-            try! context.save()
-        }
-        else {
+            try? context.save()
+        } else {
             addRecord(context: context)
         }
     }

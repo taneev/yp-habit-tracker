@@ -30,7 +30,7 @@ final class CategoryDataProvider {
 }
 
 extension CategoryDataProvider: DataProviderForDataSource {
-    typealias T = TrackerCategory
+    typealias ProviderObjectType = TrackerCategory
 
     var numberOfSections: Int {
         fetchedController?.numberOfSections ?? 1
@@ -40,11 +40,11 @@ extension CategoryDataProvider: DataProviderForDataSource {
         fetchedController?.numberOfRows(in: section) ?? 0
     }
 
-    func object(at indexPath: IndexPath) -> T? {
+    func object(at indexPath: IndexPath) -> ProviderObjectType? {
         guard let categoryStore = fetchedController?.object(at: indexPath) as? TrackerCategoryStore
         else { return nil }
 
-        let category = T(id: categoryStore.categoryID, name: categoryStore.name)
+        let category = ProviderObjectType(id: categoryStore.categoryID, name: categoryStore.name)
         return category
     }
 }

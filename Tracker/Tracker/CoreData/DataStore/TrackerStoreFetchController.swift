@@ -7,7 +7,7 @@
 
 import CoreData
 
-protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol where T == TrackerStore {
+protocol TrackerStoreFetchControllerProtocol: DataStoreFetchedControllerProtocol where DataStoreType == TrackerStore {
     func updateFilterWith(selectedDate currentDate: Date, searchString searchTextFilter: String, isCompleted: Bool?)
     func indexPath(for trackerID: UUID) -> IndexPath?
 }
@@ -16,7 +16,7 @@ final class TrackerStoreFetchController: NSObject {
 
     private weak var delegate: TrackerFetchedControllerDelegate?
     private var dataStore: DataStoreProtocol?
-    private var fetchedController:  NSFetchedResultsController<TrackerCoreData>?
+    private var fetchedController: NSFetchedResultsController<TrackerCoreData>?
     private var isPinned: Bool
 
     private var insertedSections: IndexSet?
@@ -35,14 +35,13 @@ final class TrackerStoreFetchController: NSObject {
         self.dataStore = dataStore
         self.delegate = delegate
 
-        var sectionNameKeyPath: String? = nil
+        var sectionNameKeyPath: String?
         let fetchRequest = TrackerCoreData.fetchRequest()
         if isPinned {
             fetchRequest.sortDescriptors = [
                 NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: true)
             ]
-        }
-        else {
+        } else {
             fetchRequest.sortDescriptors = [
                 NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryID), ascending: true),
                 NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: true)

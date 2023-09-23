@@ -52,8 +52,7 @@ final class StatisticsViewController: UIViewController {
                 if $0 {
                     self.placeholderView.isHidden = true
                     self.statisticsView.isHidden = false
-                }
-                else {
+                } else {
                     self.placeholderView.isHidden = false
                     self.statisticsView.isHidden = true
                 }

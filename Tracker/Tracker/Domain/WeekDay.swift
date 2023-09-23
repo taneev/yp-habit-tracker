@@ -14,8 +14,8 @@ enum WeekDay: Int, CaseIterable {
 
     static var allWeekdays: [WeekDay] {
         let firstDay = Calendar.current.firstWeekday
-        return (firstDay...7).compactMap{ WeekDay(rawValue: $0) }
-             + (1..<firstDay).compactMap{ WeekDay(rawValue: $0) }
+        return (firstDay...7).compactMap { WeekDay(rawValue: $0) }
+             + (1..<firstDay).compactMap { WeekDay(rawValue: $0) }
     }
 
     static let shortWeekdayText: [WeekDay: String] = [
@@ -25,7 +25,7 @@ enum WeekDay: Int, CaseIterable {
         .wed: "Ср",
         .thu: "Чт",
         .fri: "Пт",
-        .sat: "Сб",
+        .sat: "Сб"
     ]
 
     static let longWeekdayText: [WeekDay: String] = [
@@ -35,11 +35,11 @@ enum WeekDay: Int, CaseIterable {
         .wed: "Среда",
         .thu: "Четверг",
         .fri: "Пятница",
-        .sat: "Суббота",
+        .sat: "Суббота"
     ]
 
     static func getDescription(for schedule: [WeekDay]) -> String {
-        let description = schedule.compactMap{ WeekDay.shortWeekdayText[$0] }.joined(separator: ", ")
+        let description = schedule.compactMap { WeekDay.shortWeekdayText[$0] }.joined(separator: ", ")
         return description
     }
 
@@ -47,7 +47,7 @@ enum WeekDay: Int, CaseIterable {
         let invertedShortWD = Dictionary(
                 uniqueKeysWithValues: shortWeekdayText.map { ($0.value.lowercased(), $0.key) }
         )
-        return string.split(separator: ",").compactMap{
+        return string.split(separator: ",").compactMap {
             let normalizedWeekDay = $0.trimmingCharacters(in: .whitespaces).lowercased()
             return invertedShortWD[normalizedWeekDay]
         }

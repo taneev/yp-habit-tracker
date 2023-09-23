@@ -41,7 +41,7 @@ final class TrackerFetchedController {
 // MARK: TrackerStoreFetchControllerProtocol
 
 extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
-    typealias T = TrackerStore
+    typealias DataStoreType = TrackerStore
 
     var numberOfObjects: Int? {
         let unpinnedTrackers = fetchedUnpinnedController?.numberOfObjects ?? 0
@@ -56,19 +56,17 @@ extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
     func numberOfRows(in section: Int) -> Int? {
         if section == 0 {
             return fetchedPinnedController?.numberOfRows(in: 0) ?? 0
-        }
-        else {
+        } else {
             return fetchedUnpinnedController?.numberOfRows(in: section - 1) ?? 0
         }
     }
 
-    func object(at indexPath: IndexPath) -> TrackerStore? {
+    func object(at indexPath: IndexPath) -> DataStoreType? {
         if indexPath.section == 0 {
-            return fetchedPinnedController?.object(at: indexPath) as? TrackerStore
-        }
-        else {
+            return fetchedPinnedController?.object(at: indexPath) as? DataStoreType
+        } else {
             let unpinnedIndexPath = IndexPath(row: indexPath.row, section: indexPath.section - 1)
-            return fetchedUnpinnedController?.object(at: unpinnedIndexPath)
+            return fetchedUnpinnedController?.object(at: unpinnedIndexPath) as? DataStoreType
         }
     }
 
@@ -97,8 +95,7 @@ extension TrackerFetchedController: TrackerStoreFetchControllerProtocol {
     func indexPath(for trackerID: UUID) -> IndexPath? {
         if let pinnedIndexPath = fetchedPinnedController?.indexPath(for: trackerID) {
             return pinnedIndexPath
-        }
-        else if let unpinnedIndexPath = fetchedUnpinnedController?.indexPath(for: trackerID) {
+        } else if let unpinnedIndexPath = fetchedUnpinnedController?.indexPath(for: trackerID) {
             let indexPath = IndexPath(row: unpinnedIndexPath.row, section: unpinnedIndexPath.section + 1)
             return indexPath
         }

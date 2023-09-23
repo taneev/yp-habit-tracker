@@ -27,7 +27,7 @@ public class TrackerCoreData: NSManagedObject, Identifiable {
         return NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
     }
 
-    @nonobjc class func fetchRecord(for recordID: UUID,context: NSManagedObjectContext) -> TrackerCoreData? {
+    @nonobjc class func fetchRecord(for recordID: UUID, context: NSManagedObjectContext) -> TrackerCoreData? {
 
         let request = TrackerCoreData.fetchRequest()
         request.predicate = NSPredicate(

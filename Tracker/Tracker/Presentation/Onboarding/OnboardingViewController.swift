@@ -122,4 +122,3 @@ extension OnboardingViewController: UIPageViewControllerDelegate {
         }
     }
 }
-

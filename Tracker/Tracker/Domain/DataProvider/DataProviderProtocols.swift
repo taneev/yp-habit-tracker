@@ -8,10 +8,10 @@
 import Foundation
 
 protocol DataProviderForDataSource {
-    associatedtype T
+    associatedtype DataSourceType
     var numberOfSections: Int { get }
     func numberOfRows(in section: Int) -> Int
-    func object(at indexPath: IndexPath) -> T?
+    func object(at indexPath: IndexPath) -> DataSourceType?
 }
 
 protocol DataProviderForCollectionLayoutDelegate: AnyObject {

@@ -50,8 +50,7 @@ final class TrackerDataProvider {
         do {
             try recordStore.addRecord(context: context)
             statisticsStorage.increaseTrackersCompleted()
-        }
-        catch (let error) {
+        } catch let error {
             assertionFailure("Ошибка при завершении трекера: \(error)")
         }
     }
@@ -63,15 +62,14 @@ final class TrackerDataProvider {
         do {
             try recordStore.deleteRecord(context: context)
             statisticsStorage.decreaseTrackersCompleted()
-        }
-        catch (let error) {
+        } catch let error {
             assertionFailure("Ошибка при снятии признака завершенности трекера: \(error)")
         }
     }
 }
 
 extension TrackerDataProvider: DataProviderForDataSource {
-    typealias T = Tracker
+    typealias DataSourceType = Tracker
 
     var numberOfSections: Int {
         fetchedController?.numberOfSections ?? 1
@@ -81,7 +79,7 @@ extension TrackerDataProvider: DataProviderForDataSource {
         fetchedController?.numberOfRows(in: section) ?? 0
     }
 
-    func object(at indexPath: IndexPath) -> T? {
+    func object(at indexPath: IndexPath) -> DataSourceType? {
         guard let trackerStore = fetchedController?.object(at: indexPath) as? TrackerStore
         else { return nil }
 
@@ -89,7 +87,7 @@ extension TrackerDataProvider: DataProviderForDataSource {
         let schedule = WeekDay.getWeekDays(from: trackerStore.schedule ?? "")
         let completedDates = trackerStore.completed
         let isCompleted = completedDates?.first(where: { currentDate.isEqual(to: $0.completedAt)}) != nil
-        let tracker = T(
+        let tracker = DataSourceType(
                         trackerID: trackerStore.trackerID,
                         name: trackerStore.name,
                         isRegular: trackerStore.isRegular,
@@ -133,8 +131,7 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
     func switchTracker(withID trackerID: UUID, to isCompleted: Bool, for date: Date) {
         if isCompleted {
             completeTracker(withID: trackerID, for: date)
-        }
-        else {
+        } else {
             uncompleteTracker(withID: trackerID, for: date)
         }
     }
@@ -192,8 +189,7 @@ extension TrackerDataProvider: TrackerDataProviderProtocol {
                 isPinned: trackerStoreForUpdate.isPinned
             )
             updatedTrackerStore.updateRecord(context: context)
-        }
-        else {
+        } else {
             let trackerStore = TrackerStore(
                 trackerID: tracker.trackerID,
                 name: tracker.name,

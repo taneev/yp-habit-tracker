@@ -47,7 +47,7 @@ final class StatisticView: UIView {
     }
 
     private func removeGradientLayer() {
-        layer.sublayers?.forEach{
+        layer.sublayers?.forEach {
             if $0.name == gradientLayerName {
                 $0.removeFromSuperlayer()
             }

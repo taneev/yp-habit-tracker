@@ -55,7 +55,7 @@ final class CreateTrackerTypeSelectionViewController: UIViewController {
         return viewController
     }
 
-    private func addButtonTargets(){
+    private func addButtonTargets() {
         habitButton.addTarget(
                 self,
                 action: #selector(habitButtonDidTap),
@@ -95,7 +95,7 @@ private extension CreateTrackerTypeSelectionViewController {
             vButtonStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 43),
 
             habitButton.heightAnchor.constraint(equalToConstant: 60),
-            irregularEventButton.heightAnchor.constraint(equalTo: habitButton.heightAnchor),
+            irregularEventButton.heightAnchor.constraint(equalTo: habitButton.heightAnchor)
         ])
     }
 }

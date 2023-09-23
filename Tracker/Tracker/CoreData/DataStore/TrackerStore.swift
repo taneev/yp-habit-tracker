@@ -74,7 +74,7 @@ struct TrackerStore {
         let trackerID = trackerCoreData.trackerID ?? UUID()
         let completedRecords = trackerCoreData.completed as? Set<TrackerRecordCoreData>
 
-        let completedStoreRecords = completedRecords?.compactMap{ record -> TrackerRecordStore? in
+        let completedStoreRecords = completedRecords?.compactMap { record -> TrackerRecordStore? in
             guard let completedAt = record.completedAt?.truncated() else { return nil }
             return TrackerRecordStore(trackerID: trackerID, completedAt: completedAt)
         }

@@ -49,7 +49,7 @@ final class NewTrackerViewController: UIViewController {
     }
 
     private var emojies = [
-        "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡","🥶",
+        "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶",
         "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"
     ]
 
@@ -133,8 +133,7 @@ final class NewTrackerViewController: UIViewController {
         if inputTrackerNameTxtField.isFirstResponder {
             if inputTrackerNameTxtField.resignFirstResponder() {
                 trackerName = inputTrackerNameTxtField.text
-            }
-            else {
+            } else {
                 assertionFailure("Не удалось завершить ввода названия трекера при сохранении")
                 return
             }
@@ -186,7 +185,7 @@ final class NewTrackerViewController: UIViewController {
         counterLabel.text = "\(counter) \(counterText)"
     }
 
-    private func displayTrackerName(){
+    private func displayTrackerName() {
         guard let trackerName else { return }
         inputTrackerNameTxtField.text = trackerName
     }
@@ -256,14 +255,17 @@ extension NewTrackerViewController: CategorySelectionDelegate {
 
 extension NewTrackerViewController: UITextFieldDelegate {
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         let maxLength = 38
         let currentString = textField.text as? NSString
         let newString = currentString?.replacingCharacters(in: range, with: string) ?? ""
         if newString.count > maxLength {
             inputTrackerNameTxtField.isMaxLengthHintHidden = false
-        }
-        else if !inputTrackerNameTxtField.isMaxLengthHintHidden {
+        } else if !inputTrackerNameTxtField.isMaxLengthHintHidden {
             inputTrackerNameTxtField.isMaxLengthHintHidden = true
         }
         return newString.count <= maxLength
@@ -324,8 +326,7 @@ private extension NewTrackerViewController {
         var titleText = ""
         if isEditingMode {
             titleText = isRegular ? "Редактирование привычки" : "Редактирование нерегулярного события"
-        }
-        else {
+        } else {
             titleText = isRegular ? "Новая привычка" : "Новое нерегулярное событие"
         }
         let title = TitleLabel(title: titleText)
@@ -388,7 +389,6 @@ private extension NewTrackerViewController {
     }
 
     func createColorCollectionView() -> TrackerPropertyCollectionView {
-
         let view = TrackerPropertyCollectionView(
                         title: "Цвет",
                         propertyType: .color,
@@ -447,18 +447,26 @@ private extension NewTrackerViewController {
             NSLayoutConstraint.activate([
                 inputTrackerNameTxtField.topAnchor.constraint(equalTo: counterLabel.bottomAnchor, constant: 40)
             ])
-        }
-        else {
+        } else {
             NSLayoutConstraint.activate([
                 inputTrackerNameTxtField.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor)
             ])
         }
 
         NSLayoutConstraint.activate([
-            inputTrackerNameTxtField.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
-            inputTrackerNameTxtField.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
+            inputTrackerNameTxtField.leadingAnchor.constraint(
+                equalTo: scrollView.contentLayoutGuide.leadingAnchor,
+                constant: 16
+            ),
+            inputTrackerNameTxtField.widthAnchor.constraint(
+                equalTo: scrollView.frameLayoutGuide.widthAnchor,
+                constant: -32
+            ),
 
-            actionButtonsView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            actionButtonsView.leadingAnchor.constraint(
+                equalTo: scrollView.frameLayoutGuide.leadingAnchor,
+                constant: 16
+            ),
             actionButtonsView.topAnchor.constraint(equalTo: inputTrackerNameTxtField.bottomAnchor, constant: 24),
             actionButtonsView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32),
 
@@ -475,7 +483,7 @@ private extension NewTrackerViewController {
             buttons.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -20),
             buttons.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -40),
             buttons.heightAnchor.constraint(equalToConstant: 60),
-            buttons.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            buttons.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
         ])
 
         return scrollView
@@ -501,4 +509,3 @@ private extension NewTrackerViewController {
         ])
     }
 }
-

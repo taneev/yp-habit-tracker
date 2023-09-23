@@ -39,7 +39,7 @@ extension UIColor {
         case ypColorSelection18 = "ypColorSelection-18"
 
         static func allColorNames() -> [String] {
-            return allCases.compactMap{ $0.rawValue }
+            return allCases.compactMap { $0.rawValue }
         }
 
         func color() -> UIColor? {

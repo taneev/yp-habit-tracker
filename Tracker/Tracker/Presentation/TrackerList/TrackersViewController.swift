@@ -66,12 +66,12 @@ final class TrackersViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        analytics?.report(event: .open, screen: .Main, item: nil)
+        analytics?.report(event: .open, screen: .main, item: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        analytics?.report(event: .close, screen: .Main, item: nil)
+        analytics?.report(event: .close, screen: .main, item: nil)
     }
 
     @objc private func handleAnyTap(_ sender: UITapGestureRecognizer) {
@@ -79,7 +79,7 @@ final class TrackersViewController: UIViewController {
     }
 
     @objc private func filterButtonDidTap() {
-        analytics?.report(event: .click, screen: .Main, item: .filter)
+        analytics?.report(event: .click, screen: .main, item: .filter)
         let controller = TrackersFilterViewController()
         controller.modalPresentationStyle = .automatic
         controller.filterSelectionDelegate = self
@@ -141,7 +141,7 @@ extension  TrackersViewController: FilterSelectionDelegate {
 
 extension TrackersViewController: TrackerViewCellProtocol {
     func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID) {
-        analytics?.report(event: .click, screen: .Main, item: .track)
+        analytics?.report(event: .click, screen: .main, item: .track)
         dataProvider?.switchTracker(withID: trackerID, to: isCompleted, for: currentDate)
         // важно искать indexPath после switchTracker, т.к. switchTracker может изменить его
         // например, если наложен фильтр "Только незавершенные"
@@ -157,7 +157,7 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func editTrackerDidTap(at indexPath: IndexPath) {
-        analytics?.report(event: .click, screen: .Main, item: .edit)
+        analytics?.report(event: .click, screen: .main, item: .edit)
         guard let tracker = dataProvider?.object(at: indexPath) as? Tracker
         else { return }
 
@@ -172,16 +172,22 @@ extension TrackersViewController: TrackerViewCellProtocol {
     }
 
     func deleteTrackerDidTap(at indexPath: IndexPath) {
-        analytics?.report(event: .click, screen: .Main, item: .delete)
+        analytics?.report(event: .click, screen: .main, item: .delete)
         let alertController = UIAlertController(
             title: "trackersList.approveToDelete".localized(),
             message: nil,
             preferredStyle: .actionSheet
         )
-        alertController.addAction(UIAlertAction(title: "trackersList.approveDeletion".localized(), style: .destructive) { [weak self] _ in
+        alertController.addAction(UIAlertAction(
+            title: "trackersList.approveDeletion".localized(),
+            style: .destructive
+        ) { [weak self] _ in
             self?.dataProvider?.deleteTracker(at: indexPath)
         })
-        alertController.addAction(UIAlertAction(title: "trackersList.cancelDeletion".localized(), style: .cancel))
+        alertController.addAction(UIAlertAction(
+            title: "trackersList.cancelDeletion".localized(),
+            style: .cancel
+        ))
         present(alertController, animated: true)
     }
 }
@@ -198,7 +204,7 @@ extension TrackersViewController: TrackersBarControllerProtocol {
     }
 
     func addTrackerButtonDidTapped() {
-        analytics?.report(event: .click, screen: .Main, item: .addTrack)
+        analytics?.report(event: .click, screen: .main, item: .addTrack)
         searchTextField.resignFirstResponder()
         let selectTrackerTypeViewController = CreateTrackerTypeSelectionViewController()
         selectTrackerTypeViewController.saverDelegate = self
@@ -234,7 +240,10 @@ extension TrackersViewController: UICollectionViewDataSource {
         dataProvider?.numberOfRows(in: section) ?? 0
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
                                 withReuseIdentifier: TrackerViewCell.cellIdentifier,
                                 for: indexPath) as? TrackerViewCell,
@@ -261,22 +270,35 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         )
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumInteritemSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return params.cellSpacing
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
         UIEdgeInsets(top: 16, left: params.leftInset, bottom: 12, right: params.rightInset)
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return 0
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader,
            let view = collectionView.dequeueReusableSupplementaryView(
                             ofKind: kind,
@@ -285,27 +307,31 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                 ) as? TrackersSectionHeaderView {
             if isPinnedSection(indexPath.section) {
                 view.headerLabel.text = "trackersList.pinnedCategory".localized()
-            }
-            else {
+            } else {
                 view.headerLabel.text = dataProvider?.getCategoryForTracker(at: indexPath)?.name ?? ""
             }
             return view
-        }
-        else {
+        } else {
             return UICollectionReusableView()
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        referenceSizeForHeaderInSection section: Int) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        referenceSizeForHeaderInSection section: Int
+    ) -> CGSize {
         if isPinnedSection(section) && dataProvider?.numberOfPinned == 0 {
-            return CGSizeZero
+            return CGSize(width: 0, height: 0)
         }
         return CGSize(width: collectionView.frame.width, height: 18)
     }
 
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first,
               let tracker = dataProvider?.object(at: indexPath) as? Tracker
         else { return nil }
@@ -326,7 +352,10 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                 self.editTrackerDidTap(at: indexPath)
             }
 
-            let deleteAction = UIAction(title: "trackersList.delete".localized(), attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAction(
+                title: "trackersList.delete".localized(),
+                attributes: .destructive
+            ) { [weak self] _ in
                 guard let self else { return }
                 self.deleteTrackerDidTap(at: indexPath)
             }
@@ -334,7 +363,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfiguration configuration: UIContextMenuConfiguration,
+        highlightPreviewForItemAt indexPath: IndexPath
+    ) -> UITargetedPreview? {
         guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell
         else { return nil }
 
@@ -421,12 +454,10 @@ private extension TrackersViewController {
         if let dataProvider,
            dataProvider.numberOfObjects != 0 {
             emptyCollectionPlaceholder.isHidden = true
-        }
-        else if searchTextFilter.isEmpty {
+        } else if searchTextFilter.isEmpty {
             emptyCollectionPlaceholder.isHidden = false
             emptyCollectionPlaceholder.placeholderType = .noData
-        }
-        else {
+        } else {
             emptyCollectionPlaceholder.isHidden = false
             emptyCollectionPlaceholder.placeholderType = .emptyList
         }

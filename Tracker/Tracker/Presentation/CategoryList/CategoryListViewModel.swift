@@ -104,7 +104,7 @@ final class CategoryListViewModel: CategoryListViewModelProtocol {
     }
 
     func updateViewModels(deleteAt deletedIndexes: [IndexPath], insertAt insertedIndexes: [IndexPath]) {
-        deletedIndexes.sorted(by: {$0.item > $1.item}).forEach{
+        deletedIndexes.sorted(by: {$0.item > $1.item}).forEach {
             removeCellViewModel(at: $0)
         }
     }

@@ -31,9 +31,7 @@ final class TrackerNameInputView: UIStackView {
     }
 
     override var isFirstResponder: Bool {
-        get {
-            return inputTextField.isFirstResponder
-        }
+        inputTextField.isFirstResponder
     }
 
     private lazy var inputTextField = { createInputTextField() }()

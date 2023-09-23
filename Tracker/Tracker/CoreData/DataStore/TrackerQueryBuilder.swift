@@ -19,8 +19,7 @@ final class PredicateQuery {
     private func append(queryFormat: String, args: [CVarArg]) {
         if self.queryFormat.trimmingCharacters(in: .whitespaces).isEmpty {
             self.queryFormat = queryFormat
-        }
-        else {
+        } else {
             self.queryFormat += " AND " + queryFormat
         }
         self.args.append(contentsOf: args)
@@ -88,11 +87,10 @@ final class TrackerQueryBuilder {
                     #keyPath(TrackerCoreData.isRegular),
                     NSNumber(booleanLiteral: false),
                     #keyPath(TrackerCoreData.schedule),
-                    weekDayText,
+                    weekDayText
                 ])
             return query
-        }
-        else {
+        } else {
             return nil
         }
     }
@@ -102,7 +100,7 @@ final class TrackerQueryBuilder {
             queryFormat: TrackerListPredicates.textQuery,
             args: [
                 #keyPath(TrackerCoreData.name),
-                text,
+                text
             ])
         return query
     }

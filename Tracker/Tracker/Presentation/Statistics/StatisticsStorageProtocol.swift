@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol StatisticsStorageProtocol{
+protocol StatisticsStorageProtocol {
     func getBestPeriod() -> Int
     func getPerfectDays() -> Int
     func getAverageCompleted() -> Int

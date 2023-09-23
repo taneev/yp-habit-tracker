@@ -32,7 +32,7 @@ final class FilterItemStackSelector: RoundedStackButtonSelector<FilterItem> {
         selectedItem: FilterItemKind? = .all
     ) {
         let selectedItemIndex = selectedItem == nil ? nil : filterItems.firstIndex(of: selectedItem!)
-        let views = filterItems.enumerated().map{ index, kind in
+        let views = filterItems.enumerated().map { index, kind in
             let view = FilterItem(filterKind: kind)
             view.text = kind.localizedRawValue
             view.isChecked = index == selectedItemIndex

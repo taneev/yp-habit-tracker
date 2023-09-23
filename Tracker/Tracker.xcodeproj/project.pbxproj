@@ -535,6 +535,7 @@
 				22D371ED2A79781500FA5888 /* Frameworks */,
 				22D371EE2A79781500FA5888 /* Resources */,
 				0F48236A3EF106CBDC47D75E /* [CP] Embed Pods Frameworks */,
+				2210736C2ABF41D600EAD65C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -625,6 +626,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tracker/Pods-Tracker-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		2210736C2ABF41D600EAD65C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n    swiftlint\nelse echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		61533967BC50A6976EB0864C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

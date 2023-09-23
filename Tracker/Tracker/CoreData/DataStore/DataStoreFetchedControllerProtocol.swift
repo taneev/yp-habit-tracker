@@ -8,10 +8,10 @@
 import Foundation
 
 protocol DataStoreFetchedControllerProtocol {
-    associatedtype T
+    associatedtype DataStoreType
     var numberOfObjects: Int? { get }
     var numberOfSections: Int? { get }
     func numberOfRows(in section: Int) -> Int?
-    func object(at: IndexPath) -> T?
+    func object(at indexPath: IndexPath) -> DataStoreType?
     func fetchData()
 }

@@ -25,7 +25,7 @@ final class ServiceAnalytics: ServiceAnalyticsProtocol {
         item itemType: AnalyticsItemType? = nil
     ) {
         logger.debug("report call for event: \(eventType), screen: \(screenType), item: \(itemType?.rawValue ?? "nil")")
-        var params : [AnyHashable : Any] = [
+        var params: [AnyHashable: Any] = [
             "event": eventType.rawValue,
             "screen": screenType.rawValue
         ]
@@ -33,8 +33,7 @@ final class ServiceAnalytics: ServiceAnalyticsProtocol {
         if eventType == .click {
             if let itemType {
                 params["item"] = itemType.rawValue
-            }
-            else {
+            } else {
                 logger.error("No items for click event, screen \(screenType.rawValue)")
             }
         }

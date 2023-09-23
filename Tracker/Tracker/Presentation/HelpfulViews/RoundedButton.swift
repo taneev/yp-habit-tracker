@@ -56,8 +56,7 @@ class RoundedButton: UIButton {
         setTitle(titleText, for: .normal)
         if roundedButtonStyle == .cancel {
             setTitleColor(.ypRed, for: .normal)
-        }
-        else {
+        } else {
             setTitleColor(.ypWhiteDay, for: .normal)
         }
         titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

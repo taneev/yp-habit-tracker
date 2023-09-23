@@ -34,7 +34,7 @@ final class ScheduleViewController: UIViewController {
 
 private extension ScheduleViewController {
     func createScheduleStackView() -> RoundedViewsStackView<WeekdaySwitchView> {
-        let arrangedSubviews = WeekDay.allWeekdays.map{
+        let arrangedSubviews = WeekDay.allWeekdays.map {
             WeekdaySwitchView(for: $0, isOn: schedule?.contains($0) ?? false)
         }
         let scheduleStack = RoundedViewsStackView(arrangedSubviews: arrangedSubviews)

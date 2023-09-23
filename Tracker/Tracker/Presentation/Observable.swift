@@ -2,7 +2,7 @@ import Foundation
 
 @propertyWrapper
 final class Observable<Value> {
-    private var onChange: ((Value) -> Void)? = nil
+    private var onChange: ((Value) -> Void)?
 
     var wrappedValue: Value {
         didSet {
@@ -13,7 +13,7 @@ final class Observable<Value> {
     var projectedValue: Observable<Value> {
         return self
     }
-    
+
     init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }

@@ -76,7 +76,7 @@ private extension CategoryViewController {
 
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            title.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
+            title.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27)
         ])
 
         NSLayoutConstraint.activate([

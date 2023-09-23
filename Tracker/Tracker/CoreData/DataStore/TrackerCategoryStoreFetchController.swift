@@ -11,7 +11,7 @@ final class CategoryStoreFetchController: NSObject {
     private weak var dataProviderDelegate: DataProviderForTableViewDelegate?
 
     private var dataStore: DataStoreProtocol?
-    private var fetchedController:  NSFetchedResultsController<TrackerCategoryCoreData>?
+    private var fetchedController: NSFetchedResultsController<TrackerCategoryCoreData>?
 
     private var insertedIndexes = [IndexPath]()
     private var deletedIndexes = [IndexPath]()

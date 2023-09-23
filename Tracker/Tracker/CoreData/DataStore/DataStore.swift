@@ -21,14 +21,14 @@ final class DataStore: DataStoreProtocol {
 
     init() {
         self.persistentContainer = NSPersistentContainer(name: Constants.persistentContainerName)
-        self.persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        self.persistentContainer.loadPersistentStores(completionHandler: { (_, error) in
             if let error {
                 assertionFailure("Ошибка инициализации хранилища данных: \(error)")
             }
         })
     }
 
-    func getContext() -> NSManagedObjectContext?  {
+    func getContext() -> NSManagedObjectContext? {
         return persistentContainer.viewContext
     }
 }

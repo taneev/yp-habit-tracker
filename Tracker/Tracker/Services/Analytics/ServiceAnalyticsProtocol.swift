@@ -18,7 +18,7 @@ enum AnalyticsEventType: String {
 }
 
 enum AnalyticsScreenType: String {
-    case Main
+    case main
 }
 
 enum AnalyticsItemType: String {

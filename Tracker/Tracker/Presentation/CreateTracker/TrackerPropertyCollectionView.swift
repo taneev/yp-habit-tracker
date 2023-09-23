@@ -43,7 +43,7 @@ final class TrackerPropertyCollectionView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -55,7 +55,6 @@ final class TrackerPropertyCollectionView: UIView {
             dataSource: PropertyCollectionDataSource
     ) {
         self.init(frame: .zero)
-        
         self.title = title
         self.propertyType = propertyType
         self.delegate = delegate
@@ -76,7 +75,7 @@ extension TrackerPropertyCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let propertyType else { return }
         collectionView.cellForItem(at: indexPath)?.isSelected = true
-        delegate?.didSelectItem(at: indexPath,  for: propertyType)
+        delegate?.didSelectItem(at: indexPath, for: propertyType)
     }
 }
 
@@ -115,7 +114,10 @@ extension TrackerPropertyCollectionView: UICollectionViewDataSource {
         return dataSource.numberOfItems(in: section, for: propertyType)
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         guard let propertyType,
               let property = dataSource?.getItem(at: indexPath, for: propertyType)
         else {return UICollectionViewCell() }
@@ -144,7 +146,7 @@ private extension TrackerPropertyCollectionView {
             collectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 204),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 
