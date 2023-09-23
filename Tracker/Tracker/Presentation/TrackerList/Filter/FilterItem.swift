@@ -8,10 +8,14 @@
 import UIKit
 
 enum FilterItemKind: String, CaseIterable {
-    case all = "Все трекеры"
-    case today = "Трекеры на сегодня"
-    case completed = "Завершенные"
-    case todo = "Не завершенные"
+    case all = "filters.allTrackers"
+    case today = "filters.currentDate"
+    case completed = "filters.completed"
+    case todo = "filters.uncompleted"
+
+    var localizedRawValue: String  {
+        return self.rawValue.localized()
+    }
 }
 
 protocol SelectItemDelegate: AnyObject {
@@ -21,7 +25,7 @@ protocol SelectItemDelegate: AnyObject {
 final class FilterItem: RoundedCheckButton {
     var filterKind : FilterItemKind {
         didSet {
-            text = filterKind.rawValue
+            text = filterKind.localizedRawValue
         }
     }
     weak var delegate: SelectItemDelegate?

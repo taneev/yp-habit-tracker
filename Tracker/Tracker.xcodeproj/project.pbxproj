@@ -17,6 +17,8 @@
 		220A86A52A8292380082B271 /* TrackerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220A86A42A8292380082B271 /* TrackerViewCell.swift */; };
 		221073572ABE117900EAD65C /* StatisticsStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221073562ABE117900EAD65C /* StatisticsStorageProtocol.swift */; };
 		221073592ABE120200EAD65C /* StatisticsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221073582ABE120200EAD65C /* StatisticsStorage.swift */; };
+		2210735B2ABF0DCC00EAD65C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2210735A2ABF0DCC00EAD65C /* Localizable.strings */; };
+		2210735D2ABF124B00EAD65C /* Extensions+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2210735C2ABF124B00EAD65C /* Extensions+String.swift */; };
 		2221A0AA2ABC940C00107856 /* ServiceAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0A92ABC940C00107856 /* ServiceAnalytics.swift */; };
 		2221A0AD2ABC98E100107856 /* ServiceAnalyticsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0AC2ABC98E100107856 /* ServiceAnalyticsProtocol.swift */; };
 		2221A0B02ABCA2DD00107856 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2221A0AF2ABCA2DD00107856 /* AnalyticsLogger.swift */; };
@@ -107,6 +109,8 @@
 		220A86A42A8292380082B271 /* TrackerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewCell.swift; sourceTree = "<group>"; };
 		221073562ABE117900EAD65C /* StatisticsStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsStorageProtocol.swift; sourceTree = "<group>"; };
 		221073582ABE120200EAD65C /* StatisticsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsStorage.swift; sourceTree = "<group>"; };
+		2210735A2ABF0DCC00EAD65C /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		2210735C2ABF124B00EAD65C /* Extensions+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+String.swift"; sourceTree = "<group>"; };
 		2221A0A92ABC940C00107856 /* ServiceAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAnalytics.swift; sourceTree = "<group>"; };
 		2221A0AC2ABC98E100107856 /* ServiceAnalyticsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAnalyticsProtocol.swift; sourceTree = "<group>"; };
 		2221A0AF2ABCA2DD00107856 /* AnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsLogger.swift; sourceTree = "<group>"; };
@@ -385,8 +389,9 @@
 			isa = PBXGroup;
 			children = (
 				220A869E2A8170710082B271 /* Extensions+UIColor.swift */,
-				22CF5E4C2A84256100BEAD2F /* TextHelper.swift */,
+				2210735C2ABF124B00EAD65C /* Extensions+String.swift */,
 				22D566A92A9D035A00B9EEB5 /* Extensions+Date.swift */,
+				22CF5E4C2A84256100BEAD2F /* TextHelper.swift */,
 				227FBB0D2AA77DC7001E05B7 /* AppData.swift */,
 			);
 			path = Helpers;
@@ -460,6 +465,7 @@
 				22D371FC2A79781800FA5888 /* Assets.xcassets */,
 				22D371FE2A79781800FA5888 /* LaunchScreen.storyboard */,
 				22D372012A79781800FA5888 /* Info.plist */,
+				2210735A2ABF0DCC00EAD65C /* Localizable.strings */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -582,6 +588,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22D372002A79781800FA5888 /* LaunchScreen.storyboard in Resources */,
+				2210735B2ABF0DCC00EAD65C /* Localizable.strings in Resources */,
 				22D371FD2A79781800FA5888 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -733,6 +740,7 @@
 				22CF5E4F2A87D7E600BEAD2F /* StatisticsViewController.swift in Sources */,
 				22CF5E892A8D5A5100BEAD2F /* StackRoundedButton.swift in Sources */,
 				22CF5EDD2A967A5F00BEAD2F /* EmojiCollectionViewCell.swift in Sources */,
+				2210735D2ABF124B00EAD65C /* Extensions+String.swift in Sources */,
 				22CF5E782A881BF800BEAD2F /* TitleLabel.swift in Sources */,
 				22CF5EE72A98EE4100BEAD2F /* HabitTracker.xcdatamodeld in Sources */,
 				227FBB232AA9138D001E05B7 /* TrackerCategoryCoreData.swift in Sources */,

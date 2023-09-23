@@ -34,7 +34,7 @@ private extension TrackersFilterViewController {
 
         view.backgroundColor = .ypWhiteDay
 
-        let title = TitleLabel(title: "Фильтры")
+        let title = TitleLabel(title: "filters.title".localized())
         view.addSubview(title)
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: view.centerXAnchor),

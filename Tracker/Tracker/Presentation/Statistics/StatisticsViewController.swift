@@ -53,7 +53,7 @@ private extension StatisticsViewController {
 
     func createPlaceholderView() -> PlaceholderView {
         let view = PlaceholderView()
-        view.placeholderText = "Анализировать пока нечего"
+        view.placeholderText = "statistics.placeholderText".localized()
         view.placeholderImage = UIImage(named: "emptyStat")
         return view
     }
@@ -61,28 +61,28 @@ private extension StatisticsViewController {
     func createBestPeriodView() -> StatisticView {
         let view = StatisticView()
         view.statisticValue = 0
-        view.statisticName = "Лучший период"
+        view.statisticName = "statistics.bestPeriod".localized()
         return view
     }
 
     func createPerfectDaysView() -> StatisticView {
         let view = StatisticView()
         view.statisticValue = 0
-        view.statisticName = "Идеальные дни"
+        view.statisticName = "statistics.perfectDays".localized()
         return view
     }
 
     func createTrackersCompletedView() -> StatisticView {
         let view = StatisticView()
         view.statisticValue = 0
-        view.statisticName = "Трекеров завершено"
+        view.statisticName = "statistics.trackersCompleted".localized()
         return view
     }
 
     func createAverageCompletedView() -> StatisticView {
         let view = StatisticView()
         view.statisticValue = 0
-        view.statisticName = "Среднее значение"
+        view.statisticName = "statistics.averageCompleted".localized()
         return view
     }
 
@@ -102,7 +102,7 @@ private extension StatisticsViewController {
         view.backgroundColor = .ypWhiteDay
 
         let title = UILabel()
-        title.text = "Статистика"
+        title.text = "statistics.title".localized()
         title.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         title.textColor = .ypBlackDay
         title.translatesAutoresizingMaskIntoConstraints = false

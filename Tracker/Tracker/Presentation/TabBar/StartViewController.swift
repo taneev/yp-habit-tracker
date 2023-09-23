@@ -31,18 +31,18 @@ final class StartViewController: UITabBarController {
 
         let trackersTabBarImage = UIImage(named: "record.circle.fill") ?? UIImage()
         trackersListViewController.tabBarItem = UITabBarItem(
-                title: "Трекеры",
-                image: trackersTabBarImage,
-                selectedImage: nil
+            title: "tabBar.trackers".localized(),
+            image: trackersTabBarImage,
+            selectedImage: nil
         )
 
         let statisticsViewController = StatisticsViewController()
         statisticsViewController.statisticsStorage = statisticsStorage
         let statisticsTabBarImage = UIImage(systemName: "hare.fill") ?? UIImage()
         statisticsViewController.tabBarItem = UITabBarItem(
-                title: "Статистика",
-                image: statisticsTabBarImage,
-                selectedImage: nil
+            title: "tabBar.statistics".localized(),
+            image: statisticsTabBarImage,
+            selectedImage: nil
         )
         setViewControllers([trackersListViewController, statisticsViewController], animated: true)
     }

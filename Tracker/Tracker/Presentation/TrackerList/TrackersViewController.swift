@@ -174,14 +174,14 @@ extension TrackersViewController: TrackerViewCellProtocol {
     func deleteTrackerDidTap(at indexPath: IndexPath) {
         analytics?.report(event: .click, screen: .Main, item: .delete)
         let alertController = UIAlertController(
-            title: "Уверены, что хотите удалить трекер?",
+            title: "trackersList.approveToDelete".localized(),
             message: nil,
             preferredStyle: .actionSheet
         )
-        alertController.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: "trackersList.approveDeletion".localized(), style: .destructive) { [weak self] _ in
             self?.dataProvider?.deleteTracker(at: indexPath)
         })
-        alertController.addAction(UIAlertAction(title: "Отменить", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "trackersList.cancelDeletion".localized(), style: .cancel))
         present(alertController, animated: true)
     }
 }
@@ -284,7 +284,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                             for: indexPath
                 ) as? TrackersSectionHeaderView {
             if isPinnedSection(indexPath.section) {
-                view.headerLabel.text = "Закрепленные"
+                view.headerLabel.text = "trackersList.pinnedCategory".localized()
             }
             else {
                 view.headerLabel.text = dataProvider?.getCategoryForTracker(at: indexPath)?.name ?? ""
@@ -315,18 +315,18 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
             previewProvider: nil
         ) { [weak self] _ in
             guard let self else { return UIMenu() }
-            let pinActionTitle = tracker.isPinned ? "Открепить" : "Закрепить"
+            let pinActionTitle = tracker.isPinned ? "trackersList.unpin".localized() : "trackersList.pin".localized()
             let pinAction = UIAction(title: pinActionTitle) { [weak self] _ in
                 guard let self else { return }
                 self.pinTrackerDidTap(to: !tracker.isPinned, at: indexPath)
             }
 
-            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+            let editAction = UIAction(title: "trackersList.edit".localized()) { [weak self] _ in
                 guard let self else { return }
                 self.editTrackerDidTap(at: indexPath)
             }
 
-            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAction(title: "trackersList.delete".localized(), attributes: .destructive) { [weak self] _ in
                 guard let self else { return }
                 self.deleteTrackerDidTap(at: indexPath)
             }
@@ -375,7 +375,7 @@ private extension TrackersViewController {
 
     func createSearchTextField() -> UISearchTextField {
         let searchField = UISearchTextField()
-        searchField.placeholder = "Поиск"
+        searchField.placeholder = "trackersList.search".localized()
         searchField.delegate = self
         searchField.font = UIFont.systemFont(ofSize: 17)
         searchField.translatesAutoresizingMaskIntoConstraints = false
@@ -402,7 +402,7 @@ private extension TrackersViewController {
     }
 
     func createFilterButton() -> RoundedButton {
-        let button = RoundedButton(title: "Фильтр")
+        let button = RoundedButton(title: "trackersList.filter".localized())
         button.backgroundColor = .ypBlue
         button.titleLabel?.textColor = .ypWhiteDay
         button.addTarget(self, action: #selector(filterButtonDidTap), for: .touchUpInside)

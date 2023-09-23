@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Тимур Танеев on 23.09.2023.
+  
+*/
+
+"trackersList.title" = "Trackers"; //"Трекеры"
+"trackersList.filter" = "Filter"; // "Фильтр"
+"trackersList.pinnedCategory" = "Pinned"; // "Закрепленные"
+"trackersList.delete" = "Delete"; // "Удалить"
+"trackersList.edit" = "Edit"; // "Редактировать"
+"trackersList.pin" = "Pin"; // "Закрепить"
+"trackersList.unpin" = "Unpin"; // "Открепить"
+"trackersList.approveToDelete" = "You're about to delete tracker. Are you sure?"; //"Уверены, что хотите удалить трекер?"
+
+"trackersList.approveDeletion" = "Delete"; // "Удалить"
+"trackersList.cancelDeletion" = "Cancel"; // "Отменить"
+"trackersList.search" = "Search"; // "Поиск"
+
+"tabBar.trackers" = "Trackers"; // "Трекеры"
+"tabBar.statistics" = "Statistics"; // "Статистика"
+
+"statistics.title" = "Statistics"; // "Статистика"
+"statistics.bestPeriod" = "Best period"; // "Лучший период"
+"statistics.perfectDays" = "Perfect days"; // "Идеальные дни"
+"statistics.trackersCompleted" = "Trackers completed"; // "Трекеров завершено"
+"statistics.averageCompleted" = "Average completed per day"; // "Среднее значение"
+"statistics.placeholderText" = "Nothing to analyze yet"; // "Анализировать пока нечего"
+
+"filters.title" = "Filters"; // "Фильтры"
+"filters.allTrackers" = "All trackers"; // "Все трекеры"
+"filters.currentDate" = "Switch to current date"; // "Трекеры на сегодня"
+"filters.completed" = "Completed only"; // "Завершенные"
+"filters.uncompleted" = "Uncompleted only"; // "Не завершенные"
