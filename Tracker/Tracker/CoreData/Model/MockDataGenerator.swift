@@ -41,8 +41,14 @@ final class MockDataGenerator {
         tracker.category = category1
         tracker.categoryID = category1.categoryID
         tracker.isPinned = false
-
-        dataProvider.switchTracker(withID: tracker.trackerID!, to: true, for: Date().truncated()!)
+        
+        if let trackerID = tracker.trackerID,
+           let currentDate = Date().truncated() {
+            dataProvider.switchTracker(withID: trackerID, to: true, for: currentDate)
+        }
+        else {
+            print("Ошибка наполнения mock-данными: не удалось отметить трекер выполненным")
+        }
 
         // а трекеры добавляем сначала для первой категории -
         // для проверки сортировки по категориям и трекерам
