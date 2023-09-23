@@ -12,4 +12,11 @@ extension String {
         let localizedString = NSLocalizedString(self, comment: comment)
         return localizedString
     }
+
+    func localizedValue(_ value: CVarArg, comment: String = "") -> String {
+        String.localizedStringWithFormat(
+            NSLocalizedString(self, comment: comment),
+            value
+        )
+    }
 }

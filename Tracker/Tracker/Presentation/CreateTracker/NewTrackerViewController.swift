@@ -179,7 +179,10 @@ final class NewTrackerViewController: UIViewController {
     private func displayCounter() {
         guard let counter = tracker?.completedCounter else { return }
 
-        let counterText = TextHelper.getDaysText(for: counter)
+        let counterText = "numberOfDays".localizedValue(
+            counter,
+            comment: "Number of days the tracker was completed"
+        )
         counterLabel.text = "\(counter) \(counterText)"
     }
 

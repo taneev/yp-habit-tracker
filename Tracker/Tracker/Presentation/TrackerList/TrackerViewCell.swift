@@ -35,7 +35,10 @@ final class TrackerViewCell: UICollectionViewCell {
                 quantityLabel.text = ""
                 return
             }
-            let daysText = TextHelper.getDaysText(for: quantity)
+            let daysText = "numberOfDays".localizedValue(
+                quantity,
+                comment: "Number of days the tracker was completed"
+            )
             quantityLabel.text = "\(quantity) \(daysText)"
         }
     }
