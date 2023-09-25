@@ -5,8 +5,6 @@
 //  Created by Тимур Танеев on 21.09.2023.
 //
 
-import Foundation
-import os
 import YandexMobileMetrica
 
 final class AnalyticsService: AnalyticsServiceProtocol {
