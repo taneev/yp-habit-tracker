@@ -26,7 +26,7 @@ protocol FilterSelectionDelegate: AnyObject {
 
 final class TrackersViewController: UIViewController {
 
-    var analytics: ServiceAnalyticsProtocol?
+    var analytics: AnalyticsServiceProtocol?
     var dataProvider: (any TrackerDataProviderProtocol)?
 
     private var currentDate: Date = Date()

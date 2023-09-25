@@ -20,7 +20,7 @@ final class StartViewController: UITabBarController {
 
         let statisticsStorage = StatisticsStorage()
         let trackersListViewController = TrackersViewController()
-        trackersListViewController.analytics = ServiceAnalytics.shared
+        trackersListViewController.analytics = AnalyticsService.shared
         let dataProvider = TrackerDataProvider(
             delegate: trackersListViewController,
             statisticsStorage: statisticsStorage

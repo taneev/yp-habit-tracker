@@ -7,7 +7,7 @@
 
 import Foundation
 
-private enum AppDataKeys: String {
+enum AppDataKeys: String {
     case didStartBefore
     case statisticsTrackersCount
     case statisticsBestPeriod
@@ -28,34 +28,15 @@ class AppData {
         }
     }
 
-    @UserDefaultsProperty(key: .statisticsTrackersCount)
+    @UserDefaultsProperty(key: AppDataKeys.statisticsTrackersCount)
     var statisticsTrackersCount: Int
 
-    @UserDefaultsProperty(key: .statisticsBestPeriod)
+    @UserDefaultsProperty(key: AppDataKeys.statisticsBestPeriod)
     var statisticsBestPeriod: Int
 
-    @UserDefaultsProperty(key: .statisticsPerfectDays)
+    @UserDefaultsProperty(key: AppDataKeys.statisticsPerfectDays)
     var statisticsPerfectDays: Int
 
-    @UserDefaultsProperty(key: .statisticsAverageCompleted)
+    @UserDefaultsProperty(key: AppDataKeys.statisticsAverageCompleted)
     var statisticsAverageCompleted: Int
-}
-
-@propertyWrapper
-final class UserDefaultsProperty {
-
-    let storage = UserDefaults.standard
-    var key: String
-    var wrappedValue: Int {
-        get {
-            storage.integer(forKey: key)
-        }
-        set {
-            storage.setValue(newValue, forKey: key)
-        }
-    }
-
-    fileprivate init(key: AppDataKeys) {
-        self.key = key.rawValue
-    }
 }

@@ -5,7 +5,7 @@
 //  Created by Тимур Танеев on 21.09.2023.
 //
 
-protocol ServiceAnalyticsProtocol {
+protocol AnalyticsServiceProtocol {
     func report(
         event eventType: AnalyticsEventType,
         screen screenType: AnalyticsScreenType,

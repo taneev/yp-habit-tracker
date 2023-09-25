@@ -1,5 +1,5 @@
 //
-//  ServiceAnalytics.swift
+//  AnalyticsService.swift
 //  Tracker
 //
 //  Created by Тимур Танеев on 21.09.2023.
@@ -9,8 +9,8 @@ import Foundation
 import os
 import YandexMobileMetrica
 
-final class ServiceAnalytics: ServiceAnalyticsProtocol {
-    static var shared = ServiceAnalytics(isLoggingEnable: true)
+final class AnalyticsService: AnalyticsServiceProtocol {
+    static var shared = AnalyticsService(isLoggingEnable: true)
     private var isLoggingEnable: Bool
     private let logger: AnalyticsLoggerProtocol
 
