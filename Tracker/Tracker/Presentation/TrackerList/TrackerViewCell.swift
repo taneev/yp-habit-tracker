@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TrackerViewCellProtocol: AnyObject {
-    func trackerDoneButtonDidSwitched(to isCompleted: Bool, at indexPath: IndexPath)
+    func trackerDoneButtonDidSwitched(to isCompleted: Bool, for trackerID: UUID)
 }
 
 final class TrackerViewCell: UICollectionViewCell {
@@ -24,10 +24,9 @@ final class TrackerViewCell: UICollectionViewCell {
             emoji = tracker.emoji
             quantity = tracker.completedCounter
             isCompleted = tracker.isCompleted
+            isPinned = tracker.isPinned
         }
     }
-
-    var indexPath: IndexPath?
 
     var quantity: Int? {
         didSet {
@@ -36,7 +35,10 @@ final class TrackerViewCell: UICollectionViewCell {
                 quantityLabel.text = ""
                 return
             }
-            let daysText = TextHelper.getDaysText(for: quantity)
+            let daysText = "numberOfDays".localizedValue(
+                quantity,
+                comment: "Number of days the tracker was completed"
+            )
             quantityLabel.text = "\(quantity) \(daysText)"
         }
     }
@@ -72,9 +74,9 @@ final class TrackerViewCell: UICollectionViewCell {
             emojiLabel.text = emoji
         }
     }
-    private var pinned: Bool = false {
+    private var isPinned: Bool = false {
         didSet {
-            pinnedImageView.image = pinned ? pinImage : UIImage()
+            pinnedImageView.image = isPinned ? pinImage : UIImage()
         }
     }
 
@@ -100,8 +102,12 @@ final class TrackerViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func getTrackerView() -> UIView {
+        return trackerView
+    }
+
     @objc private func doneButtonDidTap() {
-        guard let indexPath else {
+        guard let trackerID = tracker?.trackerID else {
             assertionFailure("Не удалось определить ID трекера")
             return
         }
@@ -109,7 +115,7 @@ final class TrackerViewCell: UICollectionViewCell {
         if !(isDoneButtonEnabled == true) { return }
 
         let isButtonChecked = !(isCompleted ?? false)
-        delegate?.trackerDoneButtonDidSwitched(to: isButtonChecked, at: indexPath)
+        delegate?.trackerDoneButtonDidSwitched(to: isButtonChecked, for: trackerID)
     }
 }
 
@@ -216,13 +222,13 @@ private extension TrackerViewCell {
             emojiLabel.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
             emojiLabel.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
             emojiLabel.widthAnchor.constraint(equalToConstant: 24),
+            emojiLabel.heightAnchor.constraint(equalTo: emojiLabel.widthAnchor),
 
-            pinnedImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinnedImageView.heightAnchor.constraint(equalToConstant: 14),
             pinnedImageView.widthAnchor.constraint(equalTo: pinnedImageView.heightAnchor),
-            emojiLabel.heightAnchor.constraint(equalTo: pinnedImageView.heightAnchor),
 
             pinnedImageView.centerYAnchor.constraint(equalTo: emojiLabel.centerYAnchor),
-            pinnedImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12),
+            pinnedImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -22),
 
             cellNameLabel.topAnchor.constraint(greaterThanOrEqualTo: emojiLabel.bottomAnchor, constant: 8),
             cellNameLabel.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),

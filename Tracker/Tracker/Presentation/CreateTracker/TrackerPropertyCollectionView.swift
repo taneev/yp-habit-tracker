@@ -32,17 +32,18 @@ enum TrackerProperty: String {
 
 final class TrackerPropertyCollectionView: UIView {
 
+    lazy var collectionView = { createCollectionView() }()
+
     private var propertyType: TrackerProperty?
     private weak var delegate: PropertyCollectionViewDelegate?
     private weak var dataSource: PropertyCollectionDataSource?
     private var title: String?
     private lazy var titleView = { createTitleView() }()
-    private lazy var collectionView = { createCollectionView() }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -54,7 +55,6 @@ final class TrackerPropertyCollectionView: UIView {
             dataSource: PropertyCollectionDataSource
     ) {
         self.init(frame: .zero)
-        
         self.title = title
         self.propertyType = propertyType
         self.delegate = delegate
@@ -62,13 +62,20 @@ final class TrackerPropertyCollectionView: UIView {
 
         setupSubviews()
     }
+
+    func selectItem(at indexPath: IndexPath) {
+        guard let propertyType else { return }
+
+        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .bottom)
+        delegate?.didSelectItem(at: indexPath, for: propertyType)
+    }
 }
 
 extension TrackerPropertyCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let propertyType else { return }
         collectionView.cellForItem(at: indexPath)?.isSelected = true
-        delegate?.didSelectItem(at: indexPath,  for: propertyType)
+        delegate?.didSelectItem(at: indexPath, for: propertyType)
     }
 }
 
@@ -107,7 +114,10 @@ extension TrackerPropertyCollectionView: UICollectionViewDataSource {
         return dataSource.numberOfItems(in: section, for: propertyType)
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         guard let propertyType,
               let property = dataSource?.getItem(at: indexPath, for: propertyType)
         else {return UICollectionViewCell() }
@@ -136,7 +146,7 @@ private extension TrackerPropertyCollectionView {
             collectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: 204),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 
@@ -151,7 +161,7 @@ private extension TrackerPropertyCollectionView {
         return title
     }
 
-    func createCollectionView() -> UIView {
+    func createCollectionView() -> UICollectionView {
 
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)

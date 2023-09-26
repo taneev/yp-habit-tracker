@@ -48,8 +48,7 @@ final class CategoryListViewController: UIViewController {
 
                 if indexPath != self.tableView.indexPathForSelectedRow {
                     self.tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-                }
-                else {
+                } else {
                     self.dismiss(animated: true)
                 }
             },
@@ -108,9 +107,20 @@ extension CategoryListViewController: UITableViewDataSource {
         viewModel?.categoriesCount ?? 0
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier,for: indexPath) as? CategoryCell
-        else {return UITableViewCell(style: .default, reuseIdentifier: CategoryCell.reuseIdentifier)}
+    func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: CategoryCell.reuseIdentifier,
+            for: indexPath
+        ) as? CategoryCell
+        else {
+            return UITableViewCell(
+                style: .default,
+                reuseIdentifier: CategoryCell.reuseIdentifier
+            )
+        }
 
         cell.viewModel = viewModel?.cellViewModel(forCellAt: indexPath)
         viewModel?.configCell(at: indexPath)
@@ -175,7 +185,7 @@ private extension CategoryListViewController {
 
         NSLayoutConstraint.activate([
             title.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            title.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27),
+            title.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 27)
         ])
 
         NSLayoutConstraint.activate([
@@ -187,7 +197,7 @@ private extension CategoryListViewController {
 
         NSLayoutConstraint.activate([
             placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
 
         NSLayoutConstraint.activate([

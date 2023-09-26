@@ -44,7 +44,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
             colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 6),
             colorView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
             colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -6),
-            colorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            colorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6)
         ])
     }
 

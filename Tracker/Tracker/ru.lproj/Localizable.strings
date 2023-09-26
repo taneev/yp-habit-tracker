@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Тимур Танеев on 23.09.2023.
+  
+*/
+
+"trackersList.title" = "Трекеры";
+"trackersList.filter" = "Фильтр";
+"trackersList.pinnedCategory" = "Закрепленные";
+"trackersList.delete" = "Удалить";
+"trackersList.edit" = "Редактировать";
+"trackersList.pin" = "Закрепить";
+"trackersList.unpin" = "Открепить";
+"trackersList.approveToDelete" = "Уверены, что хотите удалить трекер?";
+
+"trackersList.approveDeletion" = "Удалить";
+"trackersList.cancelDeletion" = "Отменить";
+"trackersList.search" = "Поиск";
+
+"tabBar.trackers" = "Трекеры";
+"tabBar.statistics" = "Статистика";
+
+"statistics.title" = "Статистика";
+"statistics.bestPeriod" = "Лучший период";
+"statistics.perfectDays" = "Идеальные дни";
+"statistics.trackersCompleted" = "Трекеров завершено";
+"statistics.averageCompleted" = "Среднее значение";
+"statistics.placeholderText" = "Анализировать пока нечего";
+
+"filters.title" = "Фильтры";
+"filters.allTrackers" = "Все трекеры";
+"filters.currentDate" = "Трекеры на сегодня";
+"filters.completed" = "Завершенные";
+"filters.uncompleted" = "Не завершенные";

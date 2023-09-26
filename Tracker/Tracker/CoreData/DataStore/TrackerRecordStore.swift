@@ -7,20 +7,19 @@
 
 import CoreData
 
+enum TrackerCoreDataError: Error {
+    case initOperationError
+}
+
 struct TrackerRecordStore {
     let trackerID: UUID
     let completedAt: Date
-
-    init(trackerID: UUID, completedAt: Date) {
-        self.trackerID = trackerID
-        self.completedAt = completedAt
-    }
 
     private enum Constants {
         static let recordForTrackerPredicate = "%K == %@ and %K == %@"
     }
 
-    func addRecord(context: NSManagedObjectContext) {
+    func addRecord(context: NSManagedObjectContext) throws {
         let tracker = TrackerCoreData.fetchRecord(for: trackerID, context: context)
         let recordCoreData = TrackerRecordCoreData(context: context)
         let completedAt = completedAt.truncated() ?? completedAt
@@ -29,13 +28,13 @@ struct TrackerRecordStore {
         recordCoreData.tracker = tracker
         recordCoreData.trackerID = trackerID
 
-        try? context.save()
+        try context.save()
     }
 
-    func deleteRecord(context: NSManagedObjectContext) {
+    func deleteRecord(context: NSManagedObjectContext) throws {
         guard let completedAt = completedAt.truncated(),
               let tracker = TrackerCoreData.fetchRecord(for: trackerID, context: context)
-        else { return }
+        else { throw TrackerCoreDataError.initOperationError }
 
         let recordsRequest = TrackerRecordCoreData.fetchRequest()
         recordsRequest.predicate = NSPredicate(
@@ -45,9 +44,8 @@ struct TrackerRecordStore {
             #keyPath(TrackerRecordCoreData.tracker),
             tracker
         )
-        if let records = try? context.fetch(recordsRequest) {
-            records.forEach{context.delete($0)}
-            try? context.save()
-        }
+        let records = try context.fetch(recordsRequest)
+        records.forEach { context.delete($0) }
+        try context.save()
     }
 }

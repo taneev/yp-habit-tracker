@@ -38,6 +38,7 @@ class RoundedButton: UIButton {
     }
 
     private func applyStyle() {
+        contentEdgeInsets = UIEdgeInsets(top: 14, left: 20, bottom: 14, right: 20)
         layer.cornerRadius = 16
         layer.masksToBounds = true
         switch roundedButtonStyle {
@@ -55,8 +56,7 @@ class RoundedButton: UIButton {
         setTitle(titleText, for: .normal)
         if roundedButtonStyle == .cancel {
             setTitleColor(.ypRed, for: .normal)
-        }
-        else {
+        } else {
             setTitleColor(.ypWhiteDay, for: .normal)
         }
         titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

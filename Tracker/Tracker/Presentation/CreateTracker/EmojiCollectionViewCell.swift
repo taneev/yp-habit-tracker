@@ -25,7 +25,6 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
     }
 
     private lazy var emojiLabel = { createEmojiLabel() }()
-    
 
     override init(frame: CGRect) {
         super.init(frame: frame)

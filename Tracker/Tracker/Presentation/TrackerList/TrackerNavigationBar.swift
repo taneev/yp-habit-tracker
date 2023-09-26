@@ -14,7 +14,7 @@ final class TrackerNavigationBar: UINavigationBar {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
-        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.locale = Locale.current
         datePicker.addTarget(self, action: #selector(currentDateDidChange), for: .valueChanged)
         return datePicker
     }()
@@ -39,8 +39,8 @@ final class TrackerNavigationBar: UINavigationBar {
         leftBarItem.imageInsets = UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 0)
         layoutMargins.left = 16
         navigationItem.leftBarButtonItem = leftBarItem
-        navigationItem.title = "Трекеры"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        navigationItem.title = "trackersList.title".localized()
+        navigationItem.rightBarButtonItem =  UIBarButtonItem(customView: datePicker)
 
         self.trackerBarDelegate = trackerBarDelegate
         prefersLargeTitles = true
@@ -48,6 +48,10 @@ final class TrackerNavigationBar: UINavigationBar {
         tintColor = .ypBlackDay
         setItems([navigationItem], animated: true)
         translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    func setDatePickerDate(to date: Date) {
+        datePicker.date = date
     }
 
     @objc private func createTrackerTapped() {

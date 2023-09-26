@@ -31,9 +31,10 @@ final class ScheduleViewController: UIViewController {
 }
 
 // MARK: Layout
+
 private extension ScheduleViewController {
-    func createScheduleStackView() -> RoundedViewsStackView {
-        let arrangedSubviews = WeekDay.allWeekdays.map{
+    func createScheduleStackView() -> RoundedViewsStackView<WeekdaySwitchView> {
+        let arrangedSubviews = WeekDay.allWeekdays.map {
             WeekdaySwitchView(for: $0, isOn: schedule?.contains($0) ?? false)
         }
         let scheduleStack = RoundedViewsStackView(arrangedSubviews: arrangedSubviews)
@@ -55,7 +56,6 @@ private extension ScheduleViewController {
     }
 
     func setupSubviews() {
-
         view.backgroundColor = .ypWhiteDay
 
         let titleLabel = TitleLabel(title: "Расписание")
@@ -84,6 +84,5 @@ private extension ScheduleViewController {
             okButton.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
             okButton.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
         ])
-        
     }
 }
